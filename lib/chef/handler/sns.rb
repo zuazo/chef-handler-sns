@@ -98,6 +98,8 @@ class Chef
           message << Array(backtrace).join("\n")
           message << "\n"
         end
+
+        message
       end
   
     end
