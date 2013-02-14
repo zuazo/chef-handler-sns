@@ -17,8 +17,6 @@
 #
 
 require 'chef/handler'
-require 'chef/resource/directory'
-
 require 'right_aws'
 
 class Chef
