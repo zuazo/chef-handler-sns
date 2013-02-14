@@ -4,7 +4,7 @@ require "chef/handler/sns/version"
 Gem::Specification.new do |s|
   s.name = 'chef-handler-sns'
   s.version = ::Chef::Handler::Sns::VERSION
-  s.date = '2013-02-13'
+  s.date = '2013-02-14'
   s.platform = Gem::Platform::RUBY
   s.summary = 'Chef SNS reports'
   s.description = 'Chef report handler to send SNS notifications on failures or changes'
