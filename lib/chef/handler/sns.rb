@@ -58,7 +58,7 @@ class Chef
           :region => @region || node.ec2.placement_availability_zone.chop
         }
         params[:token] = @token if @token
-        @@sns ||= RightAws::SnsInterface.new(@access_key, @secret_key, params)
+        @sns ||= RightAws::SnsInterface.new(@access_key, @secret_key, params)
       end
   
       def sns_subject
