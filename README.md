@@ -58,7 +58,40 @@ Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler)
     
     # Then activate the handler with the `chef_handler` LWRP
     chef_handler "Chef::Handler::Sns" do
-      source "#{Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob}/chef/handler/sns"
+      source "#{Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob}/chef/handler/sns"
+      arguments argument_array
+      supports :exception => true
+      action :enable
+    end
+
+If you have an old version of gem package (< 1.8.6) without `find_by_name` or old chef-client (< 0.10.10) without `chef_gem`, you can try creating a recipe similar to the following:
+
+    # Handler configuration options
+    argument_array = [
+      :access_key => "***AMAZON-KEY***",
+      :secret_key => "***AMAZON-SECRET***",
+
+      :topic_arn => "arn:aws:sns:***",
+      :region => "us-east-1" # optional
+    ]
+    
+    # Install the `chef-handler-sns` RubyGem during the compile phase
+    if defined?(Chef::Resource::ChefGem)
+      chef_gem "chef-handler-sns"
+    else
+      gem_package("chef-handler-sns") do
+        action :nothing
+      end.run_action(:install)
+    end
+    
+    # Get the installed `chef-handler-sns` gem path
+    sns_handler_path = Gem::Specification.respond_to?("find_by_name") ?
+      Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob :
+      Gem.all_load_paths.grep(/chef-handler-sns/).first
+    
+    # Then activate the handler with the `chef_handler` LWRP
+    chef_handler "Chef::Handler::Sns" do
+      source "#{sns_handler_path}/chef/handler/sns"
       arguments argument_array
       supports :exception => true
       action :enable
