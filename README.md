@@ -5,6 +5,8 @@ A simple Chef report handler that reports status of a Chef run through Amazon SN
 
 * http://wiki.opscode.com/display/chef/Exception+and+Report+Handlers
 
+[![Dependency Status](https://gemnasium.com/onddo/chef-handler-sns.png)](https://gemnasium.com/onddo/chef-handler-sns)
+
 Requirements
 ============
 
