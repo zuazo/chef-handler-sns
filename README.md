@@ -103,7 +103,8 @@ The following options are available to configure the handler:
 * `secret_key` - AWS secret key (required).
 * `topic_arn` - AWS topic ARN name (required).
 * `region` - AWS region (optional).
-* `subject` - Message subject string in erubis format (optional). Example: "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>".
+* `subject` - Message subject string in erubis format (optional). Example:
+    "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>".
 * `body_template` - Full path of an erubis template to use for the message body (optional).
 
 ## Roadmap
