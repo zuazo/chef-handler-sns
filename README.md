@@ -113,7 +113,7 @@ The following options are available to configure the handler:
 ```
 sns_handler.subject: "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
 ```
-* `body_template` - Full path of an erubis template to use for the message body (optional).
+* `body_template` - Full path of an erubis template file to use for the message body (optional).
 
 ## Roadmap
 
