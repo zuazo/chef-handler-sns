@@ -8,6 +8,7 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
 
 [![Gem Version](https://badge.fury.io/rb/chef-handler-sns.png)](http://badge.fury.io/rb/chef-handler-sns)
 [![Dependency Status](https://gemnasium.com/onddo/chef-handler-sns.png)](https://gemnasium.com/onddo/chef-handler-sns)
+[![Code Climate](https://codeclimate.com/github/onddo/chef-handler-sns.png)](https://codeclimate.com/github/onddo/chef-handler-sns)
 
 ## Requirements
 
