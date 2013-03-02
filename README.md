@@ -2,6 +2,8 @@
 
 A simple Chef report handler that reports status of a Chef run through Amazon SNS.
 
+This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtimberman) examples.
+
 * http://wiki.opscode.com/display/chef/Exception+and+Report+Handlers
 
 [![Gem Version](https://badge.fury.io/rb/chef-handler-sns.png)](http://badge.fury.io/rb/chef-handler-sns)
