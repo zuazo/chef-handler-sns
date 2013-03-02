@@ -71,7 +71,7 @@ class Chef
         message = ''
   
         message << "Node Name: #{node.name}\n"
-        message << "Hostname: #{node.fqdn}\n"
+        message << "Hostname: #{node.fqdn}\n" if node.attribute?('fqdn')
         message << "\n"
 
         message << "Chef Run List: #{node.run_list.to_s}\n"
@@ -79,11 +79,11 @@ class Chef
         message << "\n"
 
         if node.attribute?('ec2')
-          message << "Instance Id: #{node.ec2.instance_id}\n"
-          message << "Instance Public Hostname: #{node.ec2.public_hostname}\n"
-          message << "Instance Hostname: #{node.ec2.hostname}\n"
-          message << "Instance Public IPv4: #{node.ec2.public_ipv4}\n"
-          message << "Instance Local IPv4: #{node.ec2.local_ipv4}\n"
+          message << "Instance Id: #{node.ec2.instance_id}\n" if node.ec2.attribute?('instance_id')
+          message << "Instance Public Hostname: #{node.ec2.public_hostname}\n" if node.ec2.attribute?('public_hostname')
+          message << "Instance Hostname: #{node.ec2.hostname}\n" if node.ec2.attribute?('hostname')
+          message << "Instance Public IPv4: #{node.ec2.public_ipv4}\n" if node.ec2.attribute?('public_ipv4')
+          message << "Instance Local IPv4: #{node.ec2.local_ipv4}\n" if node.ec2.attribute?('local_ipv4')
         end
         message << "\n"
   
