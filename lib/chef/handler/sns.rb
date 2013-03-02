@@ -33,7 +33,6 @@ class Chef
   
       def report
         config_check
-        Chef::Log.debug("#{self.class.to_s} reporting.")
         sns.publish(topic_arn, sns_body, sns_subject)
       end
   
