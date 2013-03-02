@@ -23,56 +23,37 @@ require 'erubis'
 class Chef
   class Handler
     class Sns < ::Chef::Handler
-      attr_writer :access_key, :secret_key, :region, :token, :topic_arn, :subject, :body_template
+      require 'chef/handler/sns/config'
+      include ::Chef::Handler::Sns::Config
   
       def initialize(config={})
         Chef::Log.debug("#{self.class.to_s} initialized.")
-        @access_key = config[:access_key]
-        @secret_key = config[:secret_key]
-        @region = config[:region] if config.has_key?(:region)
-        @token = config[:token] if config.has_key?(:token)
-        @topic_arn = config[:topic_arn]
-        @subject = config[:subject] if config.has_key?(:subject)
-        @body_template = config[:body_template] if config.has_key?(:body_template)
+        config_init(config)
       end
   
       def report
-        check_config
+        config_check
         Chef::Log.debug("#{self.class.to_s} reporting.")
-        sns.publish(@topic_arn, sns_body, sns_subject)
+        sns.publish(topic_arn, sns_body, sns_subject)
       end
   
       protected
-  
-      def check_config
-        Chef::Log.debug("#{self.class.to_s} checking handler configuration.")
-        raise "access_key not properly set" unless @access_key.kind_of?(String)
-        raise "secret_key not properly set" unless @secret_key.kind_of?(String)
-        raise "region not properly set" unless @region.kind_of?(String) or @region.nil?
-        raise "token not properly set" unless @token.kind_of?(String) or @token.nil?
-        raise "topic_arn not properly set" unless @topic_arn.kind_of?(String)
-        raise "subject not properly set" unless @subject.kind_of?(String) or @subject.nil?
-        unless @body_template.nil?
-          raise "body_template not properly set" unless @body_template.kind_of?(String)
-          raise "body_template file not found: #{@body_template}" unless ::File.exists?(@body_template)
-        end
-      end
 
       def sns
         @sns ||= begin
           params = {
             :logger => Chef::Log,
-            :region => @region || node.ec2.placement_availability_zone.chop
+            :region => region || node.ec2.placement_availability_zone.chop
           }
-          params[:token] = @token if @token
-          RightAws::SnsInterface.new(@access_key, @secret_key, params)
+          params[:token] = token if token
+          RightAws::SnsInterface.new(access_key, secret_key, params)
         end
       end
   
       def sns_subject
-        if @subject
+        if subject
           context = self
-          eruby = Erubis::Eruby.new(@subject)
+          eruby = Erubis::Eruby.new(subject)
           eruby.evaluate(context)
         else
           chef_client = Chef::Config[:solo] ? 'Chef Solo' : 'Chef Client'
@@ -82,7 +63,7 @@ class Chef
       end
   
       def sns_body
-        template = IO.read(@body_template || "#{File.dirname(__FILE__)}/sns/templates/body.erb")
+        template = IO.read(body_template || "#{File.dirname(__FILE__)}/sns/templates/body.erb")
         context = self
         eruby = Erubis::Eruby.new(template)
         eruby.evaluate(context)
