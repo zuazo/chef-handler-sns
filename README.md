@@ -48,9 +48,7 @@ Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler)
     argument_array = [
       :access_key => "***AMAZON-KEY***",
       :secret_key => "***AMAZON-SECRET***",
-
       :topic_arn => "arn:aws:sns:***",
-      :region => "us-east-1" # optional
     ]
     
     # Install the `chef-handler-sns` RubyGem during the compile phase
@@ -70,9 +68,7 @@ If you have an old version of gem package (< 1.8.6) without `find_by_name` or ol
     argument_array = [
       :access_key => "***AMAZON-KEY***",
       :secret_key => "***AMAZON-SECRET***",
-
       :topic_arn => "arn:aws:sns:***",
-      :region => "us-east-1" # optional
     ]
     
     # Install the `chef-handler-sns` RubyGem during the compile phase
@@ -96,6 +92,16 @@ If you have an old version of gem package (< 1.8.6) without `find_by_name` or ol
       supports :exception => true
       action :enable
     end
+
+## Handler Configuration Options
+
+The following options are available to configure the handler:
+
+* `access_key` - AWS access key (required).
+* `secret_key` - AWS secret key (required).
+* `topic_arn` - AWS topic ARN name (required).
+* `region` - AWS region (optional).
+* `body_template` - Full path of a erubis template to use for the message body (optional).
 
 ## Roadmap
 

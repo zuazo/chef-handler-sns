@@ -23,7 +23,7 @@ require 'erubis'
 class Chef
   class Handler
     class Sns < ::Chef::Handler
-      attr_writer :access_key, :secret_key, :region, :token, :topic_arn
+      attr_writer :access_key, :secret_key, :region, :token, :topic_arn, :body_template
   
       def initialize(config={})
         Chef::Log.debug("#{self.class.to_s} initialized.")
@@ -32,6 +32,7 @@ class Chef
         @region = config[:region] if config.has_key?(:region)
         @token = config[:token] if config.has_key?(:token)
         @topic_arn = config[:topic_arn]
+        @body_template = config[:body_template] if config.has_key?(:body_template)
       end
   
       def report
@@ -47,8 +48,10 @@ class Chef
         raise "access_key not properly set" unless @access_key.kind_of?(String)
         raise "secret_key not properly set" unless @secret_key.kind_of?(String)
         raise "region not properly set" unless @region.kind_of?(String) or @region.nil?
-        raise "topic_arn not properly set" unless @topic_arn.kind_of?(String)
         raise "token not properly set" unless @token.kind_of?(String) or @token.nil?
+        raise "topic_arn not properly set" unless @topic_arn.kind_of?(String)
+        raise "body_template not properly set" unless @body_template.kind_of?(String) or @body_template.nil?
+        raise "body_template file not found: #{@body_template}" unless ::File.exists?(@body_template)
       end
 
       def sns
@@ -69,7 +72,7 @@ class Chef
       end
   
       def sns_body
-        template = IO.read("#{File.dirname(__FILE__)}/sns/templates/body.erb")
+        template = IO.read(@body_template || "#{File.dirname(__FILE__)}/sns/templates/body.erb")
         context = self
         eruby = Erubis::Eruby.new(template)
         eruby.evaluate(context)
