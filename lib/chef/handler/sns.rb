@@ -23,7 +23,7 @@ require 'erubis'
 class Chef
   class Handler
     class Sns < ::Chef::Handler
-      attr_writer :access_key, :secret_key, :region, :token, :topic_arn, :body_template
+      attr_writer :access_key, :secret_key, :region, :token, :topic_arn, :subject, :body_template
   
       def initialize(config={})
         Chef::Log.debug("#{self.class.to_s} initialized.")
@@ -32,6 +32,7 @@ class Chef
         @region = config[:region] if config.has_key?(:region)
         @token = config[:token] if config.has_key?(:token)
         @topic_arn = config[:topic_arn]
+        @subject = config[:subject] if config.has_key?(:subject)
         @body_template = config[:body_template] if config.has_key?(:body_template)
       end
   
@@ -50,8 +51,11 @@ class Chef
         raise "region not properly set" unless @region.kind_of?(String) or @region.nil?
         raise "token not properly set" unless @token.kind_of?(String) or @token.nil?
         raise "topic_arn not properly set" unless @topic_arn.kind_of?(String)
-        raise "body_template not properly set" unless @body_template.kind_of?(String) or @body_template.nil?
-        raise "body_template file not found: #{@body_template}" unless ::File.exists?(@body_template)
+        raise "subject not properly set" unless @subject.kind_of?(String) or @subject.nil?
+        unless @body_template.nil?
+          raise "body_template not properly set" unless @body_template.kind_of?(String)
+          raise "body_template file not found: #{@body_template}" unless ::File.exists?(@body_template)
+        end
       end
 
       def sns
@@ -66,9 +70,15 @@ class Chef
       end
   
       def sns_subject
-        chef_client = Chef::Config[:solo] ? 'Chef Solo' : 'Chef Client'
-        status = run_status.success? ? 'success' : 'failure'
-        "#{chef_client} #{status} in #{node.name}"
+        if @subject
+          context = self
+          eruby = Erubis::Eruby.new(@subject)
+          eruby.evaluate(context)
+        else
+          chef_client = Chef::Config[:solo] ? 'Chef Solo' : 'Chef Client'
+          status = run_status.success? ? 'success' : 'failure'
+          "#{chef_client} #{status} in #{node.name}"
+        end
       end
   
       def sns_body
