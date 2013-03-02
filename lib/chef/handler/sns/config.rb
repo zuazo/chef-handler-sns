@@ -30,7 +30,7 @@ class Chef
             if self.respond_to?(key)
               self.send(key, value)
             else
-              Chef::Log.warn("#{self.class.to_s}: cnofiguration method not found: #{key}.")
+              Chef::Log.warn("#{self.class.to_s}: configuration method not found: #{key}.")
             end
           end
         end
