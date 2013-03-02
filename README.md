@@ -1,5 +1,4 @@
-Description
-===========
+# Chef Handler SNS
 
 A simple Chef report handler that reports status of a Chef run through Amazon SNS.
 
@@ -8,14 +7,12 @@ A simple Chef report handler that reports status of a Chef run through Amazon SN
 [![Gem Version](https://badge.fury.io/rb/chef-handler-sns.png)](http://badge.fury.io/rb/chef-handler-sns)
 [![Dependency Status](https://gemnasium.com/onddo/chef-handler-sns.png)](https://gemnasium.com/onddo/chef-handler-sns)
 
-Requirements
-============
+## Requirements
 
 * Amazon AWS: uses Amazon SNS service.
 * Uses the `right_aws` library.
 
-Usage
-=====
+## Usage
 
 You can install this handler in two ways:
 
@@ -100,15 +97,13 @@ If you have an old version of gem package (< 1.8.6) without `find_by_name` or ol
       action :enable
     end
 
-Roadmap
-=======
+## Roadmap
 
 * rspec tests.
 
 Pull requests are welcome.
 
-License and Author
-==================
+## License and Author
 
 |                      |                                          |
 |:---------------------|:-----------------------------------------|
