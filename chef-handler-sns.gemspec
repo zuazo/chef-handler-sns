@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.files = %w(LICENSE README.md) + Dir.glob('lib/**/*')
   s.add_dependency 'right_aws', '~> 3.0'
+  s.add_dependency 'erubis'
 end

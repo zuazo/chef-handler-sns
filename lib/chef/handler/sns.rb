@@ -18,6 +18,7 @@
 
 require 'chef/handler'
 require 'right_aws'
+require 'erubis'
 
 class Chef
   class Handler
@@ -68,38 +69,10 @@ class Chef
       end
   
       def sns_body
-        message = ''
-  
-        message << "Node Name: #{node.name}\n"
-        message << "Hostname: #{node.fqdn}\n" if node.attribute?('fqdn')
-        message << "\n"
-
-        message << "Chef Run List: #{node.run_list.to_s}\n"
-        message << "Chef Environment: #{node.chef_environment}\n"
-        message << "\n"
-
-        if node.attribute?('ec2')
-          message << "Instance Id: #{node.ec2.instance_id}\n" if node.ec2.attribute?('instance_id')
-          message << "Instance Public Hostname: #{node.ec2.public_hostname}\n" if node.ec2.attribute?('public_hostname')
-          message << "Instance Hostname: #{node.ec2.hostname}\n" if node.ec2.attribute?('hostname')
-          message << "Instance Public IPv4: #{node.ec2.public_ipv4}\n" if node.ec2.attribute?('public_ipv4')
-          message << "Instance Local IPv4: #{node.ec2.local_ipv4}\n" if node.ec2.attribute?('local_ipv4')
-        end
-        message << "\n"
-  
-        message << "Chef Client Elapsed Time: #{elapsed_time.to_s}\n"
-        message << "Chef Client Start Time: #{start_time.to_s}\n"
-        message << "Chef Client Start Time: #{end_time.to_s}\n"
-        message << "\n"
-  
-        if exception
-          message << "Exception: #{run_status.formatted_exception}\n"
-          message << "Stacktrace:\n"
-          message << Array(backtrace).join("\n")
-          message << "\n"
-        end
-
-        message
+        template = IO.read("#{File.dirname(__FILE__)}/sns/templates/body.erb")
+        context = self
+        eruby = Erubis::Eruby.new(template)
+        eruby.evaluate(context)
       end
   
     end
