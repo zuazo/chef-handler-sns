@@ -26,74 +26,80 @@ You can install the RubyGem and configure Chef to use it:
 
 Then add to the configuration (`/etc/chef/solo.rb` for chef-solo or `/etc/chef/client.rb` for chef-client):
 
-    require "chef/handler/sns"
-    
-    # Create the handler
-    sns_handler = Chef::Handler::Sns.new
-    
-    # Your Amazon AWS credentials
-    sns_handler.access_key = "***AMAZON-KEY***"
-    sns_handler.secret_key = "***AMAZON-SECRET***"
-    
-    # Some Amazon SNS configurations
-    sns_handler.topic_arn = "arn:aws:sns:***"
-    sns_handler.region = "us-east-1" # optional
-    
-    # Add your handler
-    exception_handlers << sns_handler
+```ruby
+require "chef/handler/sns"
+
+# Create the handler
+sns_handler = Chef::Handler::Sns.new
+
+# Your Amazon AWS credentials
+sns_handler.access_key = "***AMAZON-KEY***"
+sns_handler.secret_key = "***AMAZON-SECRET***"
+
+# Some Amazon SNS configurations
+sns_handler.topic_arn = "arn:aws:sns:***"
+sns_handler.region = "us-east-1" # optional
+
+# Add your handler
+exception_handlers << sns_handler
+```
 
 ### Method 2: In a recipe with the chef_handler LWRP
 
 Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler), creating a recipe with the following:
 
-    # Handler configuration options
-    argument_array = [
-      :access_key => "***AMAZON-KEY***",
-      :secret_key => "***AMAZON-SECRET***",
-      :topic_arn => "arn:aws:sns:***",
-    ]
-    
-    # Install the `chef-handler-sns` RubyGem during the compile phase
-    chef_gem "chef-handler-sns"
-    
-    # Then activate the handler with the `chef_handler` LWRP
-    chef_handler "Chef::Handler::Sns" do
-      source "#{Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob}/chef/handler/sns"
-      arguments argument_array
-      supports :exception => true
-      action :enable
-    end
+```ruby
+# Handler configuration options
+argument_array = [
+  :access_key => "***AMAZON-KEY***",
+  :secret_key => "***AMAZON-SECRET***",
+  :topic_arn => "arn:aws:sns:***",
+]
+
+# Install the `chef-handler-sns` RubyGem during the compile phase
+chef_gem "chef-handler-sns"
+
+# Then activate the handler with the `chef_handler` LWRP
+chef_handler "Chef::Handler::Sns" do
+  source "#{Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob}/chef/handler/sns"
+  arguments argument_array
+  supports :exception => true
+  action :enable
+end
+```
 
 If you have an old version of gem package (< 1.8.6) without `find_by_name` or old chef-client (< 0.10.10) without `chef_gem`, you can try creating a recipe similar to the following:
 
-    # Handler configuration options
-    argument_array = [
-      :access_key => "***AMAZON-KEY***",
-      :secret_key => "***AMAZON-SECRET***",
-      :topic_arn => "arn:aws:sns:***",
-    ]
-    
-    # Install the `chef-handler-sns` RubyGem during the compile phase
-    if defined?(Chef::Resource::ChefGem)
-      chef_gem "chef-handler-sns"
-    else
-      gem_package("chef-handler-sns") do
-        action :nothing
-      end.run_action(:install)
-    end
-    
-    # Get the installed `chef-handler-sns` gem path
-    sns_handler_path = Gem::Specification.respond_to?("find_by_name") ?
-      Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob :
-      Gem.all_load_paths.grep(/chef-handler-sns/).first
-    
-    # Then activate the handler with the `chef_handler` LWRP
-    chef_handler "Chef::Handler::Sns" do
-      source "#{sns_handler_path}/chef/handler/sns"
-      arguments argument_array
-      supports :exception => true
-      action :enable
-    end
+```ruby
+# Handler configuration options
+argument_array = [
+  :access_key => "***AMAZON-KEY***",
+  :secret_key => "***AMAZON-SECRET***",
+  :topic_arn => "arn:aws:sns:***",
+]
+
+# Install the `chef-handler-sns` RubyGem during the compile phase
+if defined?(Chef::Resource::ChefGem)
+  chef_gem "chef-handler-sns"
+else
+  gem_package("chef-handler-sns") do
+    action :nothing
+  end.run_action(:install)
+end
+
+# Get the installed `chef-handler-sns` gem path
+sns_handler_path = Gem::Specification.respond_to?("find_by_name") ?
+  Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob :
+  Gem.all_load_paths.grep(/chef-handler-sns/).first
+
+# Then activate the handler with the `chef_handler` LWRP
+chef_handler "Chef::Handler::Sns" do
+  source "#{sns_handler_path}/chef/handler/sns"
+  arguments argument_array
+  supports :exception => true
+  action :enable
+end
+```
 
 ## Handler Configuration Options
 
@@ -104,7 +110,9 @@ The following options are available to configure the handler:
 * `topic_arn` - AWS topic ARN name (required).
 * `region` - AWS region (optional).
 * `subject` - Message subject string in erubis format (optional). Example:
-    "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>".
+```ruby
+sns_handler.subject: "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
+```
 * `body_template` - Full path of an erubis template to use for the message body (optional).
 
 ## Roadmap
