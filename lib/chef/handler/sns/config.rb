@@ -23,11 +23,12 @@ class Chef
   class Handler
     class Sns
       module Config
+        Config.extend Config # let Config use the methods it contains as instance methods
         include ::Chef::Mixin::ParamsValidate
       
         def config_init(config={})
           config.each do |key, value|
-            if self.respond_to?(key)
+            if Config.respond_to?(key) and not /^config_/ =~ key.to_s
               self.send(key, value)
             else
               Chef::Log.warn("#{self.class.to_s}: configuration method not found: #{key}.")
