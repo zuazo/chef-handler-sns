@@ -25,6 +25,8 @@ class Chef
       module Config
         Config.extend Config # let Config use the methods it contains as instance methods
         include ::Chef::Mixin::ParamsValidate
+
+        REQUIRED = [ 'access_key', 'secret_key', 'topic_arn' ]
       
         def config_init(config={})
           config.each do |key, value|
@@ -37,10 +39,9 @@ class Chef
         end
       
         def config_check
-          required = [ 'access_key', 'secret_key', 'topic_arn' ]
           opts = {}
           map = {}
-          required.each do |key|
+          REQUIRED.each do |key|
             opts[key] = self.send(key)
             map[key] = { :required => true }
           end
