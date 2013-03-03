@@ -143,7 +143,7 @@ The following variables are accesible inside the template:
 * `elapsed_time` - The time elapsed between the start and finish of the chef run.
 * `run_context` - The Chef::RunContext object used by the chef run.
 * `exception` - The uncaught Exception that terminated the chef run, or nil if the run completed successfully.
-* `backtrace` - The backtrace captured by the uncaught exception that terminated the chef run, or nil if the run completed successfully
+* `backtrace` - The backtrace captured by the uncaught exception that terminated the chef run, or nil if the run completed successfully.
 * `node` - The Chef::Node for this client run.
 * `all_resources` - An Array containing all resources in the chef run's resource_collection.
 * `updated_resources` - An Array containing all resources that were updated during the chef run.
