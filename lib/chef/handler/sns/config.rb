@@ -21,7 +21,7 @@ require 'chef/exceptions'
 
 class Chef
   class Handler
-    class Sns
+    class Sns < ::Chef::Handler
       module Config
         Config.extend Config # let Config use the methods it contains as instance methods
         include ::Chef::Mixin::ParamsValidate
