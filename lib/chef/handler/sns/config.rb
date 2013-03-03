@@ -39,13 +39,12 @@ class Chef
         end
       
         def config_check
-          opts = {}
-          map = {}
           REQUIRED.each do |key|
-            opts[key] = self.send(key)
-            map[key] = { :required => true }
+            if self.send(key).nil?
+              raise Exceptions::ValidationFailed,
+                "Required argument #{key.to_s} is missing!"
+            end
           end
-          validate(opts, map)
       
           if body_template and not ::File.exists?(body_template)
             raise Exceptions::ValidationFailed,
