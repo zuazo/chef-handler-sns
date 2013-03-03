@@ -110,17 +110,109 @@ The following options are available to configure the handler:
 * `secret_key` - AWS secret key (required).
 * `topic_arn` - AWS topic ARN name (required).
 * `region` - AWS region (optional).
-* `subject` - Message subject string in erubis format (optional). Example:
-```
+* `subject` - Message subject string in erubis format (optional).
+* `body_template` - Full path of an erubis template file to use for the message body (optional).
+
+### subject
+
+Here is an example of the `subject` configuration option using the ruby configuration file (`solo.rb` or `client.rb`):
+
+```ruby
 sns_handler.subject: "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
 ```
-* `body_template` - Full path of an erubis template file to use for the message body (optional).
+
+Using the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler):
+```ruby
+argument_array = [
+  :access_key => "***AMAZON-KEY***",
+  :secret_key => "***AMAZON-SECRET***",
+  :topic_arn => "arn:aws:sns:***",
+  :subject => "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>",
+  # [...]
+]
+chef_handler "Chef::Handler::Sns" do
+  # [...]
+  arguments argument_array
+end
+```
+
+The following variables are accesible inside the template:
+
+* `start_time` - The time the chef run started.
+* `end_time` - The time the chef run ended.
+* `elapsed_time` - The time elapsed between the start and finish of the chef run.
+* `run_context` - The Chef::RunContext object used by the chef run.
+* `exception` - The uncaught Exception that terminated the chef run, or nil if the run completed successfully.
+* `backtrace` - The backtrace captured by the uncaught exception that terminated the chef run, or nil if the run completed successfully
+* `node` - The Chef::Node for this client run.
+* `all_resources` - An Array containing all resources in the chef run's resource_collection.
+* `updated_resources` - An Array containing all resources that were updated during the chef run.
+* `success?` - Was the chef run successful? True if the chef run did not raise an uncaught exception.
+* `failed?` - Did the chef run fail? True if the chef run raised an uncaught exception.
+
+### body_template
+
+This configuration option needs to contain the full path of an erubis template. For example:
+
+```ruby
+# recipe "myapp::sns_handler"
+
+template "/tmp/chef_handler_sns_body.erb" do
+  source "chef_handler_sns_body_erb.erb"
+  # [...]
+end
+
+argument_array = [
+  :access_key => "***AMAZON-KEY***",
+  :secret_key => "***AMAZON-SECRET***",
+  :topic_arn => "arn:aws:sns:***",
+  :body_template => "/tmp/chef_handler_sns_body.erb",
+  # [...]
+]
+chef_handler "Chef::Handler::Sns" do
+  # [...]
+  arguments argument_array
+end
+```
+
+```erb
+<%# template "myapp/templates/default/chef_handler_sns_body_erb.erb" %>
+
+Node Name: <%= node.name %>
+<% if node.attribute?("fqdn") -%>
+Hostname: <%= node.fqdn %>
+<% end -%>
+
+Chef Run List: <%= node.run_list.to_s %>
+Chef Environment: <%= node.chef_environment %>
+
+<% if node.attribute?("ec2") -%>
+Instance Id: <%= node.ec2.instance_id %>
+Instance Public Hostname: <%= node.ec2.public_hostname %>
+Instance Hostname: <%= node.ec2.hostname %>
+Instance Public IPv4: <%= node.ec2.public_ipv4 %>
+Instance Local IPv4: <%= node.ec2.local_ipv4 %>
+<% end -%>
+
+Chef Client Elapsed Time: <%= elapsed_time.to_s %>
+Chef Client Start Time: <%= start_time.to_s %>
+Chef Client Start Time: <%= end_time.to_s %>
+
+<% if exception -%>
+Exception: <%= run_status.formatted_exception %>
+Stacktrace:
+<%= Array(backtrace).join("\n") %>
+
+<% end -%>
+```
+
+See the [subject](#subject) documentation for more details on the variables accesible inside the template.
 
 ## Roadmap
 
 * rspec tests.
 
-Pull requests are welcome.
+[Pull Requests](http://github.com/onddo/chef-handler-sns/pulls) are welcome.
 
 ## License and Author
 
