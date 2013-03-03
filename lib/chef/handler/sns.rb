@@ -41,9 +41,13 @@ class Chef
       def sns
         @sns ||= begin
           params = {
-            :logger => Chef::Log,
-            :region => region || node.ec2.placement_availability_zone.chop
+            :logger => Chef::Log
           }
+          if (region)
+            params[:region] = region
+          elsif node.attribute?('ec2') and node.ec2.attribute?('placement_availability_zone')
+            params[:region] = node.ec2.placement_availability_zone.chop
+          end
           params[:token] = token if token
           RightAws::SnsInterface.new(access_key, secret_key, params)
         end
