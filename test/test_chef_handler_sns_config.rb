@@ -52,4 +52,12 @@ describe Chef::Handler::Sns::Config do
     end
   end
 
+  it 'should throw an exception when the body template file does not exist' do
+    @sns_config.body_template('/tmp/nonexistent-template.erb')
+    ::File.stubs(:exists?).with(@sns_config.body_template).returns(false)
+
+    assert_raises(Chef::Exceptions::ValidationFailed) { @sns_config.config_check }
+  end
+
+
 end

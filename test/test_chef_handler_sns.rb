@@ -117,4 +117,31 @@ describe Chef::Handler::Sns do
     assert_equal @fake_sns_handler.get_sns_subject, 'My Subject'
   end
 
+  it 'should be able to generate the default message body' do
+    @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
+    @fake_sns_handler.run_report_unsafe(@run_status)
+
+    @fake_sns_handler.get_sns_body.must_match Regexp.new('Node Name: test')
+  end
+
+  it 'should throw an exception when the body template file does not exist' do
+    @config[:body_template] = '/tmp/nonexistent-template.erb'
+    @sns_handler = Chef::Handler::Sns.new(@config)
+
+    assert_raises(Chef::Exceptions::ValidationFailed) { @sns_handler.run_report_unsafe(@run_status) }
+  end
+
+  it 'should be able to generate the body template when configured as an option' do
+    body_msg = 'My Template'
+    @config[:body_template] = '/tmp/existing-template.erb'
+    ::File.stubs(:exists?).with(@config[:body_template]).returns(true)
+    IO.stubs(:read).with(@config[:body_template]).returns(body_msg)
+    @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
+    @fake_sns_handler.run_report_unsafe(@run_status)
+
+    assert_equal @fake_sns_handler.get_sns_body, body_msg
+  end
+
 end
