@@ -16,10 +16,10 @@ Gem::Specification.new do |s|
   s.files = %w(LICENSE README.md) + Dir.glob('lib/**/*')
   s.test_files = Dir.glob('{test,spec,features}/*')
 
-  s.add_dependency 'chef', chef_version
   s.add_dependency 'right_aws', '~> 3.0'
   s.add_dependency 'erubis'
 
+  s.add_development_dependency 'chef', chef_version
   s.add_development_dependency 'rake'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
