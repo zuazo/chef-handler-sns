@@ -35,7 +35,11 @@ class Chef
         config_check
         sns.publish(topic_arn, sns_body, sns_subject)
       end
-  
+
+      def server
+        @sns.params[:server]
+      end
+
       protected
 
       def sns
