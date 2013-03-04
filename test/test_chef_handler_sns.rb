@@ -4,10 +4,24 @@ require 'chef/run_status'
 
 class RightAws::FakeSnsInterface < RightAws::SnsInterface
   attr_reader :sns_interface_new, :topic_arn, :message, :subject
+
   def fake_new
     @sns_interface_new = true
     return self
   end
+
+end
+
+class Chef::Handler::FakeSns < Chef::Handler::Sns
+
+  def get_sns_subject
+    sns_subject
+  end
+
+  def get_sns_body
+    sns_body
+  end
+
 end
 
 describe Chef::Handler::Sns do
@@ -74,6 +88,33 @@ describe Chef::Handler::Sns do
     @sns_handler.run_report_safely(@run_status)
 
     @sns_handler.server.must_match Regexp.new('us-east-1')
+  end
+
+  it 'should be able to generate the default subject in chef-client' do
+    Chef::Config[:solo] = false
+    @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
+    @fake_sns_handler.run_report_unsafe(@run_status)
+
+    assert_equal @fake_sns_handler.get_sns_subject, 'Chef Client success in test'
+  end
+
+  it 'should be able to generate the default subject in chef-solo' do
+    Chef::Config[:solo] = true
+    @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
+    @fake_sns_handler.run_report_unsafe(@run_status)
+
+    assert_equal @fake_sns_handler.get_sns_subject, 'Chef Solo success in test'
+  end
+
+  it 'should use the configured subject when set' do
+    @config[:subject] = 'My Subject'
+    @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
+    @fake_sns_handler.run_report_unsafe(@run_status)
+
+    assert_equal @fake_sns_handler.get_sns_subject, 'My Subject'
   end
 
 end
