@@ -17,13 +17,13 @@
 #
 
 require 'chef/handler'
+require 'chef/handler/sns/config'
 require 'right_aws'
 require 'erubis'
 
 class Chef
   class Handler
     class Sns < ::Chef::Handler
-      require 'chef/handler/sns/config'
       include ::Chef::Handler::Sns::Config
   
       def initialize(config={})
