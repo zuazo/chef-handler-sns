@@ -209,9 +209,7 @@ Stacktrace:
 
 See the [subject](#subject) documentation for more details on the variables accesible inside the template.
 
-## Roadmap
-
-* rspec tests.
+## Contributing
 
 [Pull Requests](http://github.com/onddo/chef-handler-sns/pulls) are welcome.
 
