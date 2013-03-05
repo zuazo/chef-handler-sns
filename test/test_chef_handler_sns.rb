@@ -32,7 +32,11 @@ describe Chef::Handler::Sns do
     @node.name('test')
     Chef::Handler::Sns.any_instance.stubs(:node).returns(@node)
 
-    @run_status = Chef::RunStatus.new(@node, {})
+    @run_status = if Gem.loaded_specs['chef'].version > Gem::Version.new('0.12.0')
+      Chef::RunStatus.new(@node, {})
+    else
+      Chef::RunStatus.new(@node)
+    end
     @run_status.start_clock
     @run_status.stop_clock
 
