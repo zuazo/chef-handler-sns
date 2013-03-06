@@ -1,6 +1,6 @@
 $:.push File.expand_path("../lib", __FILE__)
 require "chef/handler/sns/version"
-chef_version = ENV.key?('CHEF_VERSION') ? "= #{ENV['CHEF_VERSION']}" : ['>= 0.9.0']
+chef_version = ENV.key?('CHEF_VERSION') ? "#{ENV['CHEF_VERSION']}" : ['>= 0.9.0']
 
 Gem::Specification.new do |s|
   s.name = 'chef-handler-sns'
