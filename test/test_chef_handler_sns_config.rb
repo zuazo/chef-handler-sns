@@ -59,5 +59,31 @@ describe Chef::Handler::Sns::Config do
     assert_raises(Chef::Exceptions::ValidationFailed) { @sns_config.config_check }
   end
 
+  describe 'config_init' do
+
+    it 'should accept valid config options' do
+      option = :access_key
+      Chef::Log.expects(:warn).never
+
+      @sns_config.config_init({ option => 'valid' })
+    end
+
+    it 'should not accept invalid config options' do
+      option = :invalid_option
+      assert !@sns_config.respond_to?(option)
+      Chef::Log.expects(:warn).once
+
+      @sns_config.config_init({ option => 'none' })
+    end
+
+    it 'should not accept config options starting by "config_"' do
+      option = :config_check
+      assert @sns_config.respond_to?(option)
+      Chef::Log.expects(:warn).once
+
+      @sns_config.config_init({ option => 'exists but not configurable' })
+    end
+
+  end
 
 end
