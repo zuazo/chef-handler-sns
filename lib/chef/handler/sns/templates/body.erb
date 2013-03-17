@@ -3,6 +3,9 @@ Node Name: <%= node.name %>
 Hostname: <%= node.fqdn %>
 <% end -%>
 
+Chef Version: <%= Chef::VERSION %>
+Ohai Version: <%= Ohai::VERSION %>
+
 Chef Run List: <%= node.run_list.to_s %>
 Chef Environment: <%= node.chef_environment %>
 
