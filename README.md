@@ -178,7 +178,7 @@ end
 ```
 
 ```erb
-<%# file "myapp/files/default/chef_handler_sns_body_erb.erb" %>
+<%# file "myapp/files/default/chef_handler_sns_body.erb" %>
 
 Node Name: <%= node.name %>
 <% if node.attribute?("fqdn") -%>
