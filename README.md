@@ -159,8 +159,8 @@ This configuration option needs to contain the full path of an erubis template. 
 ```ruby
 # recipe "myapp::sns_handler"
 
-template "/tmp/chef_handler_sns_body.erb" do
-  source "chef_handler_sns_body_erb.erb"
+cookbook_file "chef_handler_sns_body.erb" do
+  path "/tmp/chef_handler_sns_body.erb"
   # [...]
 end
 
@@ -178,7 +178,7 @@ end
 ```
 
 ```erb
-<%# template "myapp/templates/default/chef_handler_sns_body_erb.erb" %>
+<%# file "myapp/files/default/chef_handler_sns_body_erb.erb" %>
 
 Node Name: <%= node.name %>
 <% if node.attribute?("fqdn") -%>
