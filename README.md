@@ -35,12 +35,12 @@ require "chef/handler/sns"
 sns_handler = Chef::Handler::Sns.new
 
 # Your Amazon AWS credentials
-sns_handler.access_key = "***AMAZON-KEY***"
-sns_handler.secret_key = "***AMAZON-SECRET***"
+sns_handler.access_key "***AMAZON-KEY***"
+sns_handler.secret_key "***AMAZON-SECRET***"
 
 # Some Amazon SNS configurations
-sns_handler.topic_arn = "arn:aws:sns:***"
-sns_handler.region = "us-east-1" # optional
+sns_handler.topic_arn "arn:aws:sns:***"
+sns_handler.region "us-east-1" # optional
 
 # Add your handler
 exception_handlers << sns_handler
