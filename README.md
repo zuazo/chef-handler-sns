@@ -10,7 +10,6 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
 [![Dependency Status](https://gemnasium.com/onddo/chef-handler-sns.png)](https://gemnasium.com/onddo/chef-handler-sns)
 [![Code Climate](https://codeclimate.com/github/onddo/chef-handler-sns.png)](https://codeclimate.com/github/onddo/chef-handler-sns)
 [![Build Status](https://travis-ci.org/onddo/chef-handler-sns.png)](https://travis-ci.org/onddo/chef-handler-sns)
-[![Coverage Status](https://coveralls.io/repos/onddo/chef-handler-sns/badge.png?branch=master)](https://coveralls.io/r/onddo/chef-handler-sns)
 
 ## Requirements
 
