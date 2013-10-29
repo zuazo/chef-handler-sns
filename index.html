@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Chef-handler-sns by onddo</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Chef-handler-sns</h1>
+        <h2>Chef report handler to send Amazon SNS notifications on failures or changes.</h2>
+        <a href="https://github.com/onddo/chef-handler-sns" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="chef-handler-sns" class="anchor" href="#chef-handler-sns"><span class="octicon octicon-link"></span></a>Chef Handler SNS</h1>
+
+<p>A simple Chef report handler that reports status of a Chef run through Amazon SNS.</p>
+
+<p>This Chef Handler is heavily based on <a href="https://github.com/jtimberman">Joshua Timberman</a> examples.</p>
+
+<ul>
+<li><a href="http://wiki.opscode.com/display/chef/Exception+and+Report+Handlers">http://wiki.opscode.com/display/chef/Exception+and+Report+Handlers</a></li>
+</ul><p><a href="http://badge.fury.io/rb/chef-handler-sns"><img src="https://badge.fury.io/rb/chef-handler-sns.png" alt="Gem Version"></a>
+<a href="https://gemnasium.com/onddo/chef-handler-sns"><img src="https://gemnasium.com/onddo/chef-handler-sns.png" alt="Dependency Status"></a>
+<a href="https://codeclimate.com/github/onddo/chef-handler-sns"><img src="https://codeclimate.com/github/onddo/chef-handler-sns.png" alt="Code Climate"></a>
+<a href="https://travis-ci.org/onddo/chef-handler-sns"><img src="https://travis-ci.org/onddo/chef-handler-sns.png" alt="Build Status"></a></p>
+
+<h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>Amazon AWS: uses Amazon SNS service.</li>
+<li>Uses the <code>right_aws</code> library.</li>
+</ul><h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>You can install this handler in two ways:</p>
+
+<h3>
+<a name="method-1-in-the-chef-config-file" class="anchor" href="#method-1-in-the-chef-config-file"><span class="octicon octicon-link"></span></a>Method 1: In the Chef config file</h3>
+
+<p>You can install the RubyGem and configure Chef to use it:</p>
+
+<pre><code>gem install chef-handler-sns
+</code></pre>
+
+<p>Then add to the configuration (<code>/etc/chef/solo.rb</code> for chef-solo or <code>/etc/chef/client.rb</code> for chef-client):</p>
+
+<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"chef/handler/sns"</span>
+
+<span class="c1"># Create the handler</span>
+<span class="n">sns_handler</span> <span class="o">=</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Handler</span><span class="o">::</span><span class="no">Sns</span><span class="o">.</span><span class="n">new</span>
+
+<span class="c1"># Your Amazon AWS credentials</span>
+<span class="n">sns_handler</span><span class="o">.</span><span class="n">access_key</span> <span class="s2">"***AMAZON-KEY***"</span>
+<span class="n">sns_handler</span><span class="o">.</span><span class="n">secret_key</span> <span class="s2">"***AMAZON-SECRET***"</span>
+
+<span class="c1"># Some Amazon SNS configurations</span>
+<span class="n">sns_handler</span><span class="o">.</span><span class="n">topic_arn</span> <span class="s2">"arn:aws:sns:***"</span>
+<span class="n">sns_handler</span><span class="o">.</span><span class="n">region</span> <span class="s2">"us-east-1"</span> <span class="c1"># optional</span>
+
+<span class="c1"># Add your handler</span>
+<span class="n">exception_handlers</span> <span class="o">&lt;&lt;</span> <span class="n">sns_handler</span>
+</pre></div>
+
+<h3>
+<a name="method-2-in-a-recipe-with-the-chef_handler-lwrp" class="anchor" href="#method-2-in-a-recipe-with-the-chef_handler-lwrp"><span class="octicon octicon-link"></span></a>Method 2: In a recipe with the chef_handler LWRP</h3>
+
+<p>Use the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>, creating a recipe with the following:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># Handler configuration options</span>
+<span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
+  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
+  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
+  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
+<span class="o">]</span>
+
+<span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
+<span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
+
+<span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
+<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
+  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
+  <span class="n">arguments</span> <span class="n">argument_array</span>
+  <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+  <span class="n">action</span> <span class="ss">:enable</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>If you have an old version of gem package (&lt; 1.8.6) without <code>find_by_name</code> or old chef-client (&lt; 0.10.10) without <code>chef_gem</code>, you can try creating a recipe similar to the following:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># Handler configuration options</span>
+<span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
+  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
+  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
+  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
+<span class="o">]</span>
+
+<span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
+<span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resource</span><span class="o">::</span><span class="no">ChefGem</span><span class="p">)</span>
+  <span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
+<span class="k">else</span>
+  <span class="n">gem_package</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">action</span> <span class="ss">:nothing</span>
+  <span class="k">end</span><span class="o">.</span><span class="n">run_action</span><span class="p">(</span><span class="ss">:install</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="c1"># Get the installed `chef-handler-sns` gem path</span>
+<span class="n">sns_handler_path</span> <span class="o">=</span> <span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="s2">"find_by_name"</span><span class="p">)</span> <span class="p">?</span>
+  <span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span> <span class="p">:</span>
+  <span class="no">Gem</span><span class="o">.</span><span class="n">all_load_paths</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">/chef-handler-sns/</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+
+<span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
+<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
+  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="n">sns_handler_path</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
+  <span class="n">arguments</span> <span class="n">argument_array</span>
+  <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+  <span class="n">action</span> <span class="ss">:enable</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>
+<a name="handler-configuration-options" class="anchor" href="#handler-configuration-options"><span class="octicon octicon-link"></span></a>Handler Configuration Options</h2>
+
+<p>The following options are available to configure the handler:</p>
+
+<ul>
+<li>
+<code>access_key</code> - AWS access key (required).</li>
+<li>
+<code>secret_key</code> - AWS secret key (required).</li>
+<li>
+<code>topic_arn</code> - AWS topic ARN name (required).</li>
+<li>
+<code>region</code> - AWS region (optional).</li>
+<li>
+<code>subject</code> - Message subject string in erubis format (optional).</li>
+<li>
+<code>body_template</code> - Full path of an erubis template file to use for the message body (optional).</li>
+</ul><h3>
+<a name="subject" class="anchor" href="#subject"><span class="octicon octicon-link"></span></a>subject</h3>
+
+<p>Here is an example of the <code>subject</code> configuration option using the ruby configuration file (<code>solo.rb</code> or <code>client.rb</code>):</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">sns_handler</span><span class="o">.</span><span class="n">subject</span><span class="p">:</span> <span class="s2">"Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? 'ok' : 'error' %&gt;"</span>
+</pre></div>
+
+<p>Using the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
+  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
+  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
+  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
+  <span class="ss">:subject</span> <span class="o">=&gt;</span> <span class="s2">"Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? 'ok' : 'error' %&gt;"</span><span class="p">,</span>
+  <span class="c1"># [...]</span>
+<span class="o">]</span>
+<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
+  <span class="c1"># [...]</span>
+  <span class="n">arguments</span> <span class="n">argument_array</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>The following variables are accesible inside the template:</p>
+
+<ul>
+<li>
+<code>start_time</code> - The time the chef run started.</li>
+<li>
+<code>end_time</code> - The time the chef run ended.</li>
+<li>
+<code>elapsed_time</code> - The time elapsed between the start and finish of the chef run.</li>
+<li>
+<code>run_context</code> - The Chef::RunContext object used by the chef run.</li>
+<li>
+<code>exception</code> - The uncaught Exception that terminated the chef run, or nil if the run completed successfully.</li>
+<li>
+<code>backtrace</code> - The backtrace captured by the uncaught exception that terminated the chef run, or nil if the run completed successfully.</li>
+<li>
+<code>node</code> - The Chef::Node for this client run.</li>
+<li>
+<code>all_resources</code> - An Array containing all resources in the chef run's resource_collection.</li>
+<li>
+<code>updated_resources</code> - An Array containing all resources that were updated during the chef run.</li>
+<li>
+<code>success?</code> - Was the chef run successful? True if the chef run did not raise an uncaught exception.</li>
+<li>
+<code>failed?</code> - Did the chef run fail? True if the chef run raised an uncaught exception.</li>
+</ul><h3>
+<a name="body_template" class="anchor" href="#body_template"><span class="octicon octicon-link"></span></a>body_template</h3>
+
+<p>This configuration option needs to contain the full path of an erubis template. For example:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># recipe "myapp::sns_handler"</span>
+
+<span class="n">cookbook_file</span> <span class="s2">"chef_handler_sns_body.erb"</span> <span class="k">do</span>
+  <span class="n">path</span> <span class="s2">"/tmp/chef_handler_sns_body.erb"</span>
+  <span class="c1"># [...]</span>
+<span class="k">end</span>
+
+<span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
+  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
+  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
+  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
+  <span class="ss">:body_template</span> <span class="o">=&gt;</span> <span class="s2">"/tmp/chef_handler_sns_body.erb"</span><span class="p">,</span>
+  <span class="c1"># [...]</span>
+<span class="o">]</span>
+<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
+  <span class="c1"># [...]</span>
+  <span class="n">arguments</span> <span class="n">argument_array</span>
+<span class="k">end</span>
+</pre></div>
+
+<div class="highlight highlight-erb"><pre><span class="cp">&lt;%#</span><span class="c"> file "myapp/files/default/chef_handler_sns_body.erb" </span><span class="cp">%&gt;</span><span class="x"></span>
+
+<span class="x">Node Name: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">attribute?</span><span class="p">(</span><span class="s2">"fqdn"</span><span class="p">)</span> <span class="cp">-%&gt;</span><span class="x"></span>
+<span class="x">Hostname: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">fqdn</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">-%&gt;</span><span class="x"></span>
+
+<span class="x">Chef Run List: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">run_list</span><span class="o">.</span><span class="n">to_s</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">Chef Environment: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">chef_environment</span> <span class="cp">%&gt;</span><span class="x"></span>
+
+<span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">attribute?</span><span class="p">(</span><span class="s2">"ec2"</span><span class="p">)</span> <span class="cp">-%&gt;</span><span class="x"></span>
+<span class="x">Instance Id: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">instance_id</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">Instance Public Hostname: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">public_hostname</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">Instance Hostname: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">hostname</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">Instance Public IPv4: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">public_ipv4</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">Instance Local IPv4: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">local_ipv4</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">-%&gt;</span><span class="x"></span>
+
+<span class="x">Chef Client Elapsed Time: </span><span class="cp">&lt;%=</span> <span class="n">elapsed_time</span><span class="o">.</span><span class="n">to_s</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">Chef Client Start Time: </span><span class="cp">&lt;%=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">to_s</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">Chef Client Start Time: </span><span class="cp">&lt;%=</span> <span class="n">end_time</span><span class="o">.</span><span class="n">to_s</span> <span class="cp">%&gt;</span><span class="x"></span>
+
+<span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">exception</span> <span class="cp">-%&gt;</span><span class="x"></span>
+<span class="x">Exception: </span><span class="cp">&lt;%=</span> <span class="n">run_status</span><span class="o">.</span><span class="n">formatted_exception</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">Stacktrace:</span>
+<span class="cp">&lt;%=</span> <span class="nb">Array</span><span class="p">(</span><span class="n">backtrace</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">-%&gt;</span><span class="x"></span>
+</pre></div>
+
+<p>See the <a href="#subject">subject</a> documentation for more details on the variables accesible inside the template.</p>
+
+<h2>
+<a name="running-the-tests" class="anchor" href="#running-the-tests"><span class="octicon octicon-link"></span></a>Running the tests</h2>
+
+<p>Minitest tests can be run as usual:</p>
+
+<pre><code>rake test
+</code></pre>
+
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p><a href="http://github.com/onddo/chef-handler-sns/pulls">Pull Requests</a> are welcome.</p>
+
+<h2>
+<a name="license-and-author" class="anchor" href="#license-and-author"><span class="octicon octicon-link"></span></a>License and Author</h2>
+
+<table>
+<thead><tr>
+<th align="left"></th>
+<th align="left"></th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><strong>Author:</strong></td>
+<td align="left">Xabier de Zuazo (<a href="mailto:xabier@onddo.com">xabier@onddo.com</a>)</td>
+</tr>
+<tr>
+<td align="left"><strong>Copyright:</strong></td>
+<td align="left">Copyright (c) 2013 Onddo Labs, SL. (<a href="http://www.onddo.com">www.onddo.com</a>)</td>
+</tr>
+<tr>
+<td align="left"><strong>License:</strong></td>
+<td align="left">Apache License, Version 2.0</td>
+</tr>
+</tbody>
+</table><p>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+
+<pre><code>http://www.apache.org/licenses/LICENSE-2.0
+</code></pre>
+
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/onddo/chef-handler-sns/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/onddo/chef-handler-sns/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/onddo/chef-handler-sns"></a> is maintained by <a href="https://github.com/onddo">onddo</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-38093658-2");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
