@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'right_aws', '~> 3.0'
   s.add_dependency 'erubis'
 
+  s.add_development_dependency 'mime-types', '~> 1.0' # 2.0 requires Ruby 1.9
   s.add_development_dependency 'chef', chef_version
   s.add_development_dependency 'rake'
   s.add_development_dependency 'minitest'
