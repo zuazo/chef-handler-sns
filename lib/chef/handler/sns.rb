@@ -61,7 +61,7 @@ class Chef
           AWS::SNS.new(params)
         end
       end
-  
+
       def sns_subject
         if subject
           context = self
@@ -73,14 +73,14 @@ class Chef
           "#{chef_client} #{status} in #{node.name}"
         end
       end
-  
+
       def sns_body
         template = IO.read(body_template || "#{File.dirname(__FILE__)}/sns/templates/body.erb")
         context = self
         eruby = Erubis::Eruby.new(template)
         eruby.evaluate(context)
       end
-  
+
     end
   end
 end

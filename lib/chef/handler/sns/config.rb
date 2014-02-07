@@ -27,7 +27,7 @@ class Chef
         include ::Chef::Mixin::ParamsValidate
 
         REQUIRED = [ 'access_key', 'secret_key', 'topic_arn' ]
-      
+
         def config_init(config={})
           config.each do |key, value|
             if Config.respond_to?(key) and not /^config_/ =~ key.to_s
@@ -37,7 +37,7 @@ class Chef
             end
           end
         end
-      
+
         def config_check
           REQUIRED.each do |key|
             if self.send(key).nil?
@@ -45,13 +45,13 @@ class Chef
                 "Required argument #{key.to_s} is missing!"
             end
           end
-      
+
           if body_template and not ::File.exists?(body_template)
             raise Exceptions::ValidationFailed,
               "Template file not found: #{body_template}."
           end
         end
-      
+
         def access_key(arg=nil)
           set_or_return(
             :access_key,
@@ -59,7 +59,7 @@ class Chef
             :kind_of => String
           )
         end
-      
+
         def secret_key(arg=nil)
           set_or_return(
             :secret_key,
@@ -67,7 +67,7 @@ class Chef
             :kind_of => String
           )
         end
-      
+
         def region(arg=nil)
           set_or_return(
             :region,
@@ -75,7 +75,7 @@ class Chef
             :kind_of => String
           )
         end
-      
+
         def token(arg=nil)
           set_or_return(
             :token,
@@ -83,7 +83,7 @@ class Chef
             :kind_of => String
           )
         end
-      
+
         def topic_arn(arg=nil)
           set_or_return(
             :topic_arn,
@@ -91,7 +91,7 @@ class Chef
             :kind_of => String
           )
         end
-      
+
         def subject(arg=nil)
           set_or_return(
             :subject,
@@ -99,7 +99,7 @@ class Chef
             :kind_of => String
           )
         end
-      
+
         def body_template(arg=nil)
           set_or_return(
             :body_template,
@@ -107,8 +107,8 @@ class Chef
             :kind_of => String
           )
         end
-      
+
       end
-    end 
-  end 
-end 
+    end
+  end
+end
