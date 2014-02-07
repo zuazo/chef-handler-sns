@@ -28,6 +28,22 @@ class Chef
 
         REQUIRED = [ 'access_key', 'secret_key', 'topic_arn' ]
 
+        def config_from_ohai(node)
+          if node.attribute?('ec2')
+            if region.nil? and node.ec2.attribute?('placement_availability_zone')
+              region(node.ec2.placement_availability_zone.chop)
+            end
+            if node.ec2.attribute?('iam') and node.ec2.iam.attribute?('security-credentials')
+              iam_role, credentials = node.ec2.iam['security-credentials'].first
+              unless credentials.nil?
+                access_key(credentials['AccessKeyId']) if access_key.nil?
+                secret_key(credentials['SecretAccessKey']) if secret_key.nil?
+                token(credentials['Token']) if token.nil?
+              end
+            end
+          end
+        end
+
         def config_init(config={})
           config.each do |key, value|
             if Config.respond_to?(key) and not /^config_/ =~ key.to_s
@@ -38,7 +54,8 @@ class Chef
           end
         end
 
-        def config_check
+        def config_check(node=nil)
+          config_from_ohai(node) if node
           REQUIRED.each do |key|
             if self.send(key).nil?
               raise Exceptions::ValidationFailed,

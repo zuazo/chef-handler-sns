@@ -43,6 +43,7 @@ describe Chef::Handler::Sns do
     @node = Chef::Node.new
     @node.name('test')
     Chef::Handler::Sns.any_instance.stubs(:node).returns(@node)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
 
     @run_status = if Gem.loaded_specs['chef'].version > Gem::Version.new('0.12.0')
       Chef::RunStatus.new(@node, {})

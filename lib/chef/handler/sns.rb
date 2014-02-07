@@ -32,7 +32,7 @@ class Chef
       end
 
       def report
-        config_check
+        config_check(node)
         sns.topics[topic_arn].publish(
           sns_body,
           { :subject => sns_subject }
@@ -52,11 +52,7 @@ class Chef
             :secret_access_key => secret_key,
             :logger => Chef::Log
           }
-          if (region)
-            params[:region] = region
-          elsif node.attribute?('ec2') and node.ec2.attribute?('placement_availability_zone')
-            params[:region] = node.ec2.placement_availability_zone.chop
-          end
+          params[:region] = region if region
           params[:session_token] = token if token
           AWS::SNS.new(params)
         end
