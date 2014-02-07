@@ -2,11 +2,11 @@ require 'helper'
 require 'chef/node'
 require 'chef/run_status'
 
-class RightAws::FakeSnsInterface < RightAws::SnsInterface
-  attr_reader :sns_interface_new, :topic_arn, :message, :subject
+class AWS::FakeSNS
+  attr_reader :sns_new
 
-  def fake_new
-    @sns_interface_new = true
+  def initialize(config)
+    @sns_new = true
     return self
   end
 
@@ -26,7 +26,19 @@ end
 
 describe Chef::Handler::Sns do
   before do
-    RightAws::SnsInterface.any_instance.stubs(:publish).returns(true)
+    AWS::SNS::Topic.any_instance.stubs(:publish).returns(true)
+    # avoid File.read("endpoints.json")
+    AWS::Core::Endpoints.stubs(:endpoints).returns({
+      'regions' => {
+        'us-east-1' => {
+          'sns' => {
+            'http' => true,
+            'https' => true,
+            'hostname' => 'sns.us-east-1.amazonaws.com',
+          }
+        }
+      }
+    })
 
     @node = Chef::Node.new
     @node.name('test')
@@ -37,6 +49,7 @@ describe Chef::Handler::Sns do
     else
       Chef::RunStatus.new(@node)
     end
+
     @run_status.start_clock
     @run_status.stop_clock
 
@@ -63,18 +76,22 @@ describe Chef::Handler::Sns do
 
   it 'should try to send a SNS message when properly configured' do
     @sns_handler = Chef::Handler::Sns.new(@config)
-    RightAws::SnsInterface.any_instance.expects(:publish).once
+    AWS::SNS::Topic.any_instance.expects(:publish).once
 
     @sns_handler.run_report_safely(@run_status)
   end
 
-  it 'should create a RightAws::SnsInterface object' do
+  it 'should create a AWS::SNS object' do
     @sns_handler = Chef::Handler::Sns.new(@config)
-    fake_sns = RightAws::FakeSnsInterface.new(@config[:access_key], @config[:secret_key], {:logger => Chef::Log})
-    RightAws::SnsInterface.any_instance.stubs(:new).returns(fake_sns.fake_new)
+    fake_sns = AWS::FakeSNS.new({
+      :access_key_id => @config[:access_key],
+      :secret_access_key => @config[:secret_key],
+      :logger => Chef::Log
+    })
+    AWS::SNS.any_instance.stubs(:new).returns(fake_sns)
     @sns_handler.run_report_safely(@run_status)
 
-    assert_equal fake_sns.sns_interface_new, true
+    assert_equal fake_sns.sns_new, true
   end
 
   it 'should detect the AWS region automatically' do
@@ -82,7 +99,7 @@ describe Chef::Handler::Sns do
     @sns_handler = Chef::Handler::Sns.new(@config)
     @sns_handler.run_report_safely(@run_status)
 
-    @sns_handler.server.must_match Regexp.new('eu-west-1')
+    @sns_handler.get_region.must_equal 'eu-west-1'
   end
 
   it 'should not detect AWS region automatically whan manually set' do
@@ -91,7 +108,7 @@ describe Chef::Handler::Sns do
     @sns_handler = Chef::Handler::Sns.new(@config)
     @sns_handler.run_report_safely(@run_status)
 
-    @sns_handler.server.must_match Regexp.new('us-east-1')
+    @sns_handler.get_region.must_equal 'us-east-1'
   end
 
   it 'should be able to generate the default subject in chef-client' do

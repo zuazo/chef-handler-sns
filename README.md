@@ -14,7 +14,8 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
 ## Requirements
 
 * Amazon AWS: uses Amazon SNS service.
-* Uses the `right_aws` library.
+* Uses the `aws-sdk` library.
+  * Some dependencies (libxml2) require `gcc` and `make`.
 
 ## Usage
 
@@ -109,6 +110,7 @@ The following options are available to configure the handler:
 
 * `access_key` - AWS access key (required).
 * `secret_key` - AWS secret key (required).
+* `token` - AWS security token (optional).
 * `topic_arn` - AWS topic ARN name (required).
 * `region` - AWS region (optional).
 * `subject` - Message subject string in erubis format (optional).
@@ -224,7 +226,7 @@ Minitest tests can be run as usual:
 |                      |                                          |
 |:---------------------|:-----------------------------------------|
 | **Author:**          | Xabier de Zuazo (<xabier@onddo.com>)
-| **Copyright:**       | Copyright (c) 2013 Onddo Labs, SL. (www.onddo.com)
+| **Copyright:**       | Copyright (c) 2014 Onddo Labs, SL. (www.onddo.com)
 | **License:**         | Apache License, Version 2.0
 
 Licensed under the Apache License, Version 2.0 (the "License");

@@ -5,7 +5,7 @@ chef_version = ENV.key?('CHEF_VERSION') ? "#{ENV['CHEF_VERSION']}" : ['>= 0.9.0'
 Gem::Specification.new do |s|
   s.name = 'chef-handler-sns'
   s.version = ::Chef::Handler::Sns::VERSION
-  s.date = '2013-11-15'
+  s.date = '2014-02-07'
   s.platform = Gem::Platform::RUBY
   s.summary = 'Chef SNS reports'
   s.description = 'Chef report handler to send SNS notifications on failures or changes'
@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files = %w(LICENSE README.md) + Dir.glob('lib/**/*')
   s.test_files = Dir.glob('{test,spec,features}/*')
 
-  s.add_dependency 'right_aws', '~> 3.0'
+  s.add_dependency 'aws-sdk', '~> 1.0'
   s.add_dependency 'erubis'
 
   s.add_development_dependency 'mime-types', '~> 1.0' # 2.0 requires Ruby 1.9

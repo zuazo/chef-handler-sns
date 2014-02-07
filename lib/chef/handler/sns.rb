@@ -1,6 +1,6 @@
 #
 # Author:: Xabier de Zuazo (<xabier@onddo.com>)
-# Copyright:: Copyright (c) 2013 Onddo Labs, SL.
+# Copyright:: Copyright (c) 2014 Onddo Labs, SL.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,26 +18,29 @@
 
 require 'chef/handler'
 require 'chef/handler/sns/config'
-require 'right_aws'
+require 'aws-sdk'
 require 'erubis'
 
 class Chef
   class Handler
     class Sns < ::Chef::Handler
       include ::Chef::Handler::Sns::Config
-  
+
       def initialize(config={})
         Chef::Log.debug("#{self.class.to_s} initialized.")
         config_init(config)
       end
-  
+
       def report
         config_check
-        sns.publish(topic_arn, sns_body, sns_subject)
+        sns.topics[topic_arn].publish(
+          sns_body,
+          { :subject => sns_subject }
+        )
       end
 
-      def server
-        @sns.params[:server]
+      def get_region
+        sns.config.region
       end
 
       protected
@@ -45,6 +48,8 @@ class Chef
       def sns
         @sns ||= begin
           params = {
+            :access_key_id => access_key,
+            :secret_access_key => secret_key,
             :logger => Chef::Log
           }
           if (region)
@@ -52,8 +57,8 @@ class Chef
           elsif node.attribute?('ec2') and node.ec2.attribute?('placement_availability_zone')
             params[:region] = node.ec2.placement_availability_zone.chop
           end
-          params[:token] = token if token
-          RightAws::SnsInterface.new(access_key, secret_key, params)
+          params[:session_token] = token if token
+          AWS::SNS.new(params)
         end
       end
   
