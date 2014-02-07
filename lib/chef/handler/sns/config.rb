@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+require 'chef/handler/sns/config/ohai'
 require 'chef/mixin/params_validate'
 require 'chef/exceptions'
 
@@ -29,18 +30,14 @@ class Chef
         REQUIRED = [ 'access_key', 'secret_key', 'topic_arn' ]
 
         def config_from_ohai(node)
-          if node.attribute?('ec2')
-            if region.nil? and node.ec2.attribute?('placement_availability_zone')
-              region(node.ec2.placement_availability_zone.chop)
-            end
-            if node.ec2.attribute?('iam') and node.ec2.iam.attribute?('security-credentials')
-              iam_role, credentials = node.ec2.iam['security-credentials'].first
-              unless credentials.nil?
-                access_key(credentials['AccessKeyId']) if access_key.nil?
-                secret_key(credentials['SecretAccessKey']) if secret_key.nil?
-                token(credentials['Token']) if token.nil?
-              end
-            end
+          config_ohai = Config::Ohai.new(node)
+          [
+            :region,
+            :access_key,
+            :secret_key,
+            :token,
+          ].each do |attr|
+            self.send(attr, config_ohai.send(attr)) if self.send(attr).nil?
           end
         end
 
