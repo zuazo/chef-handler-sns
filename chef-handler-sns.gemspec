@@ -20,8 +20,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'aws-sdk', '~> 1.0'
   s.add_dependency 'erubis'
 
-  s.add_development_dependency 'mime-types', '~> 1.0' # 2.0 requires Ruby 1.9
-  s.add_development_dependency 'nokogiri', '~> 1.5.0' # 1.6 requires Ruby 1.9
+  if RUBY_VERSION < '1.9'
+    s.add_development_dependency 'mime-types', '< 2.0'
+    s.add_development_dependency 'nokogiri', '< 1.6.0'
+  end
   s.add_development_dependency 'chef', chef_version
   s.add_development_dependency 'rake'
   s.add_development_dependency 'minitest'
