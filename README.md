@@ -15,7 +15,12 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
 
 * Amazon AWS: uses Amazon SNS service.
 * Uses the `aws-sdk` library.
-  * Some dependencies (libxml2) require `gcc` and `make`.
+  * `aws-sdk` requires `nokogiri`, which also requires one of the following two:
+    * `libxml2-dev` installed.
+    * `gcc` and `make` installed (this will install libxml2 internally).
+* For `Ruby 1.8`, you need to install old versions of the following dependencies:
+  * `mime-types < 2.0`.
+  * `nokogiri < 1.6`.
 
 ## Usage
 
