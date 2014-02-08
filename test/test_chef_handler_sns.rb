@@ -10,6 +10,12 @@ class AWS::FakeSNS
     return self
   end
 
+  def topics
+    {
+      'arn:aws:sns:***' => AWS::SNS::Topic.new('arn:aws:sns:***')
+    }
+  end
+
 end
 
 class Chef::Handler::FakeSns < Chef::Handler::Sns
@@ -89,7 +95,7 @@ describe Chef::Handler::Sns do
       :secret_access_key => @config[:secret_key],
       :logger => Chef::Log
     })
-    AWS::SNS.any_instance.stubs(:new).returns(fake_sns)
+    AWS::SNS.stubs(:new).returns(fake_sns)
     @sns_handler.run_report_safely(@run_status)
 
     assert_equal fake_sns.sns_new, true
@@ -158,9 +164,10 @@ describe Chef::Handler::Sns do
     body_msg = 'My Template'
     @config[:body_template] = '/tmp/existing-template.erb'
     ::File.stubs(:exists?).with(@config[:body_template]).returns(true)
-    ::File.stubs(:exists?).with(Not(equals(@config[:body_template])))
     IO.stubs(:read).with(@config[:body_template]).returns(body_msg)
-    IO.stubs(:read).with(Not(equals(@config[:body_template])))
+
+    fake_sns = AWS::FakeSNS.new({})
+    AWS::SNS.stubs(:new).returns(fake_sns)
     @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
     Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
     @fake_sns_handler.run_report_unsafe(@run_status)
