@@ -46,7 +46,8 @@ class Chef
 
           def read_config(node)
             return unless node.attribute?('ec2')
-            if node.ec2.attribute?('placement_availability_zone')
+            if node.ec2.attribute?('placement_availability_zone') and
+              node.ec2.placement_availability_zone.kind_of?(String)
               @region = node.ec2.placement_availability_zone.chop
             end
             if node.ec2.attribute?('iam') and node.ec2.iam.attribute?('security-credentials')
