@@ -158,7 +158,9 @@ describe Chef::Handler::Sns do
     body_msg = 'My Template'
     @config[:body_template] = '/tmp/existing-template.erb'
     ::File.stubs(:exists?).with(@config[:body_template]).returns(true)
+    ::File.stubs(:exists?).with(Not(equals(@config[:body_template])))
     IO.stubs(:read).with(@config[:body_template]).returns(body_msg)
+    IO.stubs(:read?).with(Not(equals(@config[:body_template])))
     @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
     Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
     @fake_sns_handler.run_report_unsafe(@run_status)
