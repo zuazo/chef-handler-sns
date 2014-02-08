@@ -113,13 +113,15 @@ end
 
 The following options are available to configure the handler:
 
-* `access_key` - AWS access key (required).
-* `secret_key` - AWS secret key (required).
-* `token` - AWS security token (optional).
+* `access_key` - AWS access key (required, but will try to read it from ohai with IAM roles).
+* `secret_key` - AWS secret key (required, but will try to read it from ohai with IAM roles).
+* `token` - AWS security token (optional, read from ohai with IAM roles).
 * `topic_arn` - AWS topic ARN name (required).
 * `region` - AWS region (optional).
 * `subject` - Message subject string in erubis format (optional).
 * `body_template` - Full path of an erubis template file to use for the message body (optional).
+
+**Note:** When the machine has an IAM role, will try to read the credentials from ohai. So in the best case, you only need to specify the `topic_arn`.
 
 ### subject
 
