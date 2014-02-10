@@ -5,6 +5,13 @@ class SnsConfig
   include Chef::Handler::Sns::Config
 end
 
+module Chef::Handler::Sns::Config
+  class FakeOhai < Chef::Handler::Sns::Config::Ohai
+    def intialize
+    end
+  end
+end
+
 describe Chef::Handler::Sns::Config do
   before do
     @config_params = {
@@ -12,6 +19,8 @@ describe Chef::Handler::Sns::Config do
       :secret_key => '***AMAZON-SECRET***',
       :topic_arn => 'arn:aws:sns:***',
     }
+    @node = Chef::Node.new
+    @node.name('test')
     @sns_config = SnsConfig.new
   end
 
@@ -82,6 +91,46 @@ describe Chef::Handler::Sns::Config do
       Chef::Log.expects(:warn).once
 
       @sns_config.config_init({ option => 'exists but not configurable' })
+    end
+
+  end
+
+  describe 'config_check' do
+
+    it 'should call #config_from_ohai method' do
+      @sns_config.access_key(@config_params[:access_key])
+      @sns_config.secret_key(@config_params[:secret_key])
+      @sns_config.topic_arn(@config_params[:topic_arn])
+      @sns_config.expects(:config_from_ohai).once
+
+      @sns_config.config_check(@node)
+    end
+
+  end
+
+  describe 'config_from_ohai' do
+    before do
+      @fake_ohai = Chef::Handler::Sns::Config::FakeOhai.new(@node)
+      Chef::Handler::Sns::Config::Ohai.stubs(:new).returns(@fake_ohai)
+    end
+
+    it 'should create Config::Ohai object' do
+      Chef::Handler::Sns::Config::Ohai.expects(:new).once.returns(@fake_ohai)
+
+      @sns_config.config_from_ohai(@node)
+    end
+
+    [
+      :region,
+      :access_key,
+      :secret_key,
+      :token,
+    ].each do |method|
+      it "should call Config::Ohai##{method} method" do
+        @fake_ohai.expects(method).once
+
+        @sns_config.config_from_ohai(@node)
+      end
     end
 
   end
