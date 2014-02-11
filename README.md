@@ -1,6 +1,6 @@
 # Chef Handler SNS
 
-A simple Chef report handler that reports status of a Chef run through [Amazon SNS](http://aws.amazon.com/sns/), [including IAM roles support](aws-sdk#usage-with-amazon-iam-roles).
+A simple Chef report handler that reports status of a Chef run through [Amazon SNS](http://aws.amazon.com/sns/), [including IAM roles support](README.md#usage-with-amazon-iam-roles).
 
 [Amazon SNS](http://aws.amazon.com/sns/) can send notifications by SMS, email, [Amazon SQS](http://aws.amazon.com/sqs/) queues or to any HTTP endpoint.
 
