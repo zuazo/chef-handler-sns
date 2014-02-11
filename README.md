@@ -113,7 +113,7 @@ end
 
 ### Usage with Amazon IAM roles
 
-If you are using AWS IAM roles with your server, probably you only need to specify the `topic_arn` parameter. A few simple examples:
+If you are using AWS [IAM roles](http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html) with your server, probably you only need to specify the `topic_arn` parameter. A few simple examples:
 
 #### Method 1: In the Chef config file
 
@@ -127,7 +127,7 @@ Then add to the configuration (`/etc/chef/solo.rb` for chef-solo or `/etc/chef/c
 require "chef/handler/sns"
 
 exception_handlers << Chef::Handler::Sns.new({
-  :topic_arn => "arn:aws:sns:us-east-1:661624769153:TestChefHandlerSns"
+  :topic_arn => "arn:aws:sns:us-east-1:12341234:MyTopicName"
 })
 ```
 
@@ -142,7 +142,7 @@ chef_gem "chef-handler-sns"
 # Then activate the handler with the `chef_handler` LWRP
 chef_handler "Chef::Handler::Sns" do
   source "#{Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob}/chef/handler/sns"
-  arguments { :topic_arn => "arn:aws:sns:***" }
+  arguments { :topic_arn => "arn:aws:sns:us-east-1:12341234:MyTopicName" }
   supports :exception => true
   action :enable
 end
