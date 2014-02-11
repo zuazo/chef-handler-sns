@@ -1,6 +1,6 @@
 # Chef Handler SNS
 
-A simple Chef report handler that reports status of a Chef run through Amazon SNS, including [IAM roles](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html) support.
+A simple Chef report handler that reports status of a Chef run through Amazon SNS, including [IAM roles](http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html) support.
 
 This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtimberman) examples.
 
