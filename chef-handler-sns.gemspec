@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.date = '2014-02-07'
   s.platform = Gem::Platform::RUBY
   s.summary = 'Chef SNS reports'
-  s.description = 'Chef report handler to send SNS notifications on failures or changes'
+  s.description = 'Chef report handler to send Amazon SNS notifications on failures or changes, includes IAM roles support'
   s.license = 'Apache-2.0'
   s.authors = ['Onddo Labs, SL.']
   s.email = 'team@onddo.com'
