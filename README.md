@@ -66,6 +66,9 @@ argument_array = [
   :topic_arn => "arn:aws:sns:***",
 ]
 
+# Depends on the `xml` cookbook to install nokogiri
+include_recipe "xml::ruby"
+
 # Install the `chef-handler-sns` RubyGem during the compile phase
 chef_gem "chef-handler-sns"
 
@@ -87,6 +90,9 @@ argument_array = [
   :secret_key => "***AMAZON-SECRET***",
   :topic_arn => "arn:aws:sns:***",
 ]
+
+# Depends on the `xml` cookbook to install nokogiri
+include_recipe "xml::ruby"
 
 # Install the `chef-handler-sns` RubyGem during the compile phase
 if defined?(Chef::Resource::ChefGem)
@@ -136,6 +142,9 @@ exception_handlers << Chef::Handler::Sns.new({
 Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler), creating a recipe with the following:
 
 ```ruby
+# Depends on the `xml` cookbook to install nokogiri
+include_recipe "xml::ruby"
+
 # Install the `chef-handler-sns` RubyGem during the compile phase
 chef_gem "chef-handler-sns"
 
