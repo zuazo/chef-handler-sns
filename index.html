@@ -31,7 +31,9 @@
           <h1>
 <a name="chef-handler-sns" class="anchor" href="#chef-handler-sns"><span class="octicon octicon-link"></span></a>Chef Handler SNS</h1>
 
-<p>A simple Chef report handler that reports status of a Chef run through Amazon SNS.</p>
+<p>A simple Chef report handler that reports status of a Chef run through <a href="http://aws.amazon.com/sns/">Amazon SNS</a>, <a href="#usage-with-amazon-iam-roles">including IAM roles support</a>.</p>
+
+<p><a href="http://aws.amazon.com/sns/">Amazon SNS</a> can send notifications by SMS, email, <a href="http://aws.amazon.com/sqs/">Amazon SQS</a> queues or to any HTTP endpoint.</p>
 
 <p>This Chef Handler is heavily based on <a href="https://github.com/jtimberman">Joshua Timberman</a> examples.</p>
 
@@ -40,14 +42,38 @@
 </ul><p><a href="http://badge.fury.io/rb/chef-handler-sns"><img src="https://badge.fury.io/rb/chef-handler-sns.png" alt="Gem Version"></a>
 <a href="https://gemnasium.com/onddo/chef-handler-sns"><img src="https://gemnasium.com/onddo/chef-handler-sns.png" alt="Dependency Status"></a>
 <a href="https://codeclimate.com/github/onddo/chef-handler-sns"><img src="https://codeclimate.com/github/onddo/chef-handler-sns.png" alt="Code Climate"></a>
-<a href="https://travis-ci.org/onddo/chef-handler-sns"><img src="https://travis-ci.org/onddo/chef-handler-sns.png" alt="Build Status"></a></p>
+<a href="https://travis-ci.org/onddo/chef-handler-sns"><img src="https://travis-ci.org/onddo/chef-handler-sns.png" alt="Build Status"></a>
+<a href="https://coveralls.io/r/onddo/chef-handler-sns?branch=master"><img src="https://coveralls.io/repos/onddo/chef-handler-sns/badge.png?branch=master" alt="Coverage Status"></a></p>
 
 <h2>
 <a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
 <ul>
 <li>Amazon AWS: uses Amazon SNS service.</li>
-<li>Uses the <code>right_aws</code> library.</li>
+<li>Uses the <code>aws-sdk</code> library.
+
+<ul>
+<li>
+<code>aws-sdk</code> requires <code>nokogiri</code>, which also has the following requirements:
+
+<ul>
+<li>
+<code>libxml2-dev</code> and <code>libxslt-dev</code> installed (optional).</li>
+<li>
+<code>gcc</code> and <code>make</code> installed (this will compile and install libxml2 and libxslt internally if not found).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>For <code>Ruby 1.8</code>, you need to install old versions of the following dependencies:
+
+<ul>
+<li>
+<code>mime-types &lt; 2.0</code>.</li>
+<li>
+<code>nokogiri &lt; 1.6</code>.</li>
+</ul>
+</li>
 </ul><h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
@@ -66,7 +92,7 @@
 <div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"chef/handler/sns"</span>
 
 <span class="c1"># Create the handler</span>
-<span class="n">sns_handler</span> <span class="o">=</span> <span class="ss">Chef</span><span class="p">:</span><span class="ss">:Handler</span><span class="o">::</span><span class="no">Sns</span><span class="o">.</span><span class="n">new</span>
+<span class="n">sns_handler</span> <span class="o">=</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Handler</span><span class="o">::</span><span class="no">Sns</span><span class="o">.</span><span class="n">new</span>
 
 <span class="c1"># Your Amazon AWS credentials</span>
 <span class="n">sns_handler</span><span class="o">.</span><span class="n">access_key</span> <span class="s2">"***AMAZON-KEY***"</span>
@@ -92,12 +118,15 @@
   <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
 <span class="o">]</span>
 
+<span class="c1"># Depends on the `xml` cookbook to install nokogiri</span>
+<span class="n">include_recipe</span> <span class="s2">"xml::ruby"</span>
+
 <span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
 <span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
 
 <span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
 <span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
-  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
+  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
   <span class="n">arguments</span> <span class="n">argument_array</span>
   <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
   <span class="n">action</span> <span class="ss">:enable</span>
@@ -113,8 +142,11 @@
   <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
 <span class="o">]</span>
 
+<span class="c1"># Depends on the `xml` cookbook to install nokogiri</span>
+<span class="n">include_recipe</span> <span class="s2">"xml::ruby"</span>
+
 <span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
-<span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="ss">Chef</span><span class="p">:</span><span class="ss">:Resource</span><span class="o">::</span><span class="no">ChefGem</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">Chef</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">ChefGem</span><span class="p">)</span>
   <span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
 <span class="k">else</span>
   <span class="n">gem_package</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span> <span class="k">do</span>
@@ -123,14 +155,56 @@
 <span class="k">end</span>
 
 <span class="c1"># Get the installed `chef-handler-sns` gem path</span>
-<span class="n">sns_handler_path</span> <span class="o">=</span> <span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="s2">"find_by_name"</span><span class="p">)</span> <span class="p">?</span>
-  <span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span> <span class="p">:</span>
+<span class="n">sns_handler_path</span> <span class="o">=</span> <span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="s2">"find_by_name"</span><span class="p">)</span> <span class="p">?</span>
+  <span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span> <span class="p">:</span>
   <span class="no">Gem</span><span class="o">.</span><span class="n">all_load_paths</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">/chef-handler-sns/</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
 
 <span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
 <span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
   <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="n">sns_handler_path</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
   <span class="n">arguments</span> <span class="n">argument_array</span>
+  <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+  <span class="n">action</span> <span class="ss">:enable</span>
+<span class="k">end</span>
+</pre></div>
+
+<h3>
+<a name="usage-with-amazon-iam-roles" class="anchor" href="#usage-with-amazon-iam-roles"><span class="octicon octicon-link"></span></a>Usage with Amazon IAM roles</h3>
+
+<p>If you are using AWS <a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html">IAM roles</a> with your server, probably you only need to specify the <code>topic_arn</code> parameter. A few simple examples:</p>
+
+<h4>
+<a name="method-1-in-the-chef-config-file-1" class="anchor" href="#method-1-in-the-chef-config-file-1"><span class="octicon octicon-link"></span></a>Method 1: In the Chef config file</h4>
+
+<p>You can install the RubyGem and configure Chef to use it:</p>
+
+<pre><code>gem install chef-handler-sns
+</code></pre>
+
+<p>Then add to the configuration (<code>/etc/chef/solo.rb</code> for chef-solo or <code>/etc/chef/client.rb</code> for chef-client):</p>
+
+<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"chef/handler/sns"</span>
+
+<span class="n">exception_handlers</span> <span class="o">&lt;&lt;</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Handler</span><span class="o">::</span><span class="no">Sns</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
+  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:us-east-1:12341234:MyTopicName"</span>
+<span class="p">})</span>
+</pre></div>
+
+<h4>
+<a name="method-2-in-a-recipe-with-the-chef_handler-lwrp-1" class="anchor" href="#method-2-in-a-recipe-with-the-chef_handler-lwrp-1"><span class="octicon octicon-link"></span></a>Method 2: In a recipe with the chef_handler LWRP</h4>
+
+<p>Use the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>, creating a recipe with the following:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1"># Depends on the `xml` cookbook to install nokogiri</span>
+<span class="n">include_recipe</span> <span class="s2">"xml::ruby"</span>
+
+<span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
+<span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
+
+<span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
+<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
+  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
+  <span class="n">arguments</span> <span class="p">{</span> <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:us-east-1:12341234:MyTopicName"</span> <span class="p">}</span>
   <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
   <span class="n">action</span> <span class="ss">:enable</span>
 <span class="k">end</span>
@@ -143,9 +217,11 @@
 
 <ul>
 <li>
-<code>access_key</code> - AWS access key (required).</li>
+<code>access_key</code> - AWS access key (required, but will try to read it from ohai with IAM roles).</li>
 <li>
-<code>secret_key</code> - AWS secret key (required).</li>
+<code>secret_key</code> - AWS secret key (required, but will try to read it from ohai with IAM roles).</li>
+<li>
+<code>token</code> - AWS security token (optional, read from ohai with IAM roles).</li>
 <li>
 <code>topic_arn</code> - AWS topic ARN name (required).</li>
 <li>
@@ -154,7 +230,9 @@
 <code>subject</code> - Message subject string in erubis format (optional).</li>
 <li>
 <code>body_template</code> - Full path of an erubis template file to use for the message body (optional).</li>
-</ul><h3>
+</ul><p><strong>Note:</strong> When the machine has an IAM role, will try to read the credentials from ohai. So in the best case, you only need to specify the <code>topic_arn</code>.</p>
+
+<h3>
 <a name="subject" class="anchor" href="#subject"><span class="octicon octicon-link"></span></a>subject</h3>
 
 <p>Here is an example of the <code>subject</code> configuration option using the ruby configuration file (<code>solo.rb</code> or <code>client.rb</code>):</p>
@@ -287,7 +365,7 @@
 </tr>
 <tr>
 <td align="left"><strong>Copyright:</strong></td>
-<td align="left">Copyright (c) 2013 Onddo Labs, SL. (<a href="http://www.onddo.com">www.onddo.com</a>)</td>
+<td align="left">Copyright (c) 2014 Onddo Labs, SL. (<a href="http://www.onddo.com">www.onddo.com</a>)</td>
 </tr>
 <tr>
 <td align="left"><strong>License:</strong></td>
@@ -320,7 +398,7 @@ limitations under the License.</p>
 
           <p class="repo-owner"><a href="https://github.com/onddo/chef-handler-sns"></a> is maintained by <a href="https://github.com/onddo">onddo</a>.</p>
 
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>
       </div>
     </div>
