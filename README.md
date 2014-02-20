@@ -4,7 +4,7 @@ A simple Chef report handler that reports status of a Chef run through [Amazon S
 
 [Amazon SNS](http://aws.amazon.com/sns/) can send notifications by SMS, email, [Amazon SQS](http://aws.amazon.com/sqs/) queues or to any HTTP endpoint.
 
-We recommend using the [chef_handler_sns cookbook](https://github.com/onddo/chef_handler_sns-cookbook) for easy installation.
+We recommend using the [chef_handler_sns cookbook](http://community.opscode.com/cookbooks/chef_handler_sns) for easy installation.
 
 This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtimberman) examples.
 
