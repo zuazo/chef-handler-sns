@@ -200,4 +200,12 @@ describe Chef::Handler::Sns do
     @sns_handler.run_report_safely(@run_status)
   end
 
+  it 'should not publish messages if node["opsworks"]["activity"] is set, but the node attribute is missing' do
+    @config[:filter_opsworks_activity] = ['deploy', 'setup']
+
+    @sns_handler = Chef::Handler::Sns.new(@config)
+    AWS::SNS::Topic.any_instance.expects(:publish).never
+    @sns_handler.run_report_safely(@run_status)
+  end
+
 end
