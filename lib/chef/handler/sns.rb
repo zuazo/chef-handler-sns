@@ -33,10 +33,12 @@ class Chef
 
       def report
         config_check(node)
-        sns.topics[topic_arn].publish(
-          sns_body,
-          { :subject => sns_subject }
-        )
+        if allow_publish(node)
+          sns.topics[topic_arn].publish(
+            sns_body,
+            { :subject => sns_subject }
+          )
+        end
       end
 
       def get_region
@@ -44,6 +46,19 @@ class Chef
       end
 
       protected
+
+      def allow_publish(node)
+        if filter_opsworks_activity.nil?
+          return true
+        end
+        
+        if node.attribute?("opsworks") && node["opsworks"].attribute?("activity")
+          return filter_opsworks_activity.include?(node["opsworks"]["activity"])
+        end
+
+        Chef::Log.debug("You supplied opsworks activity filters, but node attr was not found. Returning false")
+        return false
+      end
 
       def sns
         @sns ||= begin

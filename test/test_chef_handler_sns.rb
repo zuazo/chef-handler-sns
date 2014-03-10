@@ -175,4 +175,29 @@ describe Chef::Handler::Sns do
     assert_equal @fake_sns_handler.get_sns_body, body_msg
   end
 
+  it 'should publish messages if node["opsworks"]["activity"] does not exist' do
+    @sns_handler = Chef::Handler::Sns.new(@config)
+    AWS::SNS::Topic.any_instance.expects(:publish).once
+
+    @sns_handler.run_report_safely(@run_status)
+  end
+
+  it 'should publish messages if node["opsworks"]["activity"] matches allowed acvities' do
+    @node.set['opsworks']['activity'] = 'deploy'
+    @config[:filter_opsworks_activity] = ['deploy', 'setup']
+
+    @sns_handler = Chef::Handler::Sns.new(@config)
+    AWS::SNS::Topic.any_instance.expects(:publish).once
+    @sns_handler.run_report_safely(@run_status)
+  end
+
+  it 'should not publish messages if node["opsworks"]["activity"] differs from allowed acvities' do
+    @node.set['opsworks']['activity'] = 'configure'
+    @config[:filter_opsworks_activity] = ['deploy', 'setup']
+
+    @sns_handler = Chef::Handler::Sns.new(@config)
+    AWS::SNS::Topic.any_instance.expects(:publish).never
+    @sns_handler.run_report_safely(@run_status)
+  end
+
 end
