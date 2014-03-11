@@ -160,6 +160,16 @@ chef_handler "Chef::Handler::Sns" do
 end
 ```
 
+##### Opsworks: Filter Notifications by Activity
+An optional array of opsworks activities can be supplied. If the array is set, notifications will
+only be triggered for the activities in the array, everything else will be discarded.
+
+```ruby
+argument_array = [
+  :filter_opsworks_activities => ['deploy','configure']
+]
+```
+
 ## Handler Configuration Options
 
 The following options are available to configure the handler:
