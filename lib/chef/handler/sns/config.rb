@@ -121,7 +121,7 @@ class Chef
             :kind_of => String
           )
         end
-        
+
         def filter_opsworks_activity(arg=nil)
           arg = Array(arg) if arg.is_a? String
           set_or_return(

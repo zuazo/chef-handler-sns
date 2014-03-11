@@ -51,12 +51,12 @@ class Chef
         if filter_opsworks_activity.nil?
           return true
         end
-        
-        if node.attribute?("opsworks") && node["opsworks"].attribute?("activity")
-          return filter_opsworks_activity.include?(node["opsworks"]["activity"])
+
+        if node.attribute?('opsworks') && node['opsworks'].attribute?('activity')
+          return filter_opsworks_activity.include?(node['opsworks']['activity'])
         end
 
-        Chef::Log.debug("You supplied opsworks activity filters, but node attr was not found. Returning false")
+        Chef::Log.debug('You supplied opsworks activity filters, but node attr was not found. Returning false')
         return false
       end
 
