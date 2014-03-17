@@ -5,7 +5,7 @@ chef_version = ENV.key?('CHEF_VERSION') ? "#{ENV['CHEF_VERSION']}" : ['>= 0.9.0'
 Gem::Specification.new do |s|
   s.name = 'chef-handler-sns'
   s.version = ::Chef::Handler::Sns::VERSION
-  s.date = '2014-02-19'
+  s.date = '2014-03-17'
   s.platform = Gem::Platform::RUBY
   s.summary = 'Chef SNS reports'
   s.description = 'Chef report handler to send Amazon SNS notifications on failures or changes, includes IAM roles support'

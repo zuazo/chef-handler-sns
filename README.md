@@ -293,7 +293,8 @@ Minitest tests can be run as usual:
 
 |                      |                                          |
 |:---------------------|:-----------------------------------------|
-| **Author:**          | Xabier de Zuazo (<xabier@onddo.com>)
+| **Author:**          | [Xabier de Zuazo](https://github.com/zuazo) (<xabier@onddo.com>)
+| **Contributor:**     | [Florian Holzhauer](https://github.com/fh)
 | **Copyright:**       | Copyright (c) 2014 Onddo Labs, SL. (www.onddo.com)
 | **License:**         | Apache License, Version 2.0
 
