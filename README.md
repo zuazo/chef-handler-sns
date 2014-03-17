@@ -160,8 +160,8 @@ chef_handler "Chef::Handler::Sns" do
 end
 ```
 
-##### Opsworks: Filter Notifications by Activity
-An optional array of opsworks activities can be supplied. If the array is set, notifications will
+#### OpsWorks: Filter Notifications by Activity
+An optional array of OpsWorks activities can be supplied. If the array is set, notifications will
 only be triggered for the activities in the array, everything else will be discarded.
 
 ```ruby
@@ -181,6 +181,7 @@ The following options are available to configure the handler:
 * `region` - AWS region (optional).
 * `subject` - Message subject string in erubis format (optional).
 * `body_template` - Full path of an erubis template file to use for the message body (optional).
+* `filter_opsworks_activities` - An array of OpsWorks activities to be triggered with (optional). When set, everything else will be discarded.
 
 **Note:** When the machine has an IAM role, will try to read the credentials from ohai. So in the best case, you only need to specify the `topic_arn`.
 
