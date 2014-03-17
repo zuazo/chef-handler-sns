@@ -212,6 +212,17 @@
 <span class="k">end</span>
 </pre></div>
 
+<h5>
+<a name="opsworks-filter-notifications-by-activity" class="anchor" href="#opsworks-filter-notifications-by-activity"><span class="octicon octicon-link"></span></a>Opsworks: Filter Notifications by Activity</h5>
+
+<p>An optional array of opsworks activities can be supplied. If the array is set, notifications will
+only be triggered for the activities in the array, everything else will be discarded.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
+  <span class="ss">:filter_opsworks_activities</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s1">'deploy'</span><span class="p">,</span><span class="s1">'configure'</span><span class="o">]</span>
+<span class="o">]</span>
+</pre></div>
+
 <h2>
 <a name="handler-configuration-options" class="anchor" href="#handler-configuration-options"><span class="octicon octicon-link"></span></a>Handler Configuration Options</h2>
 
@@ -363,7 +374,12 @@
 <tbody>
 <tr>
 <td align="left"><strong>Author:</strong></td>
-<td align="left">Xabier de Zuazo (<a href="mailto:xabier@onddo.com">xabier@onddo.com</a>)</td>
+<td align="left">
+<a href="https://github.com/zuazo">Xabier de Zuazo</a> (<a href="mailto:xabier@onddo.com">xabier@onddo.com</a>)</td>
+</tr>
+<tr>
+<td align="left"><strong>Contributor:</strong></td>
+<td align="left"><a href="https://github.com/fh">Florian Holzhauer</a></td>
 </tr>
 <tr>
 <td align="left"><strong>Copyright:</strong></td>
