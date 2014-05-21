@@ -280,6 +280,25 @@ Stacktrace:
 
 See the [subject](#subject) documentation for more details on the variables accesible inside the template.
 
+## IAM Role Credentials from Ohai
+
+IAM Role information and credentials are gathered from ohai by default if they exists.
+
+No aditional ohai plugin is required. This is supported by ohai since version `6.16.0` ([OHAI-400](https://tickets.opscode.com/browse/OHAI-400)).
+
+These are the used ohai attributes:
+
+```
+ec2
+├── placement_availability_zone: region is set from here.
+└── iam
+    └── security-credentials
+        └── IAMRoleName
+            ├── AccessKeyId
+            ├── SecretAccessKey
+            └── Token
+```
+
 ## Running the tests
 
 Minitest tests can be run as usual:
