@@ -31,7 +31,7 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
 
 You can install this handler in two ways:
 
-### Method 1: in the Chef Config file
+### Method 1: in the Chef Config File
 
 You can install the RubyGem and configure Chef to use it:
 
@@ -124,7 +124,7 @@ end
 
 If you are using AWS [IAM roles](http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html) with your server, probably you only need to specify the `topic_arn` parameter. A few simple examples:
 
-#### Method 1: in the Chef Config file
+#### Method 1: in the Chef Config File
 
 You can install the RubyGem and configure Chef to use it:
 
