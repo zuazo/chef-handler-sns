@@ -31,7 +31,7 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
 
 You can install this handler in two ways:
 
-### Method 1: In the Chef config file
+### Method 1: in the Chef Config file
 
 You can install the RubyGem and configure Chef to use it:
 
@@ -57,7 +57,7 @@ sns_handler.region "us-east-1" # optional
 exception_handlers << sns_handler
 ```
 
-### Method 2: In a recipe with the chef_handler LWRP
+### Method 2: in a Recipe with the chef_handler LWRP
 
 Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler), creating a recipe with the following:
 
@@ -120,11 +120,11 @@ chef_handler "Chef::Handler::Sns" do
 end
 ```
 
-### Usage with Amazon IAM roles
+### Usage with Amazon IAM Roles
 
 If you are using AWS [IAM roles](http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html) with your server, probably you only need to specify the `topic_arn` parameter. A few simple examples:
 
-#### Method 1: In the Chef config file
+#### Method 1: in the Chef Config file
 
 You can install the RubyGem and configure Chef to use it:
 
@@ -140,7 +140,7 @@ exception_handlers << Chef::Handler::Sns.new({
 })
 ```
 
-#### Method 2: In a recipe with the chef_handler LWRP
+#### Method 2: in a Recipe with the chef_handler LWRP
 
 Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler), creating a recipe with the following:
 
@@ -284,7 +284,7 @@ See the [subject](#subject) documentation for more details on the variables acce
 
 IAM Role information and credentials are gathered from ohai by default if they exists.
 
-No aditional ohai plugin is required. This is supported by ohai since version `6.16.0` ([OHAI-400](https://tickets.opscode.com/browse/OHAI-400)).
+No aditional ohai plugin is required. This is natively supported by ohai since version `6.16.0` ([OHAI-400](https://tickets.opscode.com/browse/OHAI-400)).
 
 These are the used ohai attributes:
 
@@ -299,7 +299,7 @@ ec2
             └── Token
 ```
 
-## Running the tests
+## Running the Tests
 
 Minitest tests can be run as usual:
 
