@@ -59,6 +59,8 @@ exception_handlers << sns_handler
 
 ### Method 2: in a Recipe with the chef_handler LWRP
 
+**Note:** This method will not catch errors before the convergence phase. Use the previous method if you want to be able to report such errors.
+
 Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler), creating a recipe with the following:
 
 ```ruby
