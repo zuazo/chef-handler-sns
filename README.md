@@ -86,6 +86,8 @@ chef_handler "Chef::Handler::Sns" do
 end
 ```
 
+#### Method 2.1: in a Recipe with the chef_handler LWRP Using Gem < 1.8.6
+
 If you have an old version of gem package (< 1.8.6) without `find_by_name` or old chef-client (< 0.10.10) without `chef_gem`, you can try creating a recipe similar to the following:
 
 ```ruby
@@ -116,6 +118,41 @@ sns_handler_path = Gem::Specification.respond_to?("find_by_name") ?
 # Then activate the handler with the `chef_handler` LWRP
 chef_handler "Chef::Handler::Sns" do
   source "#{sns_handler_path}/chef/handler/sns"
+  arguments argument_array
+  supports :exception => true
+  action :enable
+end
+```
+
+#### Method 2.2: in a Recipe with the chef_handler LWRP Inside AWS OpsWorks
+
+If you are inside [AWS OpsWorks](http://aws.amazon.com/opsworks/) you might receive the following error:
+
+    Gem::LoadError
+    --------------
+    Could not find 'chef-handler-sns' (>= 0) among XX total gem(s)
+
+To fix this error, you should use [`OpsWorks::InternalGems#internal_gem_package`](https://forums.aws.amazon.com/thread.jspa?threadID=118646) instead of `chef_gem` to install the gem inside *Chef/OpsWorks* sandbox.
+
+For example:
+
+```ruby
+# Handler configuration options
+argument_array = [
+  :access_key => "***AMAZON-KEY***",
+  :secret_key => "***AMAZON-SECRET***",
+  :topic_arn => "arn:aws:sns:***",
+]
+
+# Depends on the `xml` cookbook to install nokogiri
+include_recipe "xml::ruby"
+
+# Install the `chef-handler-sns` RubyGem inside OpsWorks sandbox during the compile phase
+OpsWorks::InternalGems.internal_gem_package("chef-handler-sns")
+
+# Then activate the handler with the `chef_handler` LWRP
+chef_handler "Chef::Handler::Sns" do
+  source "#{Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob}/chef/handler/sns"
   arguments argument_array
   supports :exception => true
   action :enable
