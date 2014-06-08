@@ -150,10 +150,10 @@ chef_gem "chef-handler-sns"
 
 # Get the installed `chef-handler-sns` gem path from Bundler
 sns_handler_path = nil
-bundle_path = ::File.join(Bundler.bundle_path.to_s, 'specifications')
-Dir[::File.join(bundle_path, '*.gemspec')].each do |path|
+bundle_path = ::File.join(Bundler.bundle_path.to_s, "specifications")
+Dir[::File.join(bundle_path, "*.gemspec")].each do |path|
   spec = Gem::Specification.load(path.untaint)
-  if spec.name == 'chef-handler-sns'
+  if spec.name == "chef-handler-sns"
     sns_handler_path = spec.lib_dirs_glob
   end
 end
@@ -218,7 +218,7 @@ only be triggered for the activities in the array, everything else will be disca
 
 ```ruby
 argument_array = [
-  :filter_opsworks_activities => ['deploy','configure']
+  :filter_opsworks_activities => ["deploy","configure"]
 ]
 ```
 
@@ -242,7 +242,7 @@ The following options are available to configure the handler:
 Here is an example of the `subject` configuration option using the ruby configuration file (`solo.rb` or `client.rb`):
 
 ```ruby
-sns_handler.subject: "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
+sns_handler.subject: "Chef-run: <%= node.name %> - <%= run_status.success? ? "ok" : "error" %>"
 ```
 
 Using the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler):
@@ -251,7 +251,7 @@ argument_array = [
   :access_key => "***AMAZON-KEY***",
   :secret_key => "***AMAZON-SECRET***",
   :topic_arn => "arn:aws:sns:***",
-  :subject => "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>",
+  :subject => "Chef-run: <%= node.name %> - <%= run_status.success? ? "ok" : "error" %>",
   # [...]
 ]
 chef_handler "Chef::Handler::Sns" do
