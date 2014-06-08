@@ -126,15 +126,13 @@ end
 
 #### Method 2.2: in a Recipe with the chef_handler LWRP Inside AWS OpsWorks
 
-If you are inside [AWS OpsWorks](http://aws.amazon.com/opsworks/) you might receive the following error:
+If you are inside [AWS OpsWorks](http://aws.amazon.com/opsworks/) or running Chef inside _Bundler_, you might receive the following error:
 
     Gem::LoadError
     --------------
     Could not find 'chef-handler-sns' (>= 0) among XX total gem(s)
 
-To fix this error, you should use [`OpsWorks::InternalGems#internal_gem_package`](https://forums.aws.amazon.com/thread.jspa?threadID=118646) instead of `chef_gem` to install the gem inside *Chef/OpsWorks* sandbox.
-
-For example:
+To fix this error, you should get the handler installation path using a code similar to the following:
 
 ```ruby
 # Handler configuration options
@@ -147,8 +145,18 @@ argument_array = [
 # Depends on the `xml` cookbook to install nokogiri
 include_recipe "xml::ruby"
 
-# Install the `chef-handler-sns` RubyGem inside OpsWorks sandbox during the compile phase
-OpsWorks::InternalGems.internal_gem_package("chef-handler-sns")
+# Get the installed `chef-handler-sns` gem path from Bundler
+sns_handler_path = nil
+bundle_path = ::File.join(Bundler.bundle_path.to_s, 'specifications')
+Dir[::File.join(bundle_path, '*.gemspec')].each do |path|
+  spec = Gem::Specification.load(path.untaint)
+  if spec.name == 'chef-handler-sns'
+    sns_handler_path = spec.lib_dirs_glob
+  end
+end
+if sns_handler_path.nil?
+  Chef::Application.fatal!("chef-handler-sns not found inside Bundler path: #{bundle_path}")
+end
 
 # Then activate the handler with the `chef_handler` LWRP
 chef_handler "Chef::Handler::Sns" do
@@ -158,6 +166,8 @@ chef_handler "Chef::Handler::Sns" do
   action :enable
 end
 ```
+
+See the [`chef_handler_sns` cookbook provider code](https://github.com/onddo/chef_handler_sns-cookbook/blob/master/providers/default.rb) for a more complete working example.
 
 ### Usage with Amazon IAM Roles
 
