@@ -145,6 +145,9 @@ argument_array = [
 # Depends on the `xml` cookbook to install nokogiri
 include_recipe "xml::ruby"
 
+# Install the `chef-handler-sns` RubyGem during the compile phase
+chef_gem "chef-handler-sns"
+
 # Get the installed `chef-handler-sns` gem path from Bundler
 sns_handler_path = nil
 bundle_path = ::File.join(Bundler.bundle_path.to_s, 'specifications')
