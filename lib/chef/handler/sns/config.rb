@@ -94,7 +94,7 @@ class Chef
           set_or_return(
             :token,
             arg,
-            :kind_of => String
+            :kind_of => [ String, FalseClass ]
           )
         end
 

@@ -17,6 +17,7 @@ describe Chef::Handler::Sns::Config do
     @config_params = {
       :access_key => '***AMAZON-KEY***',
       :secret_key => '***AMAZON-SECRET***',
+      :token => '***AMAZON-TOKEN***',
       :topic_arn => 'arn:aws:sns:***',
     }
     @node = Chef::Node.new
@@ -54,11 +55,22 @@ describe Chef::Handler::Sns::Config do
       @sns_config.send(option, "test")
     end
 
-    [ true, false, 25, Object.new ].each do |bad_value|
+    it "should set '#{option}' option correctly" do
+      @sns_config.send(option, "test")
+
+      assert_equal @sns_config.send(option), "test"
+    end
+
+    [ true, 25, Object.new ].each do |bad_value|
       it "should throw and exception wen '#{option}' option is set to #{bad_value.to_s}" do
         assert_raises(Chef::Exceptions::ValidationFailed) { @sns_config.send(option, bad_value) }
       end
     end
+  end
+
+  it 'should accept false value to reset the token' do
+    @sns_config.token(false)
+    assert_equal @sns_config.token, false
   end
 
   it 'should throw an exception when the body template file does not exist' do

@@ -228,7 +228,7 @@ The following options are available to configure the handler:
 
 * `access_key` - AWS access key (required, but will try to read it from ohai with IAM roles).
 * `secret_key` - AWS secret key (required, but will try to read it from ohai with IAM roles).
-* `token` - AWS security token (optional, read from ohai with IAM roles).
+* `token` - AWS security token (optional, read from ohai with IAM roles). Set to `false` to disable the token detected by ohai.
 * `topic_arn` - AWS topic ARN name (required).
 * `region` - AWS region (optional).
 * `subject` - Message subject string in erubis format (optional).
