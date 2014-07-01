@@ -2,6 +2,16 @@
 
 This file is used to list changes made in each version of `chef-handler-sns`.
 
+## 1.2.0.beta.1:
+
+* README:
+ * Added Method 2.2: LWRP inside OpsWorks (related with [issue #4](https://github.com/onddo/chef-handler-sns/issues/4)).
+ * Add a note in the method 2 about convergence phase (related with [issue #3](https://github.com/onddo/chef-handler-sns/issues/3)).
+ * Some capitals fixed.
+ * Added ohai credentials explanation.
+ * *filter_opsworks_activities* documentation improved.
+* Fixed *AWS::SNS::Errors::InvalidClientTokenId* when using version 1.1.0 ([issue #5](https://github.com/onddo/chef-handler-sns/issues/5), thanks [Michael Hobbs](https://github.com/michaelshobbs) for reporting).
+
 ## 1.1.0:
 
 * Filter Notifications by Opsworks Activity ([issue #2](https://github.com/onddo/chef-handler-sns/pull/2), thanks [Florian Holzhauer](https://github.com/fh))
