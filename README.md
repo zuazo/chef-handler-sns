@@ -371,6 +371,7 @@ Minitest tests can be run as usual:
 |:---------------------|:-----------------------------------------|
 | **Author:**          | [Xabier de Zuazo](https://github.com/zuazo) (<xabier@onddo.com>)
 | **Contributor:**     | [Florian Holzhauer](https://github.com/fh)
+| **Contributor:**     | [Michael Hobbs](https://github.com/michaelshobbs)
 | **Copyright:**       | Copyright (c) 2013-2014 Onddo Labs, SL. (www.onddo.com)
 | **License:**         | Apache License, Version 2.0
 
