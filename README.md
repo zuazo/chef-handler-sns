@@ -1,4 +1,9 @@
 # Chef Handler SNS
+[![Gem Version](http://img.shields.io/gem/v/chef-handler-sns.svg?style=flat)](http://badge.fury.io/rb/chef-handler-sns)
+[![Dependency Status](http://img.shields.io/gemnasium/onddo/chef-handler-sns.svg?style=flat)](https://gemnasium.com/onddo/chef-handler-sns)
+[![Code Climate](http://img.shields.io/codeclimate/github/onddo/chef-handler-sns.svg?style=flat)](https://codeclimate.com/github/onddo/chef-handler-sns)
+[![Build Status](http://img.shields.io/travis/onddo/chef-handler-sns.svg?style=flat)](https://travis-ci.org/onddo/chef-handler-sns)
+[![Coverage Status](http://img.shields.io/coveralls/onddo/chef-handler-sns.svg?style=flat)](https://coveralls.io/r/onddo/chef-handler-sns?branch=master)
 
 A simple Chef report handler that reports status of a Chef run through [Amazon SNS](http://aws.amazon.com/sns/), [including IAM roles support](#usage-with-amazon-iam-roles).
 
@@ -9,12 +14,6 @@ We recommend using the [chef_handler_sns cookbook](http://community.opscode.com/
 This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtimberman) examples.
 
 * http://wiki.opscode.com/display/chef/Exception+and+Report+Handlers
-
-[![Gem Version](https://badge.fury.io/rb/chef-handler-sns.png)](http://badge.fury.io/rb/chef-handler-sns)
-[![Dependency Status](https://gemnasium.com/onddo/chef-handler-sns.png)](https://gemnasium.com/onddo/chef-handler-sns)
-[![Code Climate](https://codeclimate.com/github/onddo/chef-handler-sns.png)](https://codeclimate.com/github/onddo/chef-handler-sns)
-[![Build Status](https://travis-ci.org/onddo/chef-handler-sns.png)](https://travis-ci.org/onddo/chef-handler-sns)
-[![Coverage Status](https://coveralls.io/repos/onddo/chef-handler-sns/badge.png?branch=master)](https://coveralls.io/r/onddo/chef-handler-sns?branch=master)
 
 ## Requirements
 
@@ -359,7 +358,12 @@ Minitest tests can be run as usual:
 
 ## Contributing
 
-[Pull Requests](http://github.com/onddo/chef-handler-sns/pulls) are welcome.
+1. Fork the repository on Github.
+2. Create a named feature branch (like `add_component_x`).
+3. Write tests for your change.
+4. Write your change.
+5. Run the tests, ensuring they all pass (try as much as possible not to reduce coverage).
+6. Submit a [Pull Request using Github])(http://github.com/onddo/chef-handler-sns/pulls).
 
 ## License and Author
 
@@ -367,18 +371,18 @@ Minitest tests can be run as usual:
 |:---------------------|:-----------------------------------------|
 | **Author:**          | [Xabier de Zuazo](https://github.com/zuazo) (<xabier@onddo.com>)
 | **Contributor:**     | [Florian Holzhauer](https://github.com/fh)
-| **Copyright:**       | Copyright (c) 2014 Onddo Labs, SL. (www.onddo.com)
+| **Copyright:**       | Copyright (c) 2013-2014 Onddo Labs, SL. (www.onddo.com)
 | **License:**         | Apache License, Version 2.0
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
