@@ -363,7 +363,7 @@ Minitest tests can be run as usual:
 3. Write tests for your change.
 4. Write your change.
 5. Run the tests, ensuring they all pass (try as much as possible not to reduce coverage).
-6. Submit a [Pull Request using Github])(http://github.com/onddo/chef-handler-sns/pulls).
+6. Submit a [Pull Request using Github](http://github.com/onddo/chef-handler-sns/pulls).
 
 ## License and Author
 
