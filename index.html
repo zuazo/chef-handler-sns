@@ -1,35 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
+    <meta charset="UTF-8">
     <title>Chef-handler-sns by onddo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>Chef-handler-sns</h1>
-        <h2>Chef report handler to send Amazon SNS notifications on failures or changes.</h2>
-        <a href="https://github.com/onddo/chef-handler-sns" class="button"><small>View project on</small>GitHub</a>
-      </div>
-    </header>
+    <section class="page-header">
+      <h1 class="project-name">Chef-handler-sns</h1>
+      <h2 class="project-tagline">Chef report handler to send Amazon SNS notifications on failures or changes.</h2>
+      <a href="https://github.com/onddo/chef-handler-sns" class="btn">View on GitHub</a>
+      <a href="https://github.com/onddo/chef-handler-sns/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/onddo/chef-handler-sns/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
-<a name="chef-handler-sns" class="anchor" href="#chef-handler-sns"><span class="octicon octicon-link"></span></a>Chef Handler SNS</h1>
+    <section class="main-content">
+      <h1>
+<a id="chef-handler-sns" class="anchor" href="#chef-handler-sns" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chef Handler SNS</h1>
 
 <p><a href="http://badge.fury.io/rb/chef-handler-sns"><img src="http://img.shields.io/gem/v/chef-handler-sns.svg?style=flat" alt="Gem Version"></a>
 <a href="https://gemnasium.com/onddo/chef-handler-sns"><img src="http://img.shields.io/gemnasium/onddo/chef-handler-sns.svg?style=flat" alt="Dependency Status"></a>
@@ -47,8 +38,10 @@
 
 <ul>
 <li><a href="http://wiki.opscode.com/display/chef/Exception+and+Report+Handlers">http://wiki.opscode.com/display/chef/Exception+and+Report+Handlers</a></li>
-</ul><h2>
-<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+</ul>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
 <ul>
 <li>Amazon AWS: uses Amazon SNS service.</li>
@@ -76,13 +69,15 @@
 <code>nokogiri &lt; 1.6</code>.</li>
 </ul>
 </li>
-</ul><h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+</ul>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>You can install this handler in two ways:</p>
 
 <h3>
-<a name="method-1-in-the-chef-config-file" class="anchor" href="#method-1-in-the-chef-config-file"><span class="octicon octicon-link"></span></a>Method 1: in the Chef Config File</h3>
+<a id="method-1-in-the-chef-config-file" class="anchor" href="#method-1-in-the-chef-config-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method 1: in the Chef Config File</h3>
 
 <p>You can install the RubyGem and configure Chef to use it:</p>
 
@@ -91,92 +86,89 @@
 
 <p>Then add to the configuration (<code>/etc/chef/solo.rb</code> for chef-solo or <code>/etc/chef/client.rb</code> for chef-client):</p>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"chef/handler/sns"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">"</span>chef/handler/sns<span class="pl-pds">"</span></span>
 
-<span class="c1"># Create the handler</span>
-<span class="n">sns_handler</span> <span class="o">=</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Handler</span><span class="o">::</span><span class="no">Sns</span><span class="o">.</span><span class="n">new</span>
+<span class="pl-c"># Create the handler</span>
+sns_handler <span class="pl-k">=</span> <span class="pl-c1">Chef</span>::<span class="pl-c1">Handler</span>::<span class="pl-c1">Sns</span>.<span class="pl-k">new</span>
 
-<span class="c1"># Your Amazon AWS credentials</span>
-<span class="n">sns_handler</span><span class="o">.</span><span class="n">access_key</span> <span class="s2">"***AMAZON-KEY***"</span>
-<span class="n">sns_handler</span><span class="o">.</span><span class="n">secret_key</span> <span class="s2">"***AMAZON-SECRET***"</span>
+<span class="pl-c"># Your Amazon AWS credentials</span>
+sns_handler.access_key <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>
+sns_handler.secret_key <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>
 
-<span class="c1"># Some Amazon SNS configurations</span>
-<span class="n">sns_handler</span><span class="o">.</span><span class="n">topic_arn</span> <span class="s2">"arn:aws:sns:***"</span>
-<span class="n">sns_handler</span><span class="o">.</span><span class="n">region</span> <span class="s2">"us-east-1"</span> <span class="c1"># optional</span>
+<span class="pl-c"># Some Amazon SNS configurations</span>
+sns_handler.topic_arn <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:***<span class="pl-pds">"</span></span>
+sns_handler.region <span class="pl-s"><span class="pl-pds">"</span>us-east-1<span class="pl-pds">"</span></span> <span class="pl-c"># optional</span>
 
-<span class="c1"># Add your handler</span>
-<span class="n">exception_handlers</span> <span class="o">&lt;&lt;</span> <span class="n">sns_handler</span>
-</pre></div>
+<span class="pl-c"># Add your handler</span>
+exception_handlers <span class="pl-k">&lt;&lt;</span> sns_handler</pre></div>
 
 <h3>
-<a name="method-2-in-a-recipe-with-the-chef_handler-lwrp" class="anchor" href="#method-2-in-a-recipe-with-the-chef_handler-lwrp"><span class="octicon octicon-link"></span></a>Method 2: in a Recipe with the chef_handler LWRP</h3>
+<a id="method-2-in-a-recipe-with-the-chef_handler-lwrp" class="anchor" href="#method-2-in-a-recipe-with-the-chef_handler-lwrp" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method 2: in a Recipe with the chef_handler LWRP</h3>
 
 <p><strong>Note:</strong> This method will not catch errors before the convergence phase. Use the previous method if you want to be able to report such errors.</p>
 
 <p>Use the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>, creating a recipe with the following:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="c1"># Handler configuration options</span>
-<span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
-  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
-  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
-<span class="o">]</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c"># Handler configuration options</span>
+argument_array <span class="pl-k">=</span> [
+  <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:***<span class="pl-pds">"</span></span>,
+]
 
-<span class="c1"># Depends on the `xml` cookbook to install nokogiri</span>
-<span class="n">include_recipe</span> <span class="s2">"xml::ruby"</span>
+<span class="pl-c"># Depends on the `xml` cookbook to install nokogiri</span>
+include_recipe <span class="pl-s"><span class="pl-pds">"</span>xml::ruby<span class="pl-pds">"</span></span>
 
-<span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
-<span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
+<span class="pl-c"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
+chef_gem <span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>
 
-<span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
-<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
-  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
-  <span class="n">arguments</span> <span class="n">argument_array</span>
-  <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-  <span class="n">action</span> <span class="ss">:enable</span>
-<span class="k">end</span>
-</pre></div>
+<span class="pl-c"># Then activate the handler with the `chef_handler` LWRP</span>
+chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  source <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pse">#{</span><span class="pl-s1"><span class="pl-c1">Gem</span>::<span class="pl-c1">Specification</span>.find_by_name(<span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>).lib_dirs_glob</span><span class="pl-pse"><span class="pl-s1">}</span></span>/chef/handler/sns<span class="pl-pds">"</span></span>
+  arguments argument_array
+  supports <span class="pl-c1">:exception</span> =&gt; <span class="pl-c1">true</span>
+  action <span class="pl-c1">:enable</span>
+<span class="pl-k">end</span></pre></div>
 
 <h4>
-<a name="method-21-in-a-recipe-with-the-chef_handler-lwrp-using-gem--186" class="anchor" href="#method-21-in-a-recipe-with-the-chef_handler-lwrp-using-gem--186"><span class="octicon octicon-link"></span></a>Method 2.1: in a Recipe with the chef_handler LWRP Using Gem &lt; 1.8.6</h4>
+<a id="method-21-in-a-recipe-with-the-chef_handler-lwrp-using-gem--186" class="anchor" href="#method-21-in-a-recipe-with-the-chef_handler-lwrp-using-gem--186" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method 2.1: in a Recipe with the chef_handler LWRP Using Gem &lt; 1.8.6</h4>
 
 <p>If you have an old version of gem package (&lt; 1.8.6) without <code>find_by_name</code> or old chef-client (&lt; 0.10.10) without <code>chef_gem</code>, you can try creating a recipe similar to the following:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="c1"># Handler configuration options</span>
-<span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
-  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
-  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
-<span class="o">]</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c"># Handler configuration options</span>
+argument_array <span class="pl-k">=</span> [
+  <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:***<span class="pl-pds">"</span></span>,
+]
 
-<span class="c1"># Depends on the `xml` cookbook to install nokogiri</span>
-<span class="n">include_recipe</span> <span class="s2">"xml::ruby"</span>
+<span class="pl-c"># Depends on the `xml` cookbook to install nokogiri</span>
+include_recipe <span class="pl-s"><span class="pl-pds">"</span>xml::ruby<span class="pl-pds">"</span></span>
 
-<span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
-<span class="k">if</span> <span class="n">defined?</span><span class="p">(</span><span class="no">Chef</span><span class="o">::</span><span class="no">Resource</span><span class="o">::</span><span class="no">ChefGem</span><span class="p">)</span>
-  <span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
-<span class="k">else</span>
-  <span class="n">gem_package</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span> <span class="k">do</span>
-    <span class="n">action</span> <span class="ss">:nothing</span>
-  <span class="k">end</span><span class="o">.</span><span class="n">run_action</span><span class="p">(</span><span class="ss">:install</span><span class="p">)</span>
-<span class="k">end</span>
+<span class="pl-c"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
+<span class="pl-k">if</span> <span class="pl-k">defined?</span>(<span class="pl-c1">Chef</span>::<span class="pl-c1">Resource</span>::<span class="pl-c1">ChefGem</span>)
+  chef_gem <span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>
+<span class="pl-k">else</span>
+  gem_package(<span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>) <span class="pl-k">do</span>
+    action <span class="pl-c1">:nothing</span>
+  <span class="pl-k">end</span>.run_action(<span class="pl-c1">:install</span>)
+<span class="pl-k">end</span>
 
-<span class="c1"># Get the installed `chef-handler-sns` gem path</span>
-<span class="n">sns_handler_path</span> <span class="o">=</span> <span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="s2">"find_by_name"</span><span class="p">)</span> <span class="p">?</span>
-  <span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span> <span class="p">:</span>
-  <span class="no">Gem</span><span class="o">.</span><span class="n">all_load_paths</span><span class="o">.</span><span class="n">grep</span><span class="p">(</span><span class="sr">/chef-handler-sns/</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+<span class="pl-c"># Get the installed `chef-handler-sns` gem path</span>
+sns_handler_path <span class="pl-k">=</span> <span class="pl-c1">Gem</span>::<span class="pl-c1">Specification</span>.respond_to?(<span class="pl-s"><span class="pl-pds">"</span>find_by_name<span class="pl-pds">"</span></span>) <span class="pl-k">?</span>
+  <span class="pl-c1">Gem</span>::<span class="pl-c1">Specification</span>.find_by_name(<span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>).lib_dirs_glob :
+  <span class="pl-c1">Gem</span>.all_load_paths.grep(<span class="pl-sr"><span class="pl-pds">/</span>chef-handler-sns<span class="pl-pds">/</span></span>).first
 
-<span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
-<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
-  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="n">sns_handler_path</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
-  <span class="n">arguments</span> <span class="n">argument_array</span>
-  <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-  <span class="n">action</span> <span class="ss">:enable</span>
-<span class="k">end</span>
-</pre></div>
+<span class="pl-c"># Then activate the handler with the `chef_handler` LWRP</span>
+chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  source <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pse">#{</span><span class="pl-s1">sns_handler_path</span><span class="pl-pse"><span class="pl-s1">}</span></span>/chef/handler/sns<span class="pl-pds">"</span></span>
+  arguments argument_array
+  supports <span class="pl-c1">:exception</span> =&gt; <span class="pl-c1">true</span>
+  action <span class="pl-c1">:enable</span>
+<span class="pl-k">end</span></pre></div>
 
 <h4>
-<a name="method-22-in-a-recipe-with-the-chef_handler-lwrp-inside-aws-opsworks" class="anchor" href="#method-22-in-a-recipe-with-the-chef_handler-lwrp-inside-aws-opsworks"><span class="octicon octicon-link"></span></a>Method 2.2: in a Recipe with the chef_handler LWRP Inside AWS OpsWorks</h4>
+<a id="method-22-in-a-recipe-with-the-chef_handler-lwrp-inside-aws-opsworks" class="anchor" href="#method-22-in-a-recipe-with-the-chef_handler-lwrp-inside-aws-opsworks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method 2.2: in a Recipe with the chef_handler LWRP Inside AWS OpsWorks</h4>
 
 <p>If you are inside <a href="http://aws.amazon.com/opsworks/">AWS OpsWorks</a> or running Chef inside <em>Bundler</em>, you might receive the following error:</p>
 
@@ -187,50 +179,49 @@ Could not find 'chef-handler-sns' (&gt;= 0) among XX total gem(s)
 
 <p>To fix this error, you should get the handler installation path using a code similar to the following:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="c1"># Handler configuration options</span>
-<span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
-  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
-  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
-<span class="o">]</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c"># Handler configuration options</span>
+argument_array <span class="pl-k">=</span> [
+  <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:***<span class="pl-pds">"</span></span>,
+]
 
-<span class="c1"># Depends on the `xml` cookbook to install nokogiri</span>
-<span class="n">include_recipe</span> <span class="s2">"xml::ruby"</span>
+<span class="pl-c"># Depends on the `xml` cookbook to install nokogiri</span>
+include_recipe <span class="pl-s"><span class="pl-pds">"</span>xml::ruby<span class="pl-pds">"</span></span>
 
-<span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
-<span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
+<span class="pl-c"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
+chef_gem <span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>
 
-<span class="c1"># Get the installed `chef-handler-sns` gem path from Bundler</span>
-<span class="n">sns_handler_path</span> <span class="o">=</span> <span class="kp">nil</span>
-<span class="n">bundle_path</span> <span class="o">=</span> <span class="o">::</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">Bundler</span><span class="o">.</span><span class="n">bundle_path</span><span class="o">.</span><span class="n">to_s</span><span class="p">,</span> <span class="s2">"specifications"</span><span class="p">)</span>
-<span class="no">Dir</span><span class="o">[::</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bundle_path</span><span class="p">,</span> <span class="s2">"*.gemspec"</span><span class="p">)</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">path</span><span class="o">|</span>
-  <span class="n">spec</span> <span class="o">=</span> <span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">untaint</span><span class="p">)</span>
-  <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"chef-handler-sns"</span>
-    <span class="n">sns_handler_path</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">lib_dirs_glob</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-<span class="k">if</span> <span class="n">sns_handler_path</span><span class="o">.</span><span class="n">nil?</span>
-  <span class="no">Chef</span><span class="o">::</span><span class="no">Application</span><span class="o">.</span><span class="n">fatal!</span><span class="p">(</span><span class="s2">"chef-handler-sns not found inside Bundler path: </span><span class="si">#{</span><span class="n">bundle_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="k">end</span>
+<span class="pl-c"># Get the installed `chef-handler-sns` gem path from Bundler</span>
+sns_handler_path <span class="pl-k">=</span> <span class="pl-c1">nil</span>
+bundle_path <span class="pl-k">=</span> ::<span class="pl-c1">File</span>.join(<span class="pl-c1">Bundler</span>.bundle_path.to_s, <span class="pl-s"><span class="pl-pds">"</span>specifications<span class="pl-pds">"</span></span>)
+<span class="pl-c1">Dir</span>[::<span class="pl-c1">File</span>.join(bundle_path, <span class="pl-s"><span class="pl-pds">"</span>*.gemspec<span class="pl-pds">"</span></span>)].each <span class="pl-k">do </span>|<span class="pl-smi">path</span>|
+  spec <span class="pl-k">=</span> <span class="pl-c1">Gem</span>::<span class="pl-c1">Specification</span>.load(path.untaint)
+  <span class="pl-k">if</span> spec.name <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>
+    sns_handler_path <span class="pl-k">=</span> spec.lib_dirs_glob
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span>
+<span class="pl-k">if</span> sns_handler_path.nil?
+  <span class="pl-c1">Chef</span>::<span class="pl-c1">Application</span>.fatal!(<span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns not found inside Bundler path: <span class="pl-pse">#{</span><span class="pl-s1">bundle_path</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pds">"</span></span>)
+<span class="pl-k">end</span>
 
-<span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
-<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
-  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
-  <span class="n">arguments</span> <span class="n">argument_array</span>
-  <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-  <span class="n">action</span> <span class="ss">:enable</span>
-<span class="k">end</span>
-</pre></div>
+<span class="pl-c"># Then activate the handler with the `chef_handler` LWRP</span>
+chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  source <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pse">#{</span><span class="pl-s1"><span class="pl-c1">Gem</span>::<span class="pl-c1">Specification</span>.find_by_name(<span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>).lib_dirs_glob</span><span class="pl-pse"><span class="pl-s1">}</span></span>/chef/handler/sns<span class="pl-pds">"</span></span>
+  arguments argument_array
+  supports <span class="pl-c1">:exception</span> =&gt; <span class="pl-c1">true</span>
+  action <span class="pl-c1">:enable</span>
+<span class="pl-k">end</span></pre></div>
 
 <p>See the <a href="https://github.com/onddo/chef_handler_sns-cookbook/blob/master/providers/default.rb"><code>chef_handler_sns</code> cookbook provider code</a> for a more complete working example.</p>
 
 <h3>
-<a name="usage-with-amazon-iam-roles" class="anchor" href="#usage-with-amazon-iam-roles"><span class="octicon octicon-link"></span></a>Usage with Amazon IAM Roles</h3>
+<a id="usage-with-amazon-iam-roles" class="anchor" href="#usage-with-amazon-iam-roles" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage with Amazon IAM Roles</h3>
 
 <p>If you are using AWS <a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html">IAM roles</a> with your server, probably you only need to specify the <code>topic_arn</code> parameter. A few simple examples:</p>
 
 <h4>
-<a name="method-1-in-the-chef-config-file-1" class="anchor" href="#method-1-in-the-chef-config-file-1"><span class="octicon octicon-link"></span></a>Method 1: in the Chef Config File</h4>
+<a id="method-1-in-the-chef-config-file-1" class="anchor" href="#method-1-in-the-chef-config-file-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method 1: in the Chef Config File</h4>
 
 <p>You can install the RubyGem and configure Chef to use it:</p>
 
@@ -239,46 +230,43 @@ Could not find 'chef-handler-sns' (&gt;= 0) among XX total gem(s)
 
 <p>Then add to the configuration (<code>/etc/chef/solo.rb</code> for chef-solo or <code>/etc/chef/client.rb</code> for chef-client):</p>
 
-<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s2">"chef/handler/sns"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">"</span>chef/handler/sns<span class="pl-pds">"</span></span>
 
-<span class="n">exception_handlers</span> <span class="o">&lt;&lt;</span> <span class="no">Chef</span><span class="o">::</span><span class="no">Handler</span><span class="o">::</span><span class="no">Sns</span><span class="o">.</span><span class="n">new</span><span class="p">({</span>
-  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:us-east-1:12341234:MyTopicName"</span>
-<span class="p">})</span>
-</pre></div>
+exception_handlers <span class="pl-k">&lt;&lt;</span> <span class="pl-c1">Chef</span>::<span class="pl-c1">Handler</span>::<span class="pl-c1">Sns</span>.<span class="pl-k">new</span>({
+  <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:us-east-1:12341234:MyTopicName<span class="pl-pds">"</span></span>
+})</pre></div>
 
 <h4>
-<a name="method-2-in-a-recipe-with-the-chef_handler-lwrp-1" class="anchor" href="#method-2-in-a-recipe-with-the-chef_handler-lwrp-1"><span class="octicon octicon-link"></span></a>Method 2: in a Recipe with the chef_handler LWRP</h4>
+<a id="method-2-in-a-recipe-with-the-chef_handler-lwrp-1" class="anchor" href="#method-2-in-a-recipe-with-the-chef_handler-lwrp-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method 2: in a Recipe with the chef_handler LWRP</h4>
 
 <p>Use the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>, creating a recipe with the following:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="c1"># Depends on the `xml` cookbook to install nokogiri</span>
-<span class="n">include_recipe</span> <span class="s2">"xml::ruby"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c"># Depends on the `xml` cookbook to install nokogiri</span>
+include_recipe <span class="pl-s"><span class="pl-pds">"</span>xml::ruby<span class="pl-pds">"</span></span>
 
-<span class="c1"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
-<span class="n">chef_gem</span> <span class="s2">"chef-handler-sns"</span>
+<span class="pl-c"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
+chef_gem <span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>
 
-<span class="c1"># Then activate the handler with the `chef_handler` LWRP</span>
-<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
-  <span class="n">source</span> <span class="s2">"</span><span class="si">#{</span><span class="no">Gem</span><span class="o">::</span><span class="no">Specification</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">"chef-handler-sns"</span><span class="p">)</span><span class="o">.</span><span class="n">lib_dirs_glob</span><span class="si">}</span><span class="s2">/chef/handler/sns"</span>
-  <span class="n">arguments</span> <span class="p">{</span> <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:us-east-1:12341234:MyTopicName"</span> <span class="p">}</span>
-  <span class="n">supports</span> <span class="ss">:exception</span> <span class="o">=&gt;</span> <span class="kp">true</span>
-  <span class="n">action</span> <span class="ss">:enable</span>
-<span class="k">end</span>
-</pre></div>
+<span class="pl-c"># Then activate the handler with the `chef_handler` LWRP</span>
+chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  source <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pse">#{</span><span class="pl-s1"><span class="pl-c1">Gem</span>::<span class="pl-c1">Specification</span>.find_by_name(<span class="pl-s"><span class="pl-pds">"</span>chef-handler-sns<span class="pl-pds">"</span></span>).lib_dirs_glob</span><span class="pl-pse"><span class="pl-s1">}</span></span>/chef/handler/sns<span class="pl-pds">"</span></span>
+  arguments { <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:us-east-1:12341234:MyTopicName<span class="pl-pds">"</span></span> }
+  supports <span class="pl-c1">:exception</span> =&gt; <span class="pl-c1">true</span>
+  action <span class="pl-c1">:enable</span>
+<span class="pl-k">end</span></pre></div>
 
 <h4>
-<a name="opsworks-filter-notifications-by-activity" class="anchor" href="#opsworks-filter-notifications-by-activity"><span class="octicon octicon-link"></span></a>OpsWorks: Filter Notifications by Activity</h4>
+<a id="opsworks-filter-notifications-by-activity" class="anchor" href="#opsworks-filter-notifications-by-activity" aria-hidden="true"><span class="octicon octicon-link"></span></a>OpsWorks: Filter Notifications by Activity</h4>
 
 <p>An optional array of OpsWorks activities can be supplied. If the array is set, notifications will
 only be triggered for the activities in the array, everything else will be discarded.</p>
 
-<div class="highlight highlight-ruby"><pre><span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="ss">:filter_opsworks_activities</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">"deploy"</span><span class="p">,</span><span class="s2">"configure"</span><span class="o">]</span>
-<span class="o">]</span>
-</pre></div>
+<div class="highlight highlight-ruby"><pre>argument_array <span class="pl-k">=</span> [
+  <span class="pl-c1">:filter_opsworks_activities</span> =&gt; [<span class="pl-s"><span class="pl-pds">"</span>deploy<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>configure<span class="pl-pds">"</span></span>]
+]</pre></div>
 
 <h2>
-<a name="handler-configuration-options" class="anchor" href="#handler-configuration-options"><span class="octicon octicon-link"></span></a>Handler Configuration Options</h2>
+<a id="handler-configuration-options" class="anchor" href="#handler-configuration-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Handler Configuration Options</h2>
 
 <p>The following options are available to configure the handler:</p>
 
@@ -299,30 +287,30 @@ only be triggered for the activities in the array, everything else will be disca
 <code>body_template</code> - Full path of an erubis template file to use for the message body (optional).</li>
 <li>
 <code>filter_opsworks_activities</code> - An array of OpsWorks activities to be triggered with (optional). When set, everything else will be discarded.</li>
-</ul><p><strong>Note:</strong> When the machine has an IAM role, will try to read the credentials from ohai. So in the best case, you only need to specify the <code>topic_arn</code>.</p>
+</ul>
+
+<p><strong>Note:</strong> When the machine has an IAM role, will try to read the credentials from ohai. So in the best case, you only need to specify the <code>topic_arn</code>.</p>
 
 <h3>
-<a name="subject" class="anchor" href="#subject"><span class="octicon octicon-link"></span></a>subject</h3>
+<a id="subject" class="anchor" href="#subject" aria-hidden="true"><span class="octicon octicon-link"></span></a>subject</h3>
 
 <p>Here is an example of the <code>subject</code> configuration option using the ruby configuration file (<code>solo.rb</code> or <code>client.rb</code>):</p>
 
-<div class="highlight highlight-ruby"><pre><span class="n">sns_handler</span><span class="o">.</span><span class="n">subject</span><span class="p">:</span> <span class="s2">"Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? "</span><span class="n">ok</span><span class="s2">" : "</span><span class="n">error</span><span class="s2">" %&gt;"</span>
-</pre></div>
+<div class="highlight highlight-ruby"><pre>sns_handler.<span class="pl-c1">subject:</span> <span class="pl-s"><span class="pl-pds">"</span>Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? <span class="pl-pds">"</span></span>ok<span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span>error<span class="pl-s"><span class="pl-pds">"</span> %&gt;<span class="pl-pds">"</span></span></pre></div>
 
 <p>Using the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
-  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
-  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
-  <span class="ss">:subject</span> <span class="o">=&gt;</span> <span class="s2">"Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? "</span><span class="n">ok</span><span class="s2">" : "</span><span class="n">error</span><span class="s2">" %&gt;"</span><span class="p">,</span>
-  <span class="c1"># [...]</span>
-<span class="o">]</span>
-<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
-  <span class="c1"># [...]</span>
-  <span class="n">arguments</span> <span class="n">argument_array</span>
-<span class="k">end</span>
-</pre></div>
+<div class="highlight highlight-ruby"><pre>argument_array <span class="pl-k">=</span> [
+  <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:subject</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? <span class="pl-pds">"</span></span>ok<span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span>error<span class="pl-s"><span class="pl-pds">"</span> %&gt;<span class="pl-pds">"</span></span>,
+  <span class="pl-c"># [...]</span>
+]
+chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  <span class="pl-c"># [...]</span>
+  arguments argument_array
+<span class="pl-k">end</span></pre></div>
 
 <p>The following variables are accesible inside the template:</p>
 
@@ -349,65 +337,65 @@ only be triggered for the activities in the array, everything else will be disca
 <code>success?</code> - Was the chef run successful? True if the chef run did not raise an uncaught exception.</li>
 <li>
 <code>failed?</code> - Did the chef run fail? True if the chef run raised an uncaught exception.</li>
-</ul><h3>
-<a name="body_template" class="anchor" href="#body_template"><span class="octicon octicon-link"></span></a>body_template</h3>
+</ul>
+
+<h3>
+<a id="body_template" class="anchor" href="#body_template" aria-hidden="true"><span class="octicon octicon-link"></span></a>body_template</h3>
 
 <p>This configuration option needs to contain the full path of an erubis template. For example:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="c1"># recipe "myapp::sns_handler"</span>
+<div class="highlight highlight-ruby"><pre><span class="pl-c"># recipe "myapp::sns_handler"</span>
 
-<span class="n">cookbook_file</span> <span class="s2">"chef_handler_sns_body.erb"</span> <span class="k">do</span>
-  <span class="n">path</span> <span class="s2">"/tmp/chef_handler_sns_body.erb"</span>
-  <span class="c1"># [...]</span>
-<span class="k">end</span>
+cookbook_file <span class="pl-s"><span class="pl-pds">"</span>chef_handler_sns_body.erb<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  path <span class="pl-s"><span class="pl-pds">"</span>/tmp/chef_handler_sns_body.erb<span class="pl-pds">"</span></span>
+  <span class="pl-c"># [...]</span>
+<span class="pl-k">end</span>
 
-<span class="n">argument_array</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="ss">:access_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-KEY***"</span><span class="p">,</span>
-  <span class="ss">:secret_key</span> <span class="o">=&gt;</span> <span class="s2">"***AMAZON-SECRET***"</span><span class="p">,</span>
-  <span class="ss">:topic_arn</span> <span class="o">=&gt;</span> <span class="s2">"arn:aws:sns:***"</span><span class="p">,</span>
-  <span class="ss">:body_template</span> <span class="o">=&gt;</span> <span class="s2">"/tmp/chef_handler_sns_body.erb"</span><span class="p">,</span>
-  <span class="c1"># [...]</span>
-<span class="o">]</span>
-<span class="n">chef_handler</span> <span class="s2">"Chef::Handler::Sns"</span> <span class="k">do</span>
-  <span class="c1"># [...]</span>
-  <span class="n">arguments</span> <span class="n">argument_array</span>
-<span class="k">end</span>
-</pre></div>
+argument_array <span class="pl-k">=</span> [
+  <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:***<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:body_template</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>/tmp/chef_handler_sns_body.erb<span class="pl-pds">"</span></span>,
+  <span class="pl-c"># [...]</span>
+]
+chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
+  <span class="pl-c"># [...]</span>
+  arguments argument_array
+<span class="pl-k">end</span></pre></div>
 
-<div class="highlight highlight-erb"><pre><span class="cp">&lt;%#</span><span class="c"> file "myapp/files/default/chef_handler_sns_body.erb" </span><span class="cp">%&gt;</span><span class="x"></span>
+<div class="highlight highlight-erb"><pre><span class="pl-c">&lt;%# file "myapp/files/default/chef_handler_sns_body.erb" %&gt;</span>
 
-<span class="x">Node Name: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">attribute?</span><span class="p">(</span><span class="s2">"fqdn"</span><span class="p">)</span> <span class="cp">-%&gt;</span><span class="x"></span>
-<span class="x">Hostname: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">fqdn</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">-%&gt;</span><span class="x"></span>
+Node Name: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.name </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+<span class="pl-pse">&lt;%</span><span class="pl-s1"> <span class="pl-k">if</span> node.attribute?(<span class="pl-s"><span class="pl-pds">"</span>fqdn<span class="pl-pds">"</span></span>) </span><span class="pl-pse"><span class="pl-s1">-%</span>&gt;</span>
+Hostname: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.fqdn </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+<span class="pl-pse">&lt;%</span><span class="pl-s1"> <span class="pl-k">end</span> </span><span class="pl-pse"><span class="pl-s1">-%</span>&gt;</span>
 
-<span class="x">Chef Run List: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">run_list</span><span class="o">.</span><span class="n">to_s</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">Chef Environment: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">chef_environment</span> <span class="cp">%&gt;</span><span class="x"></span>
+Chef Run List: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.run_list.to_s </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+Chef Environment: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.chef_environment </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
 
-<span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">attribute?</span><span class="p">(</span><span class="s2">"ec2"</span><span class="p">)</span> <span class="cp">-%&gt;</span><span class="x"></span>
-<span class="x">Instance Id: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">instance_id</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">Instance Public Hostname: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">public_hostname</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">Instance Hostname: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">hostname</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">Instance Public IPv4: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">public_ipv4</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">Instance Local IPv4: </span><span class="cp">&lt;%=</span> <span class="n">node</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">local_ipv4</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">-%&gt;</span><span class="x"></span>
+<span class="pl-pse">&lt;%</span><span class="pl-s1"> <span class="pl-k">if</span> node.attribute?(<span class="pl-s"><span class="pl-pds">"</span>ec2<span class="pl-pds">"</span></span>) </span><span class="pl-pse"><span class="pl-s1">-%</span>&gt;</span>
+Instance Id: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.ec2.instance_id </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+Instance Public Hostname: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.ec2.public_hostname </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+Instance Hostname: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.ec2.hostname </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+Instance Public IPv4: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.ec2.public_ipv4 </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+Instance Local IPv4: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.ec2.local_ipv4 </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+<span class="pl-pse">&lt;%</span><span class="pl-s1"> <span class="pl-k">end</span> </span><span class="pl-pse"><span class="pl-s1">-%</span>&gt;</span>
 
-<span class="x">Chef Client Elapsed Time: </span><span class="cp">&lt;%=</span> <span class="n">elapsed_time</span><span class="o">.</span><span class="n">to_s</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">Chef Client Start Time: </span><span class="cp">&lt;%=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">to_s</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">Chef Client Start Time: </span><span class="cp">&lt;%=</span> <span class="n">end_time</span><span class="o">.</span><span class="n">to_s</span> <span class="cp">%&gt;</span><span class="x"></span>
+Chef Client Elapsed Time: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> elapsed_time.to_s </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+Chef Client Start Time: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> start_time.to_s </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+Chef Client Start Time: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> end_time.to_s </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
 
-<span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">exception</span> <span class="cp">-%&gt;</span><span class="x"></span>
-<span class="x">Exception: </span><span class="cp">&lt;%=</span> <span class="n">run_status</span><span class="o">.</span><span class="n">formatted_exception</span> <span class="cp">%&gt;</span><span class="x"></span>
-<span class="x">Stacktrace:</span>
-<span class="cp">&lt;%=</span> <span class="nb">Array</span><span class="p">(</span><span class="n">backtrace</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="pl-pse">&lt;%</span><span class="pl-s1"> <span class="pl-k">if</span> exception </span><span class="pl-pse"><span class="pl-s1">-%</span>&gt;</span>
+Exception: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> run_status.formatted_exception </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
+Stacktrace:
+<span class="pl-pse">&lt;%=</span><span class="pl-s1"> <span class="pl-c1">Array</span>(backtrace).join(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>) </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
 
-<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">-%&gt;</span><span class="x"></span>
-</pre></div>
+<span class="pl-pse">&lt;%</span><span class="pl-s1"> <span class="pl-k">end</span> </span><span class="pl-pse"><span class="pl-s1">-%</span>&gt;</span></pre></div>
 
 <p>See the <a href="#subject">subject</a> documentation for more details on the variables accesible inside the template.</p>
 
 <h2>
-<a name="iam-role-credentials-from-ohai" class="anchor" href="#iam-role-credentials-from-ohai"><span class="octicon octicon-link"></span></a>IAM Role Credentials from Ohai</h2>
+<a id="iam-role-credentials-from-ohai" class="anchor" href="#iam-role-credentials-from-ohai" aria-hidden="true"><span class="octicon octicon-link"></span></a>IAM Role Credentials from Ohai</h2>
 
 <p>IAM Role information and credentials are gathered from ohai by default if they exists.</p>
 
@@ -426,7 +414,7 @@ only be triggered for the activities in the array, everything else will be disca
 </code></pre>
 
 <h2>
-<a name="running-the-tests" class="anchor" href="#running-the-tests"><span class="octicon octicon-link"></span></a>Running the Tests</h2>
+<a id="running-the-tests" class="anchor" href="#running-the-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running the Tests</h2>
 
 <p>Minitest tests can be run as usual:</p>
 
@@ -434,7 +422,7 @@ only be triggered for the activities in the array, everything else will be disca
 </code></pre>
 
 <h2>
-<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
 
 <ol>
 <li>Fork the repository on Github.</li>
@@ -443,14 +431,18 @@ only be triggered for the activities in the array, everything else will be disca
 <li>Write your change.</li>
 <li>Run the tests, ensuring they all pass (try as much as possible not to reduce coverage).</li>
 <li>Submit a <a href="http://github.com/onddo/chef-handler-sns/pulls">Pull Request using Github</a>.</li>
-</ol><h2>
-<a name="license-and-author" class="anchor" href="#license-and-author"><span class="octicon octicon-link"></span></a>License and Author</h2>
+</ol>
+
+<h2>
+<a id="license-and-author" class="anchor" href="#license-and-author" aria-hidden="true"><span class="octicon octicon-link"></span></a>License and Author</h2>
 
 <table>
-<thead><tr>
+<thead>
+<tr>
 <th align="left"></th>
 <th align="left"></th>
-</tr></thead>
+</tr>
+</thead>
 <tbody>
 <tr>
 <td align="left"><strong>Author:</strong></td>
@@ -474,7 +466,9 @@ only be triggered for the activities in the array, everything else will be disca
 <td align="left">Apache License, Version 2.0</td>
 </tr>
 </tbody>
-</table><pre><code>Licensed under the Apache License, Version 2.0 (the "License");
+</table>
+
+<pre><code>Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
@@ -486,24 +480,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 </code></pre>
-        </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/onddo/chef-handler-sns/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/onddo/chef-handler-sns/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/onddo/chef-handler-sns">Chef-handler-sns</a> is maintained by <a href="https://github.com/onddo">onddo</a>.</span>
 
-          <p class="repo-owner"><a href="https://github.com/onddo/chef-handler-sns"></a> is maintained by <a href="https://github.com/onddo">onddo</a>.</p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+    </section>
 
             <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -518,3 +502,4 @@ limitations under the License.
 
   </body>
 </html>
+
