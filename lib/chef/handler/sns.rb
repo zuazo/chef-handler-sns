@@ -35,7 +35,7 @@ class Chef
         config_check(node)
         if allow_publish(node)
           sns.topics[topic_arn].publish(
-            sns_body.to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}),
+            sns_body,
             { :subject => sns_subject }
           )
         end
@@ -73,10 +73,14 @@ class Chef
         end
       end
 
+      def fix_encoding(o)
+        o.to_s.encode('UTF-8', { :invalid => :replace, :undef => :replace, :replace => '?' })
+      end
+
       def sns_subject
         if subject
           context = self
-          eruby = Erubis::Eruby.new(subject)
+          eruby = Erubis::Eruby.new(fix_encoding(subject))
           eruby.evaluate(context)
         else
           chef_client = Chef::Config[:solo] ? 'Chef Solo' : 'Chef Client'
@@ -88,7 +92,7 @@ class Chef
       def sns_body
         template = IO.read(body_template || "#{File.dirname(__FILE__)}/sns/templates/body.erb")
         context = self
-        eruby = Erubis::Eruby.new(template)
+        eruby = Erubis::Eruby.new(fix_encoding(template))
         eruby.evaluate(context)
       end
 

@@ -31,6 +31,7 @@ class Chef::Handler::FakeSns < Chef::Handler::Sns
 end
 
 describe Chef::Handler::Sns do
+  let(:data_dir) { ::File.join(::File.dirname(__FILE__), 'data') }
   before do
     AWS::SNS::Topic.any_instance.stubs(:publish).returns(true)
     # avoid File.read("endpoints.json")
@@ -173,6 +174,43 @@ describe Chef::Handler::Sns do
     @fake_sns_handler.run_report_unsafe(@run_status)
 
     assert_equal @fake_sns_handler.get_sns_body, body_msg
+  end
+
+  it 'should be able to read body templates in UTF-8' do
+    @config[:body_template] = ::File.join(data_dir, 'body_utf8.txt')
+
+    fake_sns = AWS::FakeSNS.new({})
+    AWS::SNS.stubs(:new).returns(fake_sns)
+    @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
+    @fake_sns_handler.run_report_unsafe(@run_status)
+    @fake_sns_handler.get_sns_body
+
+    assert_includes @fake_sns_handler.get_sns_body, 'abc'
+  end
+
+  it 'should be able to read body templates in latin' do
+    @config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
+
+    fake_sns = AWS::FakeSNS.new({})
+    AWS::SNS.stubs(:new).returns(fake_sns)
+    @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
+    @fake_sns_handler.run_report_unsafe(@run_status)
+
+    assert_includes @fake_sns_handler.get_sns_body, 'abc'
+  end
+
+  it 'should replace body character with wrong encoding' do
+    @config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
+
+    fake_sns = AWS::FakeSNS.new({})
+    AWS::SNS.stubs(:new).returns(fake_sns)
+    @fake_sns_handler = Chef::Handler::FakeSns.new(@config)
+    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
+    @fake_sns_handler.run_report_unsafe(@run_status)
+
+    assert_includes @fake_sns_handler.get_sns_body, '???'
   end
 
   it 'should publish messages if node["opsworks"]["activity"] does not exist' do
