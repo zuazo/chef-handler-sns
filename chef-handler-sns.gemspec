@@ -23,6 +23,9 @@ Gem::Specification.new do |s|
   if RUBY_VERSION < '1.9'
     s.add_development_dependency 'mime-types', '< 2.0'
     s.add_development_dependency 'nokogiri', '< 1.6.0'
+    s.add_development_dependency 'moneta', '< 0.8'
+  end
+  if RUBY_VERSION < '1.9.3'
     s.add_development_dependency 'mixlib-shellout', '< 1.6.1'
   end
   if RUBY_VERSION < '2'
