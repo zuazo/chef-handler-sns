@@ -35,7 +35,7 @@ class Chef
         config_check(node)
         if allow_publish(node)
           sns.topics[topic_arn].publish(
-            sns_body,
+            sns_body.to_s.encode('UTF-8', {:invalid => :replace, :undef => :replace, :replace => '?'}),
             { :subject => sns_subject }
           )
         end
