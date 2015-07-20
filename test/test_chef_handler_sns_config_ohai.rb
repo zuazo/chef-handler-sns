@@ -22,52 +22,52 @@ describe Chef::Handler::Sns::Config::Ohai do
 
     it 'should read the region' do
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.region, 'region1'
+      assert_equal 'region1', config.region
     end
 
     it 'should not read the region when not set' do
       @node.set['ec2']['placement_availability_zone'] = nil
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.region, nil
+      assert_equal nil, config.region
     end
 
     it 'should not read the credentials when has not IAM role' do
       @node.set['ec2'] = {}
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.access_key, nil
+      assert_equal nil, config.access_key
     end
 
     it 'should read the access_key' do
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.access_key, 'access_key1'
+      assert_equal 'access_key1', config.access_key
     end
 
     it 'should not read the access_key when not set' do
       @node.set['ec2']['iam']['security-credentials']['iam-role1']['AccessKeyId'] = nil
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.access_key, nil
+      assert_equal nil, config.access_key
     end
 
     it 'should read the secret_key' do
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.secret_key, 'secret_key1'
+      assert_equal 'secret_key1', config.secret_key
     end
 
     it 'should not read the secret_key when not set' do
       @node.set['ec2']['iam']['security-credentials']['iam-role1']['SecretAccessKey'] = nil
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.secret_key, nil
+      assert_equal nil, config.secret_key
     end
 
     it 'should read the security token' do
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.token, 'token1'
+      assert_equal 'token1', config.token
     end
 
     it 'should not read the security token when not set' do
       @node.set['ec2']['iam']['security-credentials']['iam-role1']['Token'] = nil
       config = Chef::Handler::Sns::Config::Ohai.new(@node)
-      assert_equal config.token, nil
+      assert_equal nil, config.token
     end
 
   end

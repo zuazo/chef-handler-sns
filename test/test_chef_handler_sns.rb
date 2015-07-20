@@ -70,16 +70,18 @@ describe Chef::Handler::Sns do
 
   it 'should read the configuration options on initialization' do
     @sns_handler = Chef::Handler::Sns.new(@config)
-    assert_equal @sns_handler.access_key, @config[:access_key]
-    assert_equal @sns_handler.secret_key, @config[:secret_key]
+
+    assert_equal @config[:access_key], @sns_handler.access_key
+    assert_equal @config[:secret_key], @sns_handler.secret_key
   end
 
   it 'should be able to change configuration options using method calls' do
     @sns_handler = Chef::Handler::Sns.new
     @sns_handler.access_key(@config[:access_key])
     @sns_handler.secret_key(@config[:secret_key])
-    assert_equal @sns_handler.access_key, @config[:access_key]
-    assert_equal @sns_handler.secret_key, @config[:secret_key]
+
+    assert_equal @config[:access_key], @sns_handler.access_key
+    assert_equal @config[:secret_key], @sns_handler.secret_key
   end
 
   it 'should try to send a SNS message when properly configured' do
@@ -99,7 +101,7 @@ describe Chef::Handler::Sns do
     AWS::SNS.stubs(:new).returns(fake_sns)
     @sns_handler.run_report_safely(@run_status)
 
-    assert_equal fake_sns.sns_new, true
+    assert_equal true, fake_sns.sns_new
   end
 
   it 'should detect the AWS region automatically' do
@@ -125,7 +127,7 @@ describe Chef::Handler::Sns do
     Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
     @fake_sns_handler.run_report_unsafe(@run_status)
 
-    assert_equal @fake_sns_handler.get_sns_subject, 'Chef Client success in test'
+    assert_equal 'Chef Client success in test', @fake_sns_handler.get_sns_subject
   end
 
   it 'should be able to generate the default subject in chef-solo' do
@@ -134,7 +136,7 @@ describe Chef::Handler::Sns do
     Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
     @fake_sns_handler.run_report_unsafe(@run_status)
 
-    assert_equal @fake_sns_handler.get_sns_subject, 'Chef Solo success in test'
+    assert_equal 'Chef Solo success in test', @fake_sns_handler.get_sns_subject
   end
 
   it 'should use the configured subject when set' do
@@ -143,7 +145,7 @@ describe Chef::Handler::Sns do
     Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
     @fake_sns_handler.run_report_unsafe(@run_status)
 
-    assert_equal @fake_sns_handler.get_sns_subject, 'My Subject'
+    assert_equal 'My Subject', @fake_sns_handler.get_sns_subject
   end
 
   it 'should be able to generate the default message body' do
@@ -173,7 +175,7 @@ describe Chef::Handler::Sns do
     Chef::Handler::FakeSns.any_instance.stubs(:node).returns(@node)
     @fake_sns_handler.run_report_unsafe(@run_status)
 
-    assert_equal @fake_sns_handler.get_sns_body, body_msg
+    assert_equal body_msg, @fake_sns_handler.get_sns_body
   end
 
   it 'should be able to read body templates in UTF-8' do

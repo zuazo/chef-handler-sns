@@ -28,16 +28,16 @@ describe Chef::Handler::Sns::Config do
   it 'should read the configuration options on config initialization' do
     @sns_config.config_init(@config_params)
 
-    assert_equal @sns_config.access_key, @config_params[:access_key]
-    assert_equal @sns_config.secret_key, @config_params[:secret_key]
+    assert_equal @config_params[:access_key], @sns_config.access_key
+    assert_equal @config_params[:secret_key], @sns_config.secret_key
   end
 
   it 'should be able to change configuration options using method calls' do
     @sns_config.access_key(@config_params[:access_key])
     @sns_config.secret_key(@config_params[:secret_key])
 
-    assert_equal @sns_config.access_key, @config_params[:access_key]
-    assert_equal @sns_config.secret_key, @config_params[:secret_key]
+    assert_equal @config_params[:access_key], @sns_config.access_key
+    assert_equal @config_params[:secret_key], @sns_config.secret_key
   end
 
   [ :access_key, :secret_key, :topic_arn ].each do |required|
@@ -58,7 +58,7 @@ describe Chef::Handler::Sns::Config do
     it "should set '#{option}' option correctly" do
       @sns_config.send(option, "test")
 
-      assert_equal @sns_config.send(option), "test"
+      assert_equal 'test', @sns_config.send(option)
     end
 
     [ true, 25, Object.new ].each do |bad_value|
@@ -70,7 +70,7 @@ describe Chef::Handler::Sns::Config do
 
   it 'should accept false value to reset the token' do
     @sns_config.token(false)
-    assert_equal @sns_config.token, false
+    assert_equal false, @sns_config.token
   end
 
   it 'should throw an exception when the body template file does not exist' do
