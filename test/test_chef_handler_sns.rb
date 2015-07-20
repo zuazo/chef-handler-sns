@@ -187,7 +187,7 @@ describe Chef::Handler::Sns do
     assert_includes fake_sns_handler.get_sns_body, 'abc'
   end
 
-  if RUBY_VERSION >= '2.1.0'
+  if RUBY_VERSION >= '1.9.2'
     it 'should be able to read body templates in latin' do
       config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
 

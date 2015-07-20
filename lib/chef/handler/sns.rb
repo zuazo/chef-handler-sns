@@ -75,7 +75,7 @@ class Chef
 
       def fix_encoding(o)
         return o.to_s unless String.method_defined?(:encode) # Ruby < 1.9
-        o.to_s.encode('UTF-8', { :invalid => :replace, :undef => :replace, :replace => '?' })
+        o.to_s.encode('UTF-8', 'binary', { :invalid => :replace, :undef => :replace, :replace => '?' })
       end
 
       def sns_subject
