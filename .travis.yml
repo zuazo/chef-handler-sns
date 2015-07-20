@@ -24,7 +24,7 @@ matrix:
   - rvm: 2.2
     env: CHEF_VERSION="= 0.10.10"
   - rvm: 2.2
-    env: CHEF_VERSION="= 10.24.10"
+    env: CHEF_VERSION="= 10.24.0"
   - rvm: 2.2
     env: CHEF_VERSION="= 11.4.0"
 sudo: false
