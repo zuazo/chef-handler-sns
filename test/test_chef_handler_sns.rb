@@ -187,24 +187,26 @@ describe Chef::Handler::Sns do
     assert_includes fake_sns_handler.get_sns_body, 'abc'
   end
 
-  it 'should be able to read body templates in latin' do
-    config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
+  if RUBY_VERSION >= '2.1.0'
+    it 'should be able to read body templates in latin' do
+      config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
 
-    fake_sns = AWS::FakeSNS.new({})
-    AWS::SNS.stubs(:new).returns(fake_sns)
-    fake_sns_handler.run_report_unsafe(run_status)
+      fake_sns = AWS::FakeSNS.new({})
+      AWS::SNS.stubs(:new).returns(fake_sns)
+      fake_sns_handler.run_report_unsafe(run_status)
 
-    assert_includes fake_sns_handler.get_sns_body, 'abc'
-  end
+      assert_includes fake_sns_handler.get_sns_body, 'abc'
+    end
 
-  it 'should replace body character with wrong encoding' do
-    config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
+    it 'should replace body character with wrong encoding' do
+      config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
 
-    fake_sns = AWS::FakeSNS.new({})
-    AWS::SNS.stubs(:new).returns(fake_sns)
-    fake_sns_handler.run_report_unsafe(run_status)
+      fake_sns = AWS::FakeSNS.new({})
+      AWS::SNS.stubs(:new).returns(fake_sns)
+      fake_sns_handler.run_report_unsafe(run_status)
 
-    assert_includes fake_sns_handler.get_sns_body, '???'
+      assert_includes fake_sns_handler.get_sns_body, '???'
+    end
   end
 
   it 'should publish messages if node["opsworks"]["activity"] does not exist' do
