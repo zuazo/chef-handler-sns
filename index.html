@@ -5,7 +5,7 @@
     <title>Chef-handler-sns by onddo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
@@ -86,7 +86,7 @@
 
 <p>Then add to the configuration (<code>/etc/chef/solo.rb</code> for chef-solo or <code>/etc/chef/client.rb</code> for chef-client):</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">"</span>chef/handler/sns<span class="pl-pds">"</span></span>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">"</span>chef/handler/sns<span class="pl-pds">"</span></span>
 
 <span class="pl-c"># Create the handler</span>
 sns_handler <span class="pl-k">=</span> <span class="pl-c1">Chef</span>::<span class="pl-c1">Handler</span>::<span class="pl-c1">Sns</span>.<span class="pl-k">new</span>
@@ -109,7 +109,7 @@ exception_handlers <span class="pl-k">&lt;&lt;</span> sns_handler</pre></div>
 
 <p>Use the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>, creating a recipe with the following:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-c"># Handler configuration options</span>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># Handler configuration options</span>
 argument_array <span class="pl-k">=</span> [
   <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
   <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
@@ -135,7 +135,7 @@ chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<
 
 <p>If you have an old version of gem package (&lt; 1.8.6) without <code>find_by_name</code> or old chef-client (&lt; 0.10.10) without <code>chef_gem</code>, you can try creating a recipe similar to the following:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-c"># Handler configuration options</span>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># Handler configuration options</span>
 argument_array <span class="pl-k">=</span> [
   <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
   <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
@@ -179,7 +179,7 @@ Could not find 'chef-handler-sns' (&gt;= 0) among XX total gem(s)
 
 <p>To fix this error, you should get the handler installation path using a code similar to the following:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-c"># Handler configuration options</span>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># Handler configuration options</span>
 argument_array <span class="pl-k">=</span> [
   <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
   <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
@@ -230,7 +230,7 @@ chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<
 
 <p>Then add to the configuration (<code>/etc/chef/solo.rb</code> for chef-solo or <code>/etc/chef/client.rb</code> for chef-client):</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">"</span>chef/handler/sns<span class="pl-pds">"</span></span>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">"</span>chef/handler/sns<span class="pl-pds">"</span></span>
 
 exception_handlers <span class="pl-k">&lt;&lt;</span> <span class="pl-c1">Chef</span>::<span class="pl-c1">Handler</span>::<span class="pl-c1">Sns</span>.<span class="pl-k">new</span>({
   <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:us-east-1:12341234:MyTopicName<span class="pl-pds">"</span></span>
@@ -241,7 +241,7 @@ exception_handlers <span class="pl-k">&lt;&lt;</span> <span class="pl-c1">Chef</
 
 <p>Use the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>, creating a recipe with the following:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-c"># Depends on the `xml` cookbook to install nokogiri</span>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># Depends on the `xml` cookbook to install nokogiri</span>
 include_recipe <span class="pl-s"><span class="pl-pds">"</span>xml::ruby<span class="pl-pds">"</span></span>
 
 <span class="pl-c"># Install the `chef-handler-sns` RubyGem during the compile phase</span>
@@ -261,7 +261,7 @@ chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<
 <p>An optional array of OpsWorks activities can be supplied. If the array is set, notifications will
 only be triggered for the activities in the array, everything else will be discarded.</p>
 
-<div class="highlight highlight-ruby"><pre>argument_array <span class="pl-k">=</span> [
+<div class="highlight highlight-source-ruby"><pre>argument_array <span class="pl-k">=</span> [
   <span class="pl-c1">:filter_opsworks_activities</span> =&gt; [<span class="pl-s"><span class="pl-pds">"</span>deploy<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>configure<span class="pl-pds">"</span></span>]
 ]</pre></div>
 
@@ -296,15 +296,15 @@ only be triggered for the activities in the array, everything else will be disca
 
 <p>Here is an example of the <code>subject</code> configuration option using the ruby configuration file (<code>solo.rb</code> or <code>client.rb</code>):</p>
 
-<div class="highlight highlight-ruby"><pre>sns_handler.<span class="pl-c1">subject:</span> <span class="pl-s"><span class="pl-pds">"</span>Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? <span class="pl-pds">"</span></span>ok<span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span>error<span class="pl-s"><span class="pl-pds">"</span> %&gt;<span class="pl-pds">"</span></span></pre></div>
+<div class="highlight highlight-source-ruby"><pre>sns_handler.subject <span class="pl-s"><span class="pl-pds">"</span>Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? 'ok' : 'error' %&gt;<span class="pl-pds">"</span></span></pre></div>
 
 <p>Using the <a href="http://community.opscode.com/cookbooks/chef_handler">chef_handler LWRP</a>:</p>
 
-<div class="highlight highlight-ruby"><pre>argument_array <span class="pl-k">=</span> [
+<div class="highlight highlight-source-ruby"><pre>argument_array <span class="pl-k">=</span> [
   <span class="pl-c1">:access_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-KEY***<span class="pl-pds">"</span></span>,
   <span class="pl-c1">:secret_key</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>***AMAZON-SECRET***<span class="pl-pds">"</span></span>,
   <span class="pl-c1">:topic_arn</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>arn:aws:sns:***<span class="pl-pds">"</span></span>,
-  <span class="pl-c1">:subject</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? <span class="pl-pds">"</span></span>ok<span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span>error<span class="pl-s"><span class="pl-pds">"</span> %&gt;<span class="pl-pds">"</span></span>,
+  <span class="pl-c1">:subject</span> =&gt; <span class="pl-s"><span class="pl-pds">"</span>Chef-run: &lt;%= node.name %&gt; - &lt;%= run_status.success? ? 'ok' : 'error' %&gt;<span class="pl-pds">"</span></span>,
   <span class="pl-c"># [...]</span>
 ]
 chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
@@ -312,7 +312,7 @@ chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<
   arguments argument_array
 <span class="pl-k">end</span></pre></div>
 
-<p>The following variables are accesible inside the template:</p>
+<p>The following variables are accessible inside the template:</p>
 
 <ul>
 <li>
@@ -344,7 +344,7 @@ chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<
 
 <p>This configuration option needs to contain the full path of an erubis template. For example:</p>
 
-<div class="highlight highlight-ruby"><pre><span class="pl-c"># recipe "myapp::sns_handler"</span>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"># recipe "myapp::sns_handler"</span>
 
 cookbook_file <span class="pl-s"><span class="pl-pds">"</span>chef_handler_sns_body.erb<span class="pl-pds">"</span></span> <span class="pl-k">do</span>
   path <span class="pl-s"><span class="pl-pds">"</span>/tmp/chef_handler_sns_body.erb<span class="pl-pds">"</span></span>
@@ -363,7 +363,7 @@ chef_handler <span class="pl-s"><span class="pl-pds">"</span>Chef::Handler::Sns<
   arguments argument_array
 <span class="pl-k">end</span></pre></div>
 
-<div class="highlight highlight-erb"><pre><span class="pl-c">&lt;%# file "myapp/files/default/chef_handler_sns_body.erb" %&gt;</span>
+<div class="highlight highlight-text-html-erb"><pre><span class="pl-c">&lt;%# file "myapp/files/default/chef_handler_sns_body.erb" %&gt;</span>
 
 Node Name: <span class="pl-pse">&lt;%=</span><span class="pl-s1"> node.name </span><span class="pl-pse"><span class="pl-s1">%</span>&gt;</span>
 <span class="pl-pse">&lt;%</span><span class="pl-s1"> <span class="pl-k">if</span> node.attribute?(<span class="pl-s"><span class="pl-pds">"</span>fqdn<span class="pl-pds">"</span></span>) </span><span class="pl-pse"><span class="pl-s1">-%</span>&gt;</span>
@@ -502,4 +502,3 @@ limitations under the License.
 
   </body>
 </html>
-
