@@ -259,7 +259,7 @@ chef_handler "Chef::Handler::Sns" do
 end
 ```
 
-The following variables are accesible inside the template:
+The following variables are accessible inside the template:
 
 * `start_time` - The time the chef run started.
 * `end_time` - The time the chef run ended.
@@ -268,7 +268,7 @@ The following variables are accesible inside the template:
 * `exception` - The uncaught Exception that terminated the chef run, or nil if the run completed successfully.
 * `backtrace` - The backtrace captured by the uncaught exception that terminated the chef run, or nil if the run completed successfully.
 * `node` - The Chef::Node for this client run.
-* `all_resources` - An Array containing all resources in the chef run's resource_collection.
+* `all_resources` - An Array containing all resources in the chef-run's resource_collection.
 * `updated_resources` - An Array containing all resources that were updated during the chef run.
 * `success?` - Was the chef run successful? True if the chef run did not raise an uncaught exception.
 * `failed?` - Did the chef run fail? True if the chef run raised an uncaught exception.
@@ -329,7 +329,7 @@ Stacktrace:
 <% end -%>
 ```
 
-See the [subject](#subject) documentation for more details on the variables accesible inside the template.
+See the [subject](#subject) documentation for more details on the variables accessible inside the template.
 
 ## IAM Role Credentials from Ohai
 
