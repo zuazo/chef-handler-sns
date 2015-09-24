@@ -241,7 +241,7 @@ The following options are available to configure the handler:
 Here is an example of the `subject` configuration option using the ruby configuration file (`solo.rb` or `client.rb`):
 
 ```ruby
-sns_handler.subject: "Chef-run: <%= node.name %> - <%= run_status.success? ? "ok" : "error" %>"
+sns_handler.subject "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
 ```
 
 Using the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler):
@@ -250,7 +250,7 @@ argument_array = [
   :access_key => "***AMAZON-KEY***",
   :secret_key => "***AMAZON-SECRET***",
   :topic_arn => "arn:aws:sns:***",
-  :subject => "Chef-run: <%= node.name %> - <%= run_status.success? ? "ok" : "error" %>",
+  :subject => "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>",
   # [...]
 ]
 chef_handler "Chef::Handler::Sns" do
