@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'highline', '< 1.7'
     s.add_development_dependency 'ohai', '< 8'
     s.add_development_dependency 'amq-protocol', '< 2'
+    s.add_development_dependency 'bunny', '< 2'
   end
   s.add_development_dependency 'chef', chef_version
   s.add_development_dependency 'rake', '~> 10.0'
