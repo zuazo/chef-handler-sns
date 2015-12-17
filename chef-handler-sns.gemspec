@@ -16,24 +16,11 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.files = %w(LICENSE README.md) + Dir.glob('lib/**/*')
   s.test_files = Dir.glob('{test,spec,features}/*')
+  s.required_ruby_version = Gem::Requirement.new('>= 2.0.0')
 
   s.add_dependency 'aws-sdk', '~> 1.0'
   s.add_dependency 'erubis', '~> 2.0'
 
-  if RUBY_VERSION < '1.9'
-    s.add_development_dependency 'mime-types', '< 2.0'
-    s.add_development_dependency 'nokogiri', '< 1.6.0'
-    s.add_development_dependency 'moneta', '< 0.8'
-  end
-  if RUBY_VERSION < '1.9.3'
-    s.add_development_dependency 'mixlib-shellout', '< 1.6.1'
-  end
-  if RUBY_VERSION < '2'
-    s.add_development_dependency 'highline', '< 1.7'
-    s.add_development_dependency 'ohai', '< 8'
-    s.add_development_dependency 'amq-protocol', '< 2'
-    s.add_development_dependency 'bunny', '< 2'
-  end
   s.add_development_dependency 'chef', chef_version
   s.add_development_dependency 'rake', '~> 10.0'
   s.add_development_dependency 'minitest', '~> 5.7'

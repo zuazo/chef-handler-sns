@@ -22,9 +22,7 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
   * `aws-sdk` requires `nokogiri`, which also has the following requirements:
     * `libxml2-dev` and `libxslt-dev` installed (optional).
     * `gcc` and `make` installed (this will compile and install libxml2 and libxslt internally if not found).
-* For `Ruby 1.8`, you need to install old versions of the following dependencies:
-  * `mime-types < 2.0`.
-  * `nokogiri < 1.6`.
+* Ruby `2` or higher.
 
 ## Usage
 
