@@ -10,9 +10,9 @@ Gem::Specification.new do |s|
   s.summary = 'Chef SNS reports'
   s.description = 'Chef report handler to send Amazon SNS notifications on failures or changes, includes IAM roles support'
   s.license = 'Apache-2.0'
-  s.authors = ['Onddo Labs, SL.']
-  s.email = 'team@onddo.com'
-  s.homepage = 'http://onddo.github.io/chef-handler-sns'
+  s.authors = %(Xabier de Zuazo)
+  s.email = 'xabier@zuazo.org'
+  s.homepage = 'http://zuazo.github.io/chef-handler-sns'
   s.require_path = 'lib'
   s.files = %w(LICENSE README.md) + Dir.glob('lib/**/*')
   s.test_files = Dir.glob('{test,spec,features}/*')

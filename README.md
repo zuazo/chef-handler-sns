@@ -1,9 +1,9 @@
 # Chef Handler SNS
 [![Gem Version](http://img.shields.io/gem/v/chef-handler-sns.svg?style=flat)](http://badge.fury.io/rb/chef-handler-sns)
-[![Dependency Status](http://img.shields.io/gemnasium/onddo/chef-handler-sns.svg?style=flat)](https://gemnasium.com/onddo/chef-handler-sns)
-[![Code Climate](http://img.shields.io/codeclimate/github/onddo/chef-handler-sns.svg?style=flat)](https://codeclimate.com/github/onddo/chef-handler-sns)
-[![Build Status](http://img.shields.io/travis/onddo/chef-handler-sns.svg?style=flat)](https://travis-ci.org/onddo/chef-handler-sns)
-[![Coverage Status](http://img.shields.io/coveralls/onddo/chef-handler-sns.svg?style=flat)](https://coveralls.io/r/onddo/chef-handler-sns?branch=master)
+[![Dependency Status](http://img.shields.io/gemnasium/zuazo/chef-handler-sns.svg?style=flat)](https://gemnasium.com/zuazo/chef-handler-sns)
+[![Code Climate](http://img.shields.io/codeclimate/github/zuazo/chef-handler-sns.svg?style=flat)](https://codeclimate.com/github/zuazo/chef-handler-sns)
+[![Build Status](http://img.shields.io/travis/zuazo/chef-handler-sns.svg?style=flat)](https://travis-ci.org/zuazo/chef-handler-sns)
+[![Coverage Status](http://img.shields.io/coveralls/zuazo/chef-handler-sns.svg?style=flat)](https://coveralls.io/r/zuazo/chef-handler-sns?branch=master)
 
 A simple Chef report handler that reports status of a Chef run through [Amazon SNS](http://aws.amazon.com/sns/), [including IAM roles support](#usage-with-amazon-iam-roles).
 
@@ -167,7 +167,7 @@ chef_handler "Chef::Handler::Sns" do
 end
 ```
 
-See the [`chef_handler_sns` cookbook provider code](https://github.com/onddo/chef_handler_sns-cookbook/blob/master/providers/default.rb) for a more complete working example.
+See the [`chef_handler_sns` cookbook provider code](https://github.com/zuazo/chef_handler_sns-cookbook/blob/master/providers/default.rb) for a more complete working example.
 
 ### Usage with Amazon IAM Roles
 
@@ -361,16 +361,17 @@ Minitest tests can be run as usual:
 3. Write tests for your change.
 4. Write your change.
 5. Run the tests, ensuring they all pass (try as much as possible not to reduce coverage).
-6. Submit a [Pull Request using Github](http://github.com/onddo/chef-handler-sns/pulls).
+6. Submit a [Pull Request using Github](http://github.com/zuazo/chef-handler-sns/pulls).
 
 ## License and Author
 
 |                      |                                          |
 |:---------------------|:-----------------------------------------|
-| **Author:**          | [Xabier de Zuazo](https://github.com/zuazo) (<xabier@onddo.com>)
+| **Author:**          | [Xabier de Zuazo](https://github.com/zuazo) (<xabier@zuazo.org>)
 | **Contributor:**     | [Florian Holzhauer](https://github.com/fh)
 | **Contributor:**     | [Michael Hobbs](https://github.com/michaelshobbs)
-| **Copyright:**       | Copyright (c) 2013-2014 Onddo Labs, SL. (www.onddo.com)
+| **Copyright:**       | Copyright (c) 2015 Xabier de Zuazo
+| **Copyright:**       | Copyright (c) 2013-2014 Onddo Labs, SL.
 | **License:**         | Apache License, Version 2.0
 
     Licensed under the Apache License, Version 2.0 (the "License");
