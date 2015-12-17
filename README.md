@@ -9,11 +9,11 @@ A simple Chef report handler that reports status of a Chef run through [Amazon S
 
 [Amazon SNS](http://aws.amazon.com/sns/) can send notifications by SMS, email, [Amazon SQS](http://aws.amazon.com/sqs/) queues or to any HTTP endpoint.
 
-We recommend using the [chef_handler_sns cookbook](http://community.opscode.com/cookbooks/chef_handler_sns) for easy installation.
+We recommend using the [chef_handler_sns cookbook](https://supermarket.chef.io/cookbooks/chef_handler_sns) for easy installation.
 
 This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtimberman) examples.
 
-* http://wiki.opscode.com/display/chef/Exception+and+Report+Handlers
+* http://wiki.chef.io/display/chef/Exception+and+Report+Handlers
 
 ## Requirements
 
@@ -58,7 +58,7 @@ exception_handlers << sns_handler
 
 **Note:** This method will not catch errors before the convergence phase. Use the previous method if you want to be able to report such errors.
 
-Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler), creating a recipe with the following:
+Use the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler), creating a recipe with the following:
 
 ```ruby
 # Handler configuration options
@@ -191,7 +191,7 @@ exception_handlers << Chef::Handler::Sns.new({
 
 #### Method 2: in a Recipe with the chef_handler LWRP
 
-Use the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler), creating a recipe with the following:
+Use the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler), creating a recipe with the following:
 
 ```ruby
 # Depends on the `xml` cookbook to install nokogiri
@@ -242,7 +242,7 @@ Here is an example of the `subject` configuration option using the ruby configur
 sns_handler.subject "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
 ```
 
-Using the [chef_handler LWRP](http://community.opscode.com/cookbooks/chef_handler):
+Using the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler):
 ```ruby
 argument_array = [
   :access_key => "***AMAZON-KEY***",
@@ -333,7 +333,7 @@ See the [subject](#subject) documentation for more details on the variables acce
 
 IAM Role information and credentials are gathered from ohai by default if they exists.
 
-No aditional ohai plugin is required. This is natively supported by ohai since version `6.16.0` ([OHAI-400](https://tickets.opscode.com/browse/OHAI-400)).
+No aditional ohai plugin is required. This is natively supported by ohai since version `6.16.0` ([OHAI-400](https://tickets.chef.io/browse/OHAI-400)).
 
 These are the used ohai attributes:
 
