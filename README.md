@@ -13,7 +13,7 @@ We recommend using the [chef_handler_sns cookbook](https://supermarket.chef.io/c
 
 This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtimberman) examples.
 
-* http://wiki.chef.io/display/chef/Exception+and+Report+Handlers
+* https://docs.chef.io/handlers.html#exception-report-handlers
 
 ## Requirements
 
@@ -333,7 +333,7 @@ See the [subject](#subject) documentation for more details on the variables acce
 
 IAM Role information and credentials are gathered from ohai by default if they exists.
 
-No aditional ohai plugin is required. This is natively supported by ohai since version `6.16.0` ([OHAI-400](https://tickets.chef.io/browse/OHAI-400)).
+No aditional ohai plugin is required. This is natively supported by ohai since version `6.16.0` ([OHAI-400](https://tickets.opscode.com/browse/OHAI-400)).
 
 These are the used ohai attributes:
 
