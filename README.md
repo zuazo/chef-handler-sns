@@ -1,4 +1,7 @@
 # Chef Handler SNS
+[![GitHub](http://img.shields.io/badge/github-zuazo/chef-handler-sns-blue.svg?style=flat)](https://github.com/zuazo/chef-handler-sns)
+[![License](https://img.shields.io/github/license/zuazo/chef-handler-sns.svg?style=flat)](#license-and-author)
+
 [![Gem Version](http://img.shields.io/gem/v/chef-handler-sns.svg?style=flat)](http://badge.fury.io/rb/chef-handler-sns)
 [![Dependency Status](http://img.shields.io/gemnasium/zuazo/chef-handler-sns.svg?style=flat)](https://gemnasium.com/zuazo/chef-handler-sns)
 [![Code Climate](http://img.shields.io/codeclimate/github/zuazo/chef-handler-sns.svg?style=flat)](https://codeclimate.com/github/zuazo/chef-handler-sns)
