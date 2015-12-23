@@ -32,7 +32,6 @@ class Chef
         def config_from_ohai(node)
           config_ohai = Config::Ohai.new(node)
           [
-            :region,
             :access_key,
             :secret_key,
             :token,
@@ -103,7 +102,11 @@ class Chef
             :topic_arn,
             arg,
             :kind_of => String
-          )
+          ).tap do |arn|
+            # Get the region from the ARN:
+            next if arn.nil? || !region.nil?
+            region(arn.split(':', 5)[3])
+          end
         end
 
         def subject(arg=nil)

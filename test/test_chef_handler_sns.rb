@@ -2,7 +2,7 @@ require 'helper'
 require 'chef/node'
 require 'chef/run_status'
 
-class AWS::FakeSNS
+class Aws::FakeSNS
   attr_reader :sns_new
 
   def initialize(*_args)
@@ -10,8 +10,12 @@ class AWS::FakeSNS
     self
   end
 
-  def topics
-    { 'arn:aws:sns:***' => AWS::SNS::Topic.new('arn:aws:sns:***') }
+  def publish(*_args)
+    true
+  end
+
+  def config
+    @config ||= Seahorse::Client::Configuration.new
   end
 end
 
@@ -31,19 +35,6 @@ describe Chef::Handler::Sns do
     node = Chef::Node.new
     node.name('test')
     node
-  end
-  let(:endpoints) do
-    {
-      'regions' => {
-        'us-east-1' => {
-          'sns' => {
-            'http' => true,
-            'https' => true,
-            'hostname' => 'sns.us-east-1.amazonaws.com'
-          }
-        }
-      }
-    }
   end
   let(:run_status) do
     run_status =
@@ -66,15 +57,16 @@ describe Chef::Handler::Sns do
   end
   let(:sns_handler) { Chef::Handler::Sns.new(config) }
   let(:fake_sns) do
+    Aws::FakeSNS.new(
+      :access_key_id => config[:access_key],
+      :secret_access_key => config[:secret_key],
+      :region => config[:region],
+      :logger => Chef::Log
+    )
   end
-  let(:fake_sns_handler) do
-    fake_sns_handler = Chef::Handler::FakeSns.new(config)
-    fake_sns_handler
-  end
+  let(:fake_sns_handler) { Chef::Handler::FakeSns.new(config) }
   before do
-    AWS::SNS::Topic.any_instance.stubs(:publish).returns(true)
-    # avoid File.read("endpoints.json")
-    AWS::Core::Endpoints.stubs(:endpoints).returns(endpoints)
+    Aws::SNS::Client.stubs(:new).returns(fake_sns)
 
     Chef::Handler::Sns.any_instance.stubs(:node).returns(node)
     Chef::Handler::FakeSns.any_instance.stubs(:node).returns(node)
@@ -95,36 +87,31 @@ describe Chef::Handler::Sns do
   end
 
   it 'should try to send a SNS message when properly configured' do
-    AWS::SNS::Topic.any_instance.expects(:publish).once
+    fake_sns.expects(:publish).once
 
     sns_handler.run_report_safely(run_status)
   end
 
-  it 'should create a AWS::SNS object' do
-    fake_sns = AWS::FakeSNS.new(
-      :access_key_id => config[:access_key],
-      :secret_access_key => config[:secret_key],
-      :logger => Chef::Log
-    )
-    AWS::SNS.stubs(:new).returns(fake_sns)
+  it 'should create a Aws::SNS object' do
     sns_handler.run_report_safely(run_status)
 
     assert_equal true, fake_sns.sns_new
   end
 
-  it 'should detect the AWS region automatically' do
-    node.set['ec2']['placement_availability_zone'] = 'eu-west-1a'
-    sns_handler.run_report_safely(run_status)
+  it 'should get the AWS region from the ARN' do
+    sns_handler = Chef::Handler::Sns.new
+    sns_handler.topic_arn('arn:aws:sns:eu-west-1:1234:MyTopic')
 
-    sns_handler.get_region.must_equal 'eu-west-1'
+    assert_equal 'eu-west-1', sns_handler.region
   end
 
-  it 'should not detect AWS region automatically whan manually set' do
-    node.set['ec2']['placement_availability_zone'] = 'eu-west-1a'
+  it 'should not detect AWS region automatically when manually set' do
     config[:region] = 'us-east-1'
+    sns_handler = Chef::Handler::Sns.new(config)
+    sns_handler.topic_arn('arn:aws:sns:eu-west-1:1234:MyTopic')
     sns_handler.run_report_safely(run_status)
 
-    sns_handler.get_region.must_equal 'us-east-1'
+    assert_equal 'us-east-1', sns_handler.region
   end
 
   it 'should be able to generate the default subject in chef-client' do
@@ -169,8 +156,6 @@ describe Chef::Handler::Sns do
     ::File.stubs(:exists?).with(config[:body_template]).returns(true)
     IO.stubs(:read).with(config[:body_template]).returns(body_msg)
 
-    fake_sns = AWS::FakeSNS.new({})
-    AWS::SNS.stubs(:new).returns(fake_sns)
     fake_sns_handler.run_report_unsafe(run_status)
 
     assert_equal body_msg, fake_sns_handler.get_sns_body
@@ -179,8 +164,6 @@ describe Chef::Handler::Sns do
   it 'should be able to read body templates in UTF-8' do
     config[:body_template] = ::File.join(data_dir, 'body_utf8.txt')
 
-    fake_sns = AWS::FakeSNS.new({})
-    AWS::SNS.stubs(:new).returns(fake_sns)
     fake_sns_handler.run_report_unsafe(run_status)
     fake_sns_handler.get_sns_body
 
@@ -191,8 +174,6 @@ describe Chef::Handler::Sns do
     it 'should be able to read body templates in latin' do
       config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
 
-      fake_sns = AWS::FakeSNS.new({})
-      AWS::SNS.stubs(:new).returns(fake_sns)
       fake_sns_handler.run_report_unsafe(run_status)
 
       assert_includes fake_sns_handler.get_sns_body, 'abc'
@@ -201,8 +182,6 @@ describe Chef::Handler::Sns do
     it 'should replace body character with wrong encoding' do
       config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
 
-      fake_sns = AWS::FakeSNS.new({})
-      AWS::SNS.stubs(:new).returns(fake_sns)
       fake_sns_handler.run_report_unsafe(run_status)
 
       assert_includes fake_sns_handler.get_sns_body, '???'
@@ -210,7 +189,7 @@ describe Chef::Handler::Sns do
   end
 
   it 'should publish messages if node["opsworks"]["activity"] does not exist' do
-    AWS::SNS::Topic.any_instance.expects(:publish).once
+    fake_sns.expects(:publish).once
 
     sns_handler.run_report_safely(run_status)
   end
@@ -220,7 +199,7 @@ describe Chef::Handler::Sns do
     node.set['opsworks']['activity'] = 'deploy'
     config[:filter_opsworks_activity] = %w(deploy setup)
 
-    AWS::SNS::Topic.any_instance.expects(:publish).once
+    fake_sns.expects(:publish).once
     sns_handler.run_report_safely(run_status)
   end
 
@@ -229,7 +208,7 @@ describe Chef::Handler::Sns do
     node.set['opsworks']['activity'] = 'configure'
     config[:filter_opsworks_activity] = %w(deploy setup)
 
-    AWS::SNS::Topic.any_instance.expects(:publish).never
+    fake_sns.expects(:publish).never
     sns_handler.run_report_safely(run_status)
   end
 
@@ -237,7 +216,7 @@ describe Chef::Handler::Sns do
      'but the node attribute is missing' do
     config[:filter_opsworks_activity] = %w(deploy setup)
 
-    AWS::SNS::Topic.any_instance.expects(:publish).never
+    fake_sns.expects(:publish).never
     sns_handler.run_report_safely(run_status)
   end
 end

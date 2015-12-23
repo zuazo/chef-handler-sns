@@ -26,6 +26,7 @@ class Chef
             read_config(node)
           end
 
+          # Not used, read from the topic ARN.
           def region
             @region
           end

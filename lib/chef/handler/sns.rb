@@ -34,15 +34,12 @@ class Chef
       def report
         config_check(node)
         if allow_publish(node)
-          sns.topics[topic_arn].publish(
-            sns_body,
-            { :subject => sns_subject }
+          sns.publish(
+            topic_arn: topic_arn,
+            message: sns_body,
+            subject: sns_subject
           )
         end
-      end
-
-      def get_region
-        sns.config.region
       end
 
       protected
@@ -69,7 +66,7 @@ class Chef
           }
           params[:region] = region if region
           params[:session_token] = token if token
-          AWS::SNS.new(params)
+          Aws::SNS::Client.new(params)
         end
       end
 

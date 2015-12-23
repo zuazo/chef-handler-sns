@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir.glob('{test,spec,features}/*')
   s.required_ruby_version = Gem::Requirement.new('>= 2.0.0')
 
-  s.add_dependency 'aws-sdk', '~> 1.0'
+  s.add_dependency 'aws-sdk', '~> 2.0'
   s.add_dependency 'erubis', '~> 2.0'
 
   s.add_development_dependency 'chef', chef_version

@@ -137,7 +137,6 @@ describe Chef::Handler::Sns::Config do
     end
 
     [
-      :region,
       :access_key,
       :secret_key,
       :token
