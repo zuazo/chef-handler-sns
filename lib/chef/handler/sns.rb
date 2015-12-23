@@ -70,27 +70,38 @@ class Chef
         end
       end
 
-      def fix_encoding(o)
-        o.to_s.encode('UTF-8', 'binary', { :invalid => :replace, :undef => :replace, :replace => '?' })
+      def fix_encoding(o, encoding)
+        o.to_s.encode(
+          encoding, 'binary', invalid: :replace, undef: :replace, replace: '?'
+        )
+      end
+
+      def fix_subject_encoding(o)
+        fix_encoding(o, 'ASCII')
+      end
+
+      def fix_body_encoding(o)
+        fix_encoding(o, 'UTF-8')
+      end
+
+      def default_sns_subject
+        chef_client = Chef::Config[:solo] ? 'Chef Solo' : 'Chef Client'
+        status = run_status.success? ? 'success' : 'failure'
+        fix_subject_encoding("#{chef_client} #{status} in #{node.name}"[0..99])
       end
 
       def sns_subject
-        if subject
-          context = self
-          eruby = Erubis::Eruby.new(fix_encoding(subject))
-          eruby.evaluate(context)
-        else
-          chef_client = Chef::Config[:solo] ? 'Chef Solo' : 'Chef Client'
-          status = run_status.success? ? 'success' : 'failure'
-          "#{chef_client} #{status} in #{node.name}"
-        end
+        return default_sns_subject unless subject
+        context = self
+        eruby = Erubis::Eruby.new(fix_subject_encoding(subject))
+        fix_subject_encoding(eruby.evaluate(context))[0..99]
       end
 
       def sns_body
         template = IO.read(body_template || "#{File.dirname(__FILE__)}/sns/templates/body.erb")
         context = self
-        eruby = Erubis::Eruby.new(fix_encoding(template))
-        eruby.evaluate(context)
+        eruby = Erubis::Eruby.new(fix_body_encoding(template))
+        fix_body_encoding(eruby.evaluate(context))
       end
 
     end

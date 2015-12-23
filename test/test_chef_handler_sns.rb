@@ -165,7 +165,6 @@ describe Chef::Handler::Sns do
     config[:body_template] = ::File.join(data_dir, 'body_utf8.txt')
 
     fake_sns_handler.run_report_unsafe(run_status)
-    fake_sns_handler.get_sns_body
 
     assert_includes fake_sns_handler.get_sns_body, 'abc'
   end
@@ -178,12 +177,37 @@ describe Chef::Handler::Sns do
     assert_includes fake_sns_handler.get_sns_body, 'abc'
   end
 
-  it 'should replace body character with wrong encoding' do
+  it 'should replace body characters with wrong encoding' do
     config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
 
     fake_sns_handler.run_report_unsafe(run_status)
 
     assert_includes fake_sns_handler.get_sns_body, '???'
+  end
+
+  it 'should be able to use subject with wrong encoding' do
+    config[:subject] = ::IO.read(::File.join(data_dir, 'subject_utf8.txt'))
+
+    fake_sns_handler.run_report_unsafe(run_status)
+
+    assert_includes fake_sns_handler.get_sns_subject, 'abc'
+    assert_includes fake_sns_handler.get_sns_subject, 'xyz'
+  end
+
+  it 'should replace subject characters with wrong encoding' do
+    config[:subject] = ::IO.read(::File.join(data_dir, 'subject_utf8.txt'))
+
+    fake_sns_handler.run_report_unsafe(run_status)
+
+    assert_includes fake_sns_handler.get_sns_subject, '???'
+  end
+
+  it 'should shorten long subjects' do
+    config[:subject] = 'A' * 200
+
+    fake_sns_handler.run_report_unsafe(run_status)
+
+    assert_equal fake_sns_handler.get_sns_subject, 'A' * 100
   end
 
   it 'should publish messages if node["opsworks"]["activity"] does not exist' do
