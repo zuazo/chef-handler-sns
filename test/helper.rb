@@ -10,5 +10,6 @@ SimpleCov.start
 
 gem 'minitest' # ensures you're using the gem, and not the built in MT
 require 'minitest/autorun'
+require 'minitest/stub_const'
 require 'mocha/setup'
 require 'chef/handler/sns'

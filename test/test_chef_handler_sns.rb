@@ -185,6 +185,56 @@ describe Chef::Handler::Sns do
     assert_includes fake_sns_handler.get_sns_body, '???'
   end
 
+  it 'should not cut short bodies' do
+    body_msg = 'A' * 262144
+    config[:body_template] = '/tmp/existing-template.erb'
+    ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+    IO.stubs(:read).with(config[:body_template]).returns(body_msg)
+
+    assert_equal body_msg, fake_sns_handler.get_sns_body
+  end
+
+  it 'should cut long bodies' do
+    body_msg = 'A' * 262144
+    config[:body_template] = '/tmp/existing-template.erb'
+    ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+    IO.stubs(:read).with(config[:body_template]).returns("#{body_msg}A")
+
+    assert_equal body_msg, fake_sns_handler.get_sns_body
+  end
+
+  if RUBY_VERSION >= '2.1.0'
+    it 'should not cut short bodies with utf8' do
+      body_msg = 'A' * 262141 + "\u2014"
+      config[:body_template] = '/tmp/existing-template.erb'
+      ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+      IO.stubs(:read).with(config[:body_template]).returns(body_msg)
+
+      assert_equal body_msg, fake_sns_handler.get_sns_body
+    end
+
+    it 'should cut long bodies with utf8' do
+      body_msg = 'A' * 262142
+      config[:body_template] = '/tmp/existing-template.erb'
+      ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+      IO.stubs(:read).with(config[:body_template]).returns("#{body_msg}\u2014")
+
+      assert_equal body_msg, fake_sns_handler.get_sns_body
+    end
+
+    # Coverage to 100%: Run code for Ruby 2.0
+    it 'encodes utf8 chars as binary on Ruby < 2.1' do
+      Object.stub_const(:RUBY_VERSION, '2.0.0') do
+        body_msg = 'A' * 4
+        config[:body_template] = '/tmp/existing-template.erb'
+        ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+        IO.stubs(:read).with(config[:body_template]).returns(body_msg)
+
+        assert_equal body_msg, fake_sns_handler.get_sns_body
+      end
+    end
+  end
+
   it 'should be able to use subject with wrong encoding' do
     config[:subject] = ::IO.read(::File.join(data_dir, 'subject_utf8.txt'))
 

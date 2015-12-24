@@ -71,9 +71,11 @@ class Chef
       end
 
       def fix_encoding(o, encoding)
-        o.to_s.encode(
-          encoding, 'binary', invalid: :replace, undef: :replace, replace: '?'
-        )
+        encode_opts = { invalid: :replace, undef: :replace, replace: '?' }
+
+        return o.to_s.encode(encoding, encode_opts) if RUBY_VERSION >= '2.1.0'
+        # Fix ArgumentError: invalid byte sequence in UTF-8 (issue #7)
+        o.to_s.encode(encoding, 'binary', encode_opts)
       end
 
       def fix_subject_encoding(o)
@@ -90,6 +92,22 @@ class Chef
         fix_subject_encoding("#{chef_client} #{status} in #{node.name}"[0..99])
       end
 
+      # Based on http://stackoverflow.com/questions/12536080/
+      # ruby-limiting-a-utf-8-string-by-byte-length
+      def limit_utf8_size(str, size)
+        # Start with a string of the correct byte size, but with a possibly
+        # incomplete char at the end.
+        new_str = str.byteslice(0, size)
+
+        # We need to force_encoding from utf-8 to utf-8 so ruby will
+        # re-validate (idea from halfelf).
+        until new_str[-1].force_encoding('utf-8').valid_encoding?
+          # Remove the invalid char
+          new_str = new_str.slice(0..-2)
+        end
+        new_str
+      end
+
       def sns_subject
         return default_sns_subject unless subject
         context = self
@@ -101,7 +119,8 @@ class Chef
         template = IO.read(body_template || "#{File.dirname(__FILE__)}/sns/templates/body.erb")
         context = self
         eruby = Erubis::Eruby.new(fix_body_encoding(template))
-        fix_body_encoding(eruby.evaluate(context))
+        body = fix_body_encoding(eruby.evaluate(context))
+        limit_utf8_size(body, 262144)
       end
 
     end
