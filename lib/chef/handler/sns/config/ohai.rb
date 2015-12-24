@@ -41,14 +41,15 @@ class Chef
 
           def read_region_config(ec2)
             return unless ec2.attribute?('placement_availability_zone') &&
-                          ec2.placement_availability_zone.is_a?(String)
-            @region = ec2.placement_availability_zone.chop
+                          ec2['placement_availability_zone'].is_a?(String)
+            @region = ec2['placement_availability_zone'].chop
           end
 
           def read_iam_config(ec2)
             return unless ec2.attribute?('iam') &&
-                          ec2.iam.attribute?('security-credentials')
-            _iam_role, credentials = ec2.iam['security-credentials'].first
+                          ec2['iam'].attribute?('security-credentials')
+            _iam_role, credentials =
+              ec2['iam']['security-credentials'].to_hash.first
             return if credentials.nil?
             @access_key = credentials['AccessKeyId']
             @secret_key = credentials['SecretAccessKey']
@@ -57,8 +58,8 @@ class Chef
 
           def read_config(node)
             return unless node.attribute?('ec2')
-            read_region_config(node.ec2)
-            read_iam_config(node.ec2)
+            read_region_config(node['ec2'])
+            read_iam_config(node['ec2'])
           end
         end
       end

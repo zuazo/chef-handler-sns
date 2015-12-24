@@ -21,21 +21,21 @@ require 'helper'
 
 describe Chef::Handler::Sns::Config::Ohai do
   let(:node) do
-    node = Chef::Node.new
-    node.name('test')
-    node.set['ec2'] = {
-      'placement_availability_zone' => 'region1a',
-      'iam' => {
-        'security-credentials' => {
-          'iam-role1' => {
-            'AccessKeyId' => 'access_key1',
-            'SecretAccessKey' => 'secret_key1',
-            'Token' => 'token1'
+    Chef::Node.new.tap do |node|
+      node.name('test')
+      node.set['ec2'] = {
+        'placement_availability_zone' => 'region1a',
+        'iam' => {
+          'security-credentials' => {
+            'iam-role1' => {
+              'AccessKeyId' => 'access_key1',
+              'SecretAccessKey' => 'secret_key1',
+              'Token' => 'token1'
+            }
           }
         }
       }
-    }
-    node
+    end
   end
   let(:config) { Chef::Handler::Sns::Config::Ohai.new(node) }
   let(:node_set_iam_roles) { node.set['ec2']['iam']['security-credentials'] }
