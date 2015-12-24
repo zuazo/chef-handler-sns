@@ -257,7 +257,7 @@ describe Chef::Handler::Sns do
 
     fake_sns_handler.run_report_unsafe(run_status)
 
-    assert_equal fake_sns_handler.get_sns_subject, 'A' * 100
+    assert_equal 'A' * 100, fake_sns_handler.get_sns_subject
   end
 
   it 'should publish messages if node["opsworks"]["activity"] does not exist' do
