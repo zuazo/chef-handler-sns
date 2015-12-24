@@ -1,5 +1,6 @@
 #
 # Author:: Xabier de Zuazo (<xabier@zuazo.org>)
+# Copyright:: Copyright (c) 2015 Xabier de Zuazo
 # Copyright:: Copyright (c) 2014 Onddo Labs, SL.
 # License:: Apache License, Version 2.0
 #
@@ -23,46 +24,52 @@ require 'erubis'
 
 class Chef
   class Handler
+    # Chef Handler SNS main class.
+    #
+    # A simple Chef report handler that reports status of a Chef run through
+    # [Amazon SNS](http://aws.amazon.com/sns/),
+    # [including IAM roles support](#usage-with-amazon-iam-roles).
     class Sns < ::Chef::Handler
       include ::Chef::Handler::Sns::Config
 
-      def initialize(config={})
-        Chef::Log.debug("#{self.class.to_s} initialized.")
+      def initialize(config = {})
+        Chef::Log.debug("#{self.class} initialized.")
         config_init(config)
       end
 
       def report
         config_check(node)
-        if allow_publish(node)
-          sns.publish(
-            topic_arn: topic_arn,
-            message: sns_body,
-            subject: sns_subject
-          )
-        end
+        return unless allow_publish(node)
+        sns.publish(
+          topic_arn: topic_arn,
+          message: sns_body,
+          subject: sns_subject
+        )
       end
 
       protected
 
       def allow_publish(node)
-        if filter_opsworks_activity.nil?
-          return true
-        end
+        return true if filter_opsworks_activity.nil?
 
-        if node.attribute?('opsworks') && node['opsworks'].attribute?('activity')
+        if node.attribute?('opsworks') &&
+           node['opsworks'].attribute?('activity')
           return filter_opsworks_activity.include?(node['opsworks']['activity'])
         end
 
-        Chef::Log.debug('You supplied opsworks activity filters, but node attr was not found. Returning false')
-        return false
+        Chef::Log.debug(
+          'You supplied opsworks activity filters, but node attr was not '\
+          'found. Returning false'
+        )
+        false
       end
 
       def sns
         @sns ||= begin
           params = {
-            :access_key_id => access_key,
-            :secret_access_key => secret_key,
-            :logger => Chef::Log
+            access_key_id: access_key,
+            secret_access_key: secret_key,
+            logger: Chef::Log
           }
           params[:region] = region if region
           params[:session_token] = token if token
@@ -116,13 +123,13 @@ class Chef
       end
 
       def sns_body
-        template = IO.read(body_template || "#{File.dirname(__FILE__)}/sns/templates/body.erb")
+        template = IO.read(body_template ||
+          "#{File.dirname(__FILE__)}/sns/templates/body.erb")
         context = self
         eruby = Erubis::Eruby.new(fix_body_encoding(template))
         body = fix_body_encoding(eruby.evaluate(context))
-        limit_utf8_size(body, 262144)
+        limit_utf8_size(body, 262_144)
       end
-
     end
   end
 end

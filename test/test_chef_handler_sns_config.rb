@@ -1,3 +1,22 @@
+#
+# Author:: Xabier de Zuazo (<xabier@zuazo.org>)
+# Copyright:: Copyright (c) 2015 Xabier de Zuazo
+# Copyright:: Copyright (c) 2014 Onddo Labs, SL.
+# License:: Apache License, Version 2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 require 'helper'
 require 'chef/exceptions'
 
@@ -5,10 +24,8 @@ class SnsConfig
   include Chef::Handler::Sns::Config
 end
 
-module Chef::Handler::Sns::Config
-  class FakeOhai < Chef::Handler::Sns::Config::Ohai
-    def intialize
-    end
+class ChefFakeOhai < Chef::Handler::Sns::Config::Ohai
+  def intialize
   end
 end
 
@@ -21,10 +38,10 @@ describe Chef::Handler::Sns::Config do
   let(:sns_config) { SnsConfig.new }
   let(:config_params) do
     {
-      :access_key => '***AMAZON-KEY***',
-      :secret_key => '***AMAZON-SECRET***',
-      :token => '***AMAZON-TOKEN***',
-      :topic_arn => 'arn:aws:sns:***'
+      access_key: '***AMAZON-KEY***',
+      secret_key: '***AMAZON-SECRET***',
+      token: '***AMAZON-TOKEN***',
+      topic_arn: 'arn:aws:sns:***'
     }
   end
 
@@ -81,7 +98,7 @@ describe Chef::Handler::Sns::Config do
 
   it 'throws an exception when the body template file does not exist' do
     sns_config.body_template('/tmp/nonexistent-template.erb')
-    ::File.stubs(:exists?).with(sns_config.body_template).returns(false)
+    ::File.stubs(:exist?).with(sns_config.body_template).returns(false)
 
     assert_raises(Chef::Exceptions::ValidationFailed) do
       sns_config.config_check
@@ -126,7 +143,7 @@ describe Chef::Handler::Sns::Config do
 
   describe 'config_from_ohai' do
     before do
-      @fake_ohai = Chef::Handler::Sns::Config::FakeOhai.new(node)
+      @fake_ohai = ChefFakeOhai.new(node)
       Chef::Handler::Sns::Config::Ohai.stubs(:new).returns(@fake_ohai)
     end
 

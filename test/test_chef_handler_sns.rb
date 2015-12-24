@@ -1,31 +1,42 @@
+#
+# Author:: Xabier de Zuazo (<xabier@zuazo.org>)
+# Copyright:: Copyright (c) 2015 Xabier de Zuazo
+# Copyright:: Copyright (c) 2014 Onddo Labs, SL.
+# License:: Apache License, Version 2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 require 'helper'
 require 'chef/node'
 require 'chef/run_status'
 
-class Aws::FakeSNS
-  attr_reader :sns_new
+module Aws
+  class FakeSNS
+    attr_reader :sns_new
 
-  def initialize(*_args)
-    @sns_new = true
-    self
-  end
+    def initialize(*_args)
+      @sns_new = true
+      self
+    end
 
-  def publish(*_args)
-    true
-  end
+    def publish(*_args)
+      true
+    end
 
-  def config
-    @config ||= Seahorse::Client::Configuration.new
-  end
-end
-
-class Chef::Handler::FakeSns < Chef::Handler::Sns
-  def get_sns_subject
-    sns_subject
-  end
-
-  def get_sns_body
-    sns_body
+    def config
+      @config ||= Seahorse::Client::Configuration.new
+    end
   end
 end
 
@@ -50,26 +61,24 @@ describe Chef::Handler::Sns do
   end
   let(:config) do
     {
-      :access_key => '***AMAZON-KEY***',
-      :secret_key => '***AMAZON-SECRET***',
-      :topic_arn => 'arn:aws:sns:***'
+      access_key: '***AMAZON-KEY***',
+      secret_key: '***AMAZON-SECRET***',
+      topic_arn: 'arn:aws:sns:***'
     }
   end
   let(:sns_handler) { Chef::Handler::Sns.new(config) }
   let(:fake_sns) do
     Aws::FakeSNS.new(
-      :access_key_id => config[:access_key],
-      :secret_access_key => config[:secret_key],
-      :region => config[:region],
-      :logger => Chef::Log
+      access_key_id: config[:access_key],
+      secret_access_key: config[:secret_key],
+      region: config[:region],
+      logger: Chef::Log
     )
   end
-  let(:fake_sns_handler) { Chef::Handler::FakeSns.new(config) }
   before do
     Aws::SNS::Client.stubs(:new).returns(fake_sns)
 
     Chef::Handler::Sns.any_instance.stubs(:node).returns(node)
-    Chef::Handler::FakeSns.any_instance.stubs(:node).returns(node)
   end
 
   it 'should read the configuration options on initialization' do
@@ -116,29 +125,29 @@ describe Chef::Handler::Sns do
 
   it 'should be able to generate the default subject in chef-client' do
     Chef::Config[:solo] = false
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_equal 'Chef Client success in test', fake_sns_handler.get_sns_subject
+    assert_equal 'Chef Client success in test', sns_handler.send(:sns_subject)
   end
 
   it 'should be able to generate the default subject in chef-solo' do
     Chef::Config[:solo] = true
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_equal 'Chef Solo success in test', fake_sns_handler.get_sns_subject
+    assert_equal 'Chef Solo success in test', sns_handler.send(:sns_subject)
   end
 
   it 'should use the configured subject when set' do
     config[:subject] = 'My Subject'
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_equal 'My Subject', fake_sns_handler.get_sns_subject
+    assert_equal 'My Subject', sns_handler.send(:sns_subject)
   end
 
   it 'should be able to generate the default message body' do
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    fake_sns_handler.get_sns_body.must_match Regexp.new('Node Name: test')
+    sns_handler.send(:sns_body).must_match Regexp.new('Node Name: test')
   end
 
   it 'should throw an exception when the body template file does not exist' do
@@ -153,73 +162,73 @@ describe Chef::Handler::Sns do
      'option' do
     body_msg = 'My Template'
     config[:body_template] = '/tmp/existing-template.erb'
-    ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+    ::File.stubs(:exist?).with(config[:body_template]).returns(true)
     IO.stubs(:read).with(config[:body_template]).returns(body_msg)
 
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_equal body_msg, fake_sns_handler.get_sns_body
+    assert_equal body_msg, sns_handler.send(:sns_body)
   end
 
   it 'should be able to read body templates in UTF-8' do
     config[:body_template] = ::File.join(data_dir, 'body_utf8.txt')
 
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_includes fake_sns_handler.get_sns_body, 'abc'
+    assert_includes sns_handler.send(:sns_body), 'abc'
   end
 
   it 'should be able to read body templates in latin' do
     config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
 
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_includes fake_sns_handler.get_sns_body, 'abc'
+    assert_includes sns_handler.send(:sns_body), 'abc'
   end
 
   it 'should replace body characters with wrong encoding' do
     config[:body_template] = ::File.join(data_dir, 'body_latin.txt')
 
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_includes fake_sns_handler.get_sns_body, '???'
+    assert_includes sns_handler.send(:sns_body), '???'
   end
 
   it 'should not cut short bodies' do
-    body_msg = 'A' * 262144
+    body_msg = 'A' * 262_144
     config[:body_template] = '/tmp/existing-template.erb'
-    ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+    ::File.stubs(:exist?).with(config[:body_template]).returns(true)
     IO.stubs(:read).with(config[:body_template]).returns(body_msg)
 
-    assert_equal body_msg, fake_sns_handler.get_sns_body
+    assert_equal body_msg, sns_handler.send(:sns_body)
   end
 
   it 'should cut long bodies' do
-    body_msg = 'A' * 262144
+    body_msg = 'A' * 262_144
     config[:body_template] = '/tmp/existing-template.erb'
-    ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+    ::File.stubs(:exist?).with(config[:body_template]).returns(true)
     IO.stubs(:read).with(config[:body_template]).returns("#{body_msg}A")
 
-    assert_equal body_msg, fake_sns_handler.get_sns_body
+    assert_equal body_msg, sns_handler.send(:sns_body)
   end
 
   if RUBY_VERSION >= '2.1.0'
     it 'should not cut short bodies with utf8' do
-      body_msg = 'A' * 262141 + "\u2014"
+      body_msg = 'A' * 262_141 + "\u2014"
       config[:body_template] = '/tmp/existing-template.erb'
-      ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+      ::File.stubs(:exist?).with(config[:body_template]).returns(true)
       IO.stubs(:read).with(config[:body_template]).returns(body_msg)
 
-      assert_equal body_msg, fake_sns_handler.get_sns_body
+      assert_equal body_msg, sns_handler.send(:sns_body)
     end
 
     it 'should cut long bodies with utf8' do
-      body_msg = 'A' * 262142
+      body_msg = 'A' * 262_142
       config[:body_template] = '/tmp/existing-template.erb'
-      ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+      ::File.stubs(:exist?).with(config[:body_template]).returns(true)
       IO.stubs(:read).with(config[:body_template]).returns("#{body_msg}\u2014")
 
-      assert_equal body_msg, fake_sns_handler.get_sns_body
+      assert_equal body_msg, sns_handler.send(:sns_body)
     end
 
     # Coverage to 100%: Run code for Ruby 2.0
@@ -227,10 +236,10 @@ describe Chef::Handler::Sns do
       Object.stub_const(:RUBY_VERSION, '2.0.0') do
         body_msg = 'A' * 4
         config[:body_template] = '/tmp/existing-template.erb'
-        ::File.stubs(:exists?).with(config[:body_template]).returns(true)
+        ::File.stubs(:exist?).with(config[:body_template]).returns(true)
         IO.stubs(:read).with(config[:body_template]).returns(body_msg)
 
-        assert_equal body_msg, fake_sns_handler.get_sns_body
+        assert_equal body_msg, sns_handler.send(:sns_body)
       end
     end
   end
@@ -238,26 +247,26 @@ describe Chef::Handler::Sns do
   it 'should be able to use subject with wrong encoding' do
     config[:subject] = ::IO.read(::File.join(data_dir, 'subject_utf8.txt'))
 
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_includes fake_sns_handler.get_sns_subject, 'abc'
-    assert_includes fake_sns_handler.get_sns_subject, 'xyz'
+    assert_includes sns_handler.send(:sns_subject), 'abc'
+    assert_includes sns_handler.send(:sns_subject), 'xyz'
   end
 
   it 'should replace subject characters with wrong encoding' do
     config[:subject] = ::IO.read(::File.join(data_dir, 'subject_utf8.txt'))
 
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_includes fake_sns_handler.get_sns_subject, '???'
+    assert_includes sns_handler.send(:sns_subject), '???'
   end
 
   it 'should shorten long subjects' do
     config[:subject] = 'A' * 200
 
-    fake_sns_handler.run_report_unsafe(run_status)
+    sns_handler.run_report_unsafe(run_status)
 
-    assert_equal 'A' * 100, fake_sns_handler.get_sns_subject
+    assert_equal 'A' * 100, sns_handler.send(:sns_subject)
   end
 
   it 'should publish messages if node["opsworks"]["activity"] does not exist' do

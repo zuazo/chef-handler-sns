@@ -1,5 +1,6 @@
 #
 # Author:: Xabier de Zuazo (<xabier@zuazo.org>)
+# Copyright:: Copyright (c) 2015 Xabier de Zuazo
 # Copyright:: Copyright (c) 2014 Onddo Labs, SL.
 # License:: Apache License, Version 2.0
 #
@@ -20,47 +21,45 @@ class Chef
   class Handler
     class Sns < ::Chef::Handler
       module Config
+        # Gets Chef Handler SNS default configuration from
+        # [Ohai](https://docs.chef.io/ohai.html) information.
         class Ohai
+          # Not used, read from the topic ARN.
+          attr_reader :region
+
+          attr_reader :access_key
+
+          attr_reader :secret_key
+
+          attr_reader :token
 
           def initialize(node)
             read_config(node)
           end
 
-          # Not used, read from the topic ARN.
-          def region
-            @region
-          end
-
-          def access_key
-            @access_key
-          end
-
-          def secret_key
-            @secret_key
-          end
-
-          def token
-            @token
-          end
-
           protected
+
+          def read_region_config(ec2)
+            return unless ec2.attribute?('placement_availability_zone') &&
+                          ec2.placement_availability_zone.is_a?(String)
+            @region = ec2.placement_availability_zone.chop
+          end
+
+          def read_iam_config(ec2)
+            return unless ec2.attribute?('iam') &&
+                          ec2.iam.attribute?('security-credentials')
+            _iam_role, credentials = ec2.iam['security-credentials'].first
+            return if credentials.nil?
+            @access_key = credentials['AccessKeyId']
+            @secret_key = credentials['SecretAccessKey']
+            @token = credentials['Token']
+          end
 
           def read_config(node)
             return unless node.attribute?('ec2')
-            if node.ec2.attribute?('placement_availability_zone') and
-              node.ec2.placement_availability_zone.kind_of?(String)
-              @region = node.ec2.placement_availability_zone.chop
-            end
-            if node.ec2.attribute?('iam') and node.ec2.iam.attribute?('security-credentials')
-              iam_role, credentials = node.ec2.iam['security-credentials'].first
-              unless credentials.nil?
-                @access_key = credentials['AccessKeyId']
-                @secret_key = credentials['SecretAccessKey']
-                @token = credentials['Token']
-              end
-            end
+            read_region_config(node.ec2)
+            read_iam_config(node.ec2)
           end
-
         end
       end
     end

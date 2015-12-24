@@ -25,7 +25,7 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
   * `aws-sdk` requires `nokogiri`, which also has the following requirements:
     * `libxml2-dev` and `libxslt-dev` installed (optional).
     * `gcc` and `make` installed (this will compile and install libxml2 and libxslt internally if not found).
-* Ruby `2` or higher.
+* Ruby `2` or higher (recommended `2.1` or higher).
 
 ## Usage
 
@@ -40,18 +40,18 @@ You can install the RubyGem and configure Chef to use it:
 Then add to the configuration (`/etc/chef/solo.rb` for chef-solo or `/etc/chef/client.rb` for chef-client):
 
 ```ruby
-require "chef/handler/sns"
+require 'chef/handler/sns'
 
 # Create the handler
 sns_handler = Chef::Handler::Sns.new
 
 # Your Amazon AWS credentials
-sns_handler.access_key "***AMAZON-KEY***"
-sns_handler.secret_key "***AMAZON-SECRET***"
+sns_handler.access_key '***AMAZON-KEY***'
+sns_handler.secret_key '***AMAZON-SECRET***'
 
 # Some Amazon SNS configurations
-sns_handler.topic_arn "arn:aws:sns:***"
-sns_handler.region "us-east-1" # optional
+sns_handler.topic_arn 'arn:aws:sns:***'
+sns_handler.region 'us-east-1' # optional
 
 # Add your handler
 exception_handlers << sns_handler
@@ -66,22 +66,25 @@ Use the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler),
 ```ruby
 # Handler configuration options
 argument_array = [
-  :access_key => "***AMAZON-KEY***",
-  :secret_key => "***AMAZON-SECRET***",
-  :topic_arn => "arn:aws:sns:***",
+  access_key: '***AMAZON-KEY***',
+  secret_key: '***AMAZON-SECRET***',
+  topic_arn: 'arn:aws:sns:***'
 ]
 
 # Depends on the `xml` cookbook to install nokogiri
-include_recipe "xml::ruby"
+include_recipe 'xml::ruby'
 
 # Install the `chef-handler-sns` RubyGem during the compile phase
-chef_gem "chef-handler-sns"
+chef_gem 'chef-handler-sns'
 
 # Then activate the handler with the `chef_handler` LWRP
-chef_handler "Chef::Handler::Sns" do
-  source "#{Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob}/chef/handler/sns"
+chef_handler 'Chef::Handler::Sns' do
+  source(::File.join(
+           Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob,
+           'chef/handler/sns'
+  ))
   arguments argument_array
-  supports :exception => true
+  supports exception: true
   action :enable
 end
 ```
@@ -93,33 +96,36 @@ If you have an old version of gem package (< 1.8.6) without `find_by_name` or ol
 ```ruby
 # Handler configuration options
 argument_array = [
-  :access_key => "***AMAZON-KEY***",
-  :secret_key => "***AMAZON-SECRET***",
-  :topic_arn => "arn:aws:sns:***",
+  access_key: '***AMAZON-KEY***',
+  secret_key: '***AMAZON-SECRET***',
+  topic_arn: 'arn:aws:sns:***'
 ]
 
 # Depends on the `xml` cookbook to install nokogiri
-include_recipe "xml::ruby"
+include_recipe 'xml::ruby'
 
 # Install the `chef-handler-sns` RubyGem during the compile phase
 if defined?(Chef::Resource::ChefGem)
-  chef_gem "chef-handler-sns"
+  chef_gem 'chef-handler-sns'
 else
-  gem_package("chef-handler-sns") do
+  gem_package('chef-handler-sns') do
     action :nothing
   end.run_action(:install)
 end
 
 # Get the installed `chef-handler-sns` gem path
-sns_handler_path = Gem::Specification.respond_to?("find_by_name") ?
-  Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob :
-  Gem.all_load_paths.grep(/chef-handler-sns/).first
+sns_handler_path =
+  if Gem::Specification.respond_to?('find_by_name')
+    Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob
+  else
+    Gem.all_load_paths.grep(/chef-handler-sns/).first
+  end
 
 # Then activate the handler with the `chef_handler` LWRP
-chef_handler "Chef::Handler::Sns" do
+chef_handler 'Chef::Handler::Sns' do
   source "#{sns_handler_path}/chef/handler/sns"
   arguments argument_array
-  supports :exception => true
+  supports exception: true
   action :enable
 end
 ```
@@ -137,35 +143,38 @@ To fix this error, you should get the handler installation path using a code sim
 ```ruby
 # Handler configuration options
 argument_array = [
-  :access_key => "***AMAZON-KEY***",
-  :secret_key => "***AMAZON-SECRET***",
-  :topic_arn => "arn:aws:sns:***",
+  access_key: '***AMAZON-KEY***',
+  secret_key: '***AMAZON-SECRET***',
+  topic_arn: 'arn:aws:sns:***'
 ]
 
 # Depends on the `xml` cookbook to install nokogiri
-include_recipe "xml::ruby"
+include_recipe 'xml::ruby'
 
 # Install the `chef-handler-sns` RubyGem during the compile phase
-chef_gem "chef-handler-sns"
+chef_gem 'chef-handler-sns'
 
 # Get the installed `chef-handler-sns` gem path from Bundler
 sns_handler_path = nil
-bundle_path = ::File.join(Bundler.bundle_path.to_s, "specifications")
-Dir[::File.join(bundle_path, "*.gemspec")].each do |path|
+bundle_path = ::File.join(Bundler.bundle_path.to_s, 'specifications')
+Dir[::File.join(bundle_path, '*.gemspec')].each do |path|
   spec = Gem::Specification.load(path.untaint)
-  if spec.name == "chef-handler-sns"
-    sns_handler_path = spec.lib_dirs_glob
-  end
+  sns_handler_path = spec.lib_dirs_glob if spec.name == 'chef-handler-sns'
 end
 if sns_handler_path.nil?
-  Chef::Application.fatal!("chef-handler-sns not found inside Bundler path: #{bundle_path}")
+  Chef::Application.fatal!(
+    "chef-handler-sns not found inside Bundler path: #{bundle_path}"
+  )
 end
 
 # Then activate the handler with the `chef_handler` LWRP
-chef_handler "Chef::Handler::Sns" do
-  source "#{Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob}/chef/handler/sns"
+chef_handler 'Chef::Handler::Sns' do
+  source(::File.join(
+           Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob,
+           'chef/handler/sns'
+  ))
   arguments argument_array
-  supports :exception => true
+  supports exception: true
   action :enable
 end
 ```
@@ -185,11 +194,11 @@ You can install the RubyGem and configure Chef to use it:
 Then add to the configuration (`/etc/chef/solo.rb` for chef-solo or `/etc/chef/client.rb` for chef-client):
 
 ```ruby
-require "chef/handler/sns"
+require 'chef/handler/sns'
 
-exception_handlers << Chef::Handler::Sns.new({
-  :topic_arn => "arn:aws:sns:us-east-1:12341234:MyTopicName"
-})
+exception_handlers << Chef::Handler::Sns.new(
+  topic_arn: 'arn:aws:sns:us-east-1:12341234:MyTopicName'
+)
 ```
 
 #### Method 2: in a Recipe with the chef_handler LWRP
@@ -198,16 +207,19 @@ Use the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler),
 
 ```ruby
 # Depends on the `xml` cookbook to install nokogiri
-include_recipe "xml::ruby"
+include_recipe 'xml::ruby'
 
 # Install the `chef-handler-sns` RubyGem during the compile phase
-chef_gem "chef-handler-sns"
+chef_gem 'chef-handler-sns'
 
 # Then activate the handler with the `chef_handler` LWRP
-chef_handler "Chef::Handler::Sns" do
-  source "#{Gem::Specification.find_by_name("chef-handler-sns").lib_dirs_glob}/chef/handler/sns"
-  arguments { :topic_arn => "arn:aws:sns:us-east-1:12341234:MyTopicName" }
-  supports :exception => true
+chef_handler 'Chef::Handler::Sns' do
+  source(::File.join(
+           Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob,
+           'chef/handler/sns'
+  ))
+  arguments(topic_arn: 'arn:aws:sns:us-east-1:12341234:MyTopicName')
+  supports exception: true
   action :enable
 end
 ```
@@ -218,7 +230,7 @@ only be triggered for the activities in the array, everything else will be disca
 
 ```ruby
 argument_array = [
-  :filter_opsworks_activities => ["deploy","configure"]
+  filter_opsworks_activities: %w(deploy configure)
 ]
 ```
 
@@ -242,19 +254,22 @@ The following options are available to configure the handler:
 Here is an example of the `subject` configuration option using the ruby configuration file (`solo.rb` or `client.rb`):
 
 ```ruby
-sns_handler.subject "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
+sns_handler.subject(
+  "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
+)
 ```
 
 Using the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler):
 ```ruby
 argument_array = [
-  :access_key => "***AMAZON-KEY***",
-  :secret_key => "***AMAZON-SECRET***",
-  :topic_arn => "arn:aws:sns:***",
-  :subject => "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>",
+  access_key: '***AMAZON-KEY***',
+  secret_key: '***AMAZON-SECRET***',
+  topic_arn: 'arn:aws:sns:***',
+  subject:
+    "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
   # [...]
 ]
-chef_handler "Chef::Handler::Sns" do
+chef_handler 'Chef::Handler::Sns' do
   # [...]
   arguments argument_array
 end
@@ -279,38 +294,38 @@ The following variables are accessible inside the template:
 This configuration option needs to contain the full path of an erubis template. For example:
 
 ```ruby
-# recipe "myapp::sns_handler"
+# recipe 'myapp::sns_handler'
 
-cookbook_file "chef_handler_sns_body.erb" do
-  path "/tmp/chef_handler_sns_body.erb"
+cookbook_file 'chef_handler_sns_body.erb' do
+  path '/tmp/chef_handler_sns_body.erb'
   # [...]
 end
 
 argument_array = [
-  :access_key => "***AMAZON-KEY***",
-  :secret_key => "***AMAZON-SECRET***",
-  :topic_arn => "arn:aws:sns:***",
-  :body_template => "/tmp/chef_handler_sns_body.erb",
+  access_key: '***AMAZON-KEY***',
+  secret_key: '***AMAZON-SECRET***',
+  topic_arn: 'arn:aws:sns:***',
+  body_template: '/tmp/chef_handler_sns_body.erb'
   # [...]
 ]
-chef_handler "Chef::Handler::Sns" do
+chef_handler 'Chef::Handler::Sns' do
   # [...]
   arguments argument_array
 end
 ```
 
 ```erb
-<%# file "myapp/files/default/chef_handler_sns_body.erb" %>
+<%# file 'myapp/files/default/chef_handler_sns_body.erb' %>
 
 Node Name: <%= node.name %>
-<% if node.attribute?("fqdn") -%>
+<% if node.attribute?('fqdn') -%>
 Hostname: <%= node.fqdn %>
 <% end -%>
 
 Chef Run List: <%= node.run_list.to_s %>
 Chef Environment: <%= node.chef_environment %>
 
-<% if node.attribute?("ec2") -%>
+<% if node.attribute?('ec2') -%>
 Instance Id: <%= node.ec2.instance_id %>
 Instance Public Hostname: <%= node.ec2.public_hostname %>
 Instance Hostname: <%= node.ec2.hostname %>

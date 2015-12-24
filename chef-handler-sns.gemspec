@@ -1,6 +1,7 @@
-$:.push File.expand_path("../lib", __FILE__)
-require "chef/handler/sns/version"
-chef_version = ENV.key?('CHEF_VERSION') ? "#{ENV['CHEF_VERSION']}" : ['>= 0.9.0']
+$LOAD_PATH.push File.expand_path('../lib', __FILE__)
+require 'chef/handler/sns/version'
+chef_version =
+  ENV.key?('CHEF_VERSION') ? "#{ENV['CHEF_VERSION']}" : ['>= 0.9.0']
 
 Gem::Specification.new do |s|
   s.name = 'chef-handler-sns'
@@ -8,7 +9,9 @@ Gem::Specification.new do |s|
   s.date = '2014-07-04'
   s.platform = Gem::Platform::RUBY
   s.summary = 'Chef SNS reports'
-  s.description = 'Chef report handler to send Amazon SNS notifications on failures or changes, includes IAM roles support'
+  s.description =
+    'Chef report handler to send Amazon SNS notifications on failures or '\
+    'changes, includes IAM roles support.'
   s.license = 'Apache-2.0'
   s.authors = %(Xabier de Zuazo)
   s.email = 'xabier@zuazo.org'
@@ -28,4 +31,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mocha', '~> 1.1'
   s.add_development_dependency 'coveralls', '~> 0.7'
   s.add_development_dependency 'simplecov', '~> 0.9'
+  s.add_development_dependency 'rubocop', '~> 0.35.0'
 end

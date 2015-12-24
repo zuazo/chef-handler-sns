@@ -1,5 +1,6 @@
 #
 # Author:: Xabier de Zuazo (<xabier@zuazo.org>)
+# Copyright:: Copyright (c) 2015 Xabier de Zuazo
 # Copyright:: Copyright (c) 2014 Onddo Labs, SL.
 # License:: Apache License, Version 2.0
 #
@@ -23,85 +24,89 @@ require 'chef/exceptions'
 class Chef
   class Handler
     class Sns < ::Chef::Handler
+      # Reads Chef Handler SNS configuration options or calculate them if not
+      # set.
       module Config
-        Config.extend Config # let Config use the methods it contains as instance methods
+        # Let Config use the methods it contains as instance methods:
+        Config.extend Config
+
         include ::Chef::Mixin::ParamsValidate
 
-        REQUIRED = [ 'access_key', 'secret_key', 'topic_arn' ]
+        REQUIRED = %w(access_key secret_key topic_arn)
 
         def config_from_ohai(node)
           config_ohai = Config::Ohai.new(node)
           [
             :access_key,
             :secret_key,
-            :token,
+            :token
           ].each do |attr|
-            self.send(attr, config_ohai.send(attr)) if self.send(attr).nil?
+            send(attr, config_ohai.send(attr)) if send(attr).nil?
           end
         end
 
-        def config_init(config={})
+        def config_init(config = {})
           config.each do |key, value|
-            if Config.respond_to?(key) and not /^config_/ =~ key.to_s
-              self.send(key, value)
+            if Config.respond_to?(key) && !key.to_s.match(/^config_/)
+              send(key, value)
             else
-              Chef::Log.warn("#{self.class.to_s}: configuration method not found: #{key}.")
+              Chef::Log.warn(
+                "#{self.class}: configuration method not found: #{key}."
+              )
             end
           end
         end
 
-        def config_check(node=nil)
+        def config_check(node = nil)
           config_from_ohai(node) if node
           REQUIRED.each do |key|
-            if self.send(key).nil?
-              raise Exceptions::ValidationFailed,
-                "Required argument #{key.to_s} is missing!"
-            end
+            next unless send(key).nil?
+            fail Exceptions::ValidationFailed,
+                 "Required argument #{key} is missing!"
           end
 
-          if body_template and not ::File.exists?(body_template)
-            raise Exceptions::ValidationFailed,
-              "Template file not found: #{body_template}."
-          end
+          return unless body_template && !::File.exist?(body_template)
+          fail Exceptions::ValidationFailed,
+               "Template file not found: #{body_template}."
         end
 
-        def access_key(arg=nil)
+        def access_key(arg = nil)
           set_or_return(
             :access_key,
             arg,
-            :kind_of => String
+            kind_of: String
           )
         end
 
-        def secret_key(arg=nil)
+        def secret_key(arg = nil)
           set_or_return(
             :secret_key,
             arg,
-            :kind_of => String
+            kind_of: String
           )
         end
 
-        def region(arg=nil)
+        def region(arg = nil)
           set_or_return(
             :region,
             arg,
-            :kind_of => String
+            kind_of: String
           )
         end
 
-        def token(arg=nil)
+        def token(arg = nil)
           set_or_return(
             :token,
             arg,
-            :kind_of => [ String, FalseClass ]
+            kind_of: [String, FalseClass]
           )
         end
 
-        def topic_arn(arg=nil)
+        def topic_arn(arg = nil)
           set_or_return(
             :topic_arn,
             arg,
-            :kind_of => String
+            kind_of: String
           ).tap do |arn|
             # Get the region from the ARN:
             next if arn.nil? || !region.nil?
@@ -109,28 +114,28 @@ class Chef
           end
         end
 
-        def subject(arg=nil)
+        def subject(arg = nil)
           set_or_return(
             :subject,
             arg,
-            :kind_of => String
+            kind_of: String
           )
         end
 
-        def body_template(arg=nil)
+        def body_template(arg = nil)
           set_or_return(
             :body_template,
             arg,
-            :kind_of => String
+            kind_of: String
           )
         end
 
-        def filter_opsworks_activity(arg=nil)
+        def filter_opsworks_activity(arg = nil)
           arg = Array(arg) if arg.is_a? String
           set_or_return(
             :filter_opsworks_activity,
             arg,
-            :kind_of => Array
+            kind_of: Array
           )
         end
       end
