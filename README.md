@@ -12,7 +12,7 @@ A simple Chef report handler that reports status of a Chef run through [Amazon S
 
 [Amazon SNS](http://aws.amazon.com/sns/) can send notifications by SMS, email, [Amazon SQS](http://aws.amazon.com/sqs/) queues or to any HTTP endpoint.
 
-We recommend using the [chef_handler_sns cookbook](https://supermarket.chef.io/cookbooks/chef_handler_sns) for easy installation.
+We recommend using the [`chef_handler_sns` cookbook](https://supermarket.chef.io/cookbooks/chef_handler_sns) for easy installation.
 
 This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtimberman) examples.
 
@@ -21,10 +21,6 @@ This Chef Handler is heavily based on [Joshua Timberman](https://github.com/jtim
 ## Requirements
 
 * Amazon AWS: uses Amazon SNS service.
-* Uses the `aws-sdk` library.
-  * `aws-sdk` requires `nokogiri`, which also has the following requirements:
-    * `libxml2-dev` and `libxslt-dev` installed (optional).
-    * `gcc` and `make` installed (this will compile and install libxml2 and libxslt internally if not found).
 * Ruby `2` or higher (recommended `2.1` or higher).
 
 ## Usage
@@ -35,7 +31,7 @@ You can install this handler in two ways:
 
 You can install the RubyGem and configure Chef to use it:
 
-    gem install chef-handler-sns
+    $ gem install chef-handler-sns
 
 Then add to the configuration (`/etc/chef/solo.rb` for chef-solo or `/etc/chef/client.rb` for chef-client):
 
@@ -57,11 +53,11 @@ sns_handler.region 'us-east-1' # optional
 exception_handlers << sns_handler
 ```
 
-### Method 2: in a Recipe with the chef_handler LWRP
+### Method 2: in a Recipe with the `chef_handler` LWRP
 
 **Note:** This method will not catch errors before the convergence phase. Use the previous method if you want to be able to report such errors.
 
-Use the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler), creating a recipe with the following:
+Use the [`chef_handler` LWRP](https://supermarket.chef.io/cookbooks/chef_handler), creating a recipe with the following:
 
 ```ruby
 # Handler configuration options
@@ -71,108 +67,14 @@ argument_array = [
   topic_arn: 'arn:aws:sns:***'
 ]
 
-# Depends on the `xml` cookbook to install nokogiri
-include_recipe 'xml::ruby'
-
 # Install the `chef-handler-sns` RubyGem during the compile phase
-chef_gem 'chef-handler-sns'
-
-# Then activate the handler with the `chef_handler` LWRP
-chef_handler 'Chef::Handler::Sns' do
-  source(::File.join(
-           Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob,
-           'chef/handler/sns'
-  ))
-  arguments argument_array
-  supports exception: true
-  action :enable
-end
-```
-
-#### Method 2.1: in a Recipe with the chef_handler LWRP Using Gem < 1.8.6
-
-If you have an old version of gem package (< 1.8.6) without `find_by_name` or old chef-client (< 0.10.10) without `chef_gem`, you can try creating a recipe similar to the following:
-
-```ruby
-# Handler configuration options
-argument_array = [
-  access_key: '***AMAZON-KEY***',
-  secret_key: '***AMAZON-SECRET***',
-  topic_arn: 'arn:aws:sns:***'
-]
-
-# Depends on the `xml` cookbook to install nokogiri
-include_recipe 'xml::ruby'
-
-# Install the `chef-handler-sns` RubyGem during the compile phase
-if defined?(Chef::Resource::ChefGem)
-  chef_gem 'chef-handler-sns'
-else
-  gem_package('chef-handler-sns') do
-    action :nothing
-  end.run_action(:install)
-end
-
-# Get the installed `chef-handler-sns` gem path
-sns_handler_path =
-  if Gem::Specification.respond_to?('find_by_name')
-    Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob
-  else
-    Gem.all_load_paths.grep(/chef-handler-sns/).first
-  end
-
-# Then activate the handler with the `chef_handler` LWRP
-chef_handler 'Chef::Handler::Sns' do
-  source "#{sns_handler_path}/chef/handler/sns"
-  arguments argument_array
-  supports exception: true
-  action :enable
-end
-```
-
-#### Method 2.2: in a Recipe with the chef_handler LWRP Inside AWS OpsWorks
-
-If you are inside [AWS OpsWorks](http://aws.amazon.com/opsworks/) or running Chef inside _Bundler_, you might receive the following error:
-
-    Gem::LoadError
-    --------------
-    Could not find 'chef-handler-sns' (>= 0) among XX total gem(s)
-
-To fix this error, you should get the handler installation path using a code similar to the following:
-
-```ruby
-# Handler configuration options
-argument_array = [
-  access_key: '***AMAZON-KEY***',
-  secret_key: '***AMAZON-SECRET***',
-  topic_arn: 'arn:aws:sns:***'
-]
-
-# Depends on the `xml` cookbook to install nokogiri
-include_recipe 'xml::ruby'
-
-# Install the `chef-handler-sns` RubyGem during the compile phase
-chef_gem 'chef-handler-sns'
-
-# Get the installed `chef-handler-sns` gem path from Bundler
-sns_handler_path = nil
-bundle_path = ::File.join(Bundler.bundle_path.to_s, 'specifications')
-Dir[::File.join(bundle_path, '*.gemspec')].each do |path|
-  spec = Gem::Specification.load(path.untaint)
-  sns_handler_path = spec.lib_dirs_glob if spec.name == 'chef-handler-sns'
-end
-if sns_handler_path.nil?
-  Chef::Application.fatal!(
-    "chef-handler-sns not found inside Bundler path: #{bundle_path}"
-  )
+chef_gem 'chef-handler-sns' do
+  compile_time true # Only for Chef 12
 end
 
 # Then activate the handler with the `chef_handler` LWRP
 chef_handler 'Chef::Handler::Sns' do
-  source(::File.join(
-           Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob,
-           'chef/handler/sns'
-  ))
+  source 'chef/handler/sns'
   arguments argument_array
   supports exception: true
   action :enable
@@ -181,15 +83,30 @@ end
 
 See the [`chef_handler_sns` cookbook provider code](https://github.com/zuazo/chef_handler_sns-cookbook/blob/master/providers/default.rb) for a more complete working example.
 
+### Method 3: Using the `chef-client` Cookbook
+
+You can also use the `node['chef_client']['config']` attribute of the [`chef-client`](https://github.com/chef-cookbooks/chef-client/tree/v4.3.2#start-report-exception-handlers) cookbook:
+
+```ruby
+node.default['chef_client']['config']['exception_handlers'] = [{
+  'class' => 'Chef::Handler::Sns',
+  'arguments' => {
+    access_key: '***AMAZON-KEY***',
+    secret_key: '***AMAZON-SECRET***',
+    topic_arn: 'arn:aws:sns:***'
+  }.map { |k, v| "#{k}: #{v.inspect}" }
+}]
+```
+
 ### Usage with Amazon IAM Roles
 
 If you are using AWS [IAM roles](http://docs.aws.amazon.com/IAM/latest/UserGuide/WorkingWithRoles.html) with your server, probably you only need to specify the `topic_arn` parameter. A few simple examples:
 
-#### Method 1: in the Chef Config File
+#### IAM Roles Method 1: in the Chef Config File
 
 You can install the RubyGem and configure Chef to use it:
 
-    gem install chef-handler-sns
+    $ gem install chef-handler-sns
 
 Then add to the configuration (`/etc/chef/solo.rb` for chef-solo or `/etc/chef/client.rb` for chef-client):
 
@@ -201,30 +118,38 @@ exception_handlers << Chef::Handler::Sns.new(
 )
 ```
 
-#### Method 2: in a Recipe with the chef_handler LWRP
+#### IAM Roles Method 2: in a Recipe with the `chef_handler` LWRP
 
-Use the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler), creating a recipe with the following:
+Use the [`chef_handler` LWRP](https://supermarket.chef.io/cookbooks/chef_handler), creating a recipe with the following:
 
 ```ruby
-# Depends on the `xml` cookbook to install nokogiri
-include_recipe 'xml::ruby'
-
 # Install the `chef-handler-sns` RubyGem during the compile phase
-chef_gem 'chef-handler-sns'
+chef_gem 'chef-handler-sns' do
+  compile_time true # Only for Chef 12
+end
 
 # Then activate the handler with the `chef_handler` LWRP
 chef_handler 'Chef::Handler::Sns' do
-  source(::File.join(
-           Gem::Specification.find_by_name('chef-handler-sns').lib_dirs_glob,
-           'chef/handler/sns'
-  ))
-  arguments(topic_arn: 'arn:aws:sns:us-east-1:12341234:MyTopicName')
+  source 'chef/handler/sns'
+  arguments topic_arn: 'arn:aws:sns:us-east-1:12341234:MyTopicName'
   supports exception: true
   action :enable
 end
 ```
 
+### IAM Roles Method 3: Using the `chef-client` Cookbook
+
+You can also use the `node['chef_client']['config']` attribute of the [`chef-client`](https://github.com/chef-cookbooks/chef-client/tree/v4.3.2#start-report-exception-handlers) cookbook:
+
+```ruby
+node.default['chef_client']['config']['exception_handlers'] = [{
+  'class' => 'Chef::Handler::Sns',
+  'arguments' => ['topic_arn: "arn:aws:sns:***"']
+}]
+```
+
 #### OpsWorks: Filter Notifications by Activity
+
 An optional array of OpsWorks activities can be supplied. If the array is set, notifications will
 only be triggered for the activities in the array, everything else will be discarded.
 
@@ -238,18 +163,18 @@ argument_array = [
 
 The following options are available to configure the handler:
 
-* `access_key` - AWS access key (required, but will try to read it from ohai with IAM roles).
-* `secret_key` - AWS secret key (required, but will try to read it from ohai with IAM roles).
-* `token` - AWS security token (optional, read from ohai with IAM roles). Set to `false` to disable the token detected by ohai.
+* `access_key` - AWS access key (required, but will try to read it from Ohai with IAM roles).
+* `secret_key` - AWS secret key (required, but will try to read it from Ohai with IAM roles).
+* `token` - AWS security token (optional, read from Ohai with IAM roles). Set to `false` to disable the token detected by Ohai.
 * `topic_arn` - AWS topic ARN name (required).
 * `region` - AWS region (optional).
 * `subject` - Message subject string in erubis format (optional).
 * `body_template` - Full path of an erubis template file to use for the message body (optional).
 * `filter_opsworks_activities` - An array of OpsWorks activities to be triggered with (optional). When set, everything else will be discarded.
 
-**Note:** When the machine has an IAM role, will try to read the credentials from ohai. So in the best case, you only need to specify the `topic_arn`.
+**Note:** When the machine has an IAM role, will try to read the credentials from Ohai. So in the best case, you only need to specify the `topic_arn`.
 
-### subject
+### `subject` Configuration Option
 
 Here is an example of the `subject` configuration option using the ruby configuration file (`solo.rb` or `client.rb`):
 
@@ -259,7 +184,8 @@ sns_handler.subject(
 )
 ```
 
-Using the [chef_handler LWRP](https://supermarket.chef.io/cookbooks/chef_handler):
+Using the [`chef_handler` LWRP](https://supermarket.chef.io/cookbooks/chef_handler):
+
 ```ruby
 argument_array = [
   access_key: '***AMAZON-KEY***',
@@ -269,6 +195,7 @@ argument_array = [
     "Chef-run: <%= node.name %> - <%= run_status.success? ? 'ok' : 'error' %>"
   # [...]
 ]
+
 chef_handler 'Chef::Handler::Sns' do
   # [...]
   arguments argument_array
@@ -284,14 +211,14 @@ The following variables are accessible inside the template:
 * `exception` - The uncaught Exception that terminated the chef run, or nil if the run completed successfully.
 * `backtrace` - The backtrace captured by the uncaught exception that terminated the chef run, or nil if the run completed successfully.
 * `node` - The Chef::Node for this client run.
-* `all_resources` - An Array containing all resources in the chef-run's resource_collection.
+* `all_resources` - An Array containing all resources in the chef-run resource collection.
 * `updated_resources` - An Array containing all resources that were updated during the chef run.
 * `success?` - Was the chef run successful? True if the chef run did not raise an uncaught exception.
 * `failed?` - Did the chef run fail? True if the chef run raised an uncaught exception.
 
-### body_template
+### `body_template` Configuration Option
 
-This configuration option needs to contain the full path of an erubis template. For example:
+This configuration option needs to contain the full path of an Erubis template. For example:
 
 ```ruby
 # recipe 'myapp::sns_handler'
@@ -308,6 +235,7 @@ argument_array = [
   body_template: '/tmp/chef_handler_sns_body.erb'
   # [...]
 ]
+
 chef_handler 'Chef::Handler::Sns' do
   # [...]
   arguments argument_array
@@ -349,11 +277,11 @@ See the [subject](#subject) documentation for more details on the variables acce
 
 ## IAM Role Credentials from Ohai
 
-IAM Role information and credentials are gathered from ohai by default if they exists.
+IAM Role information and credentials are gathered from Ohai by default if they exists.
 
-No aditional ohai plugin is required. This is natively supported by ohai since version `6.16.0` ([OHAI-400](https://tickets.opscode.com/browse/OHAI-400)).
+No aditional Ohai plugin is required. This is natively supported by Ohai since version `6.16.0` ([OHAI-400](https://tickets.opscode.com/browse/OHAI-400)).
 
-These are the used ohai attributes:
+These are the used Ohai attributes:
 
 ```
 ec2
@@ -368,9 +296,17 @@ ec2
 
 ## Running the Tests
 
+### Style Tests
+
+To run the RuboCop style tests:
+
+    $ rake style
+
+### Unit Tests
+
 Minitest tests can be run as usual:
 
-    rake test
+    $ rake test
 
 ## Contributing
 
