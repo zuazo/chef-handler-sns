@@ -294,28 +294,19 @@ ec2
             └── Token
 ```
 
-## Running the Tests
+## Testing
 
-### Style Tests
-
-To run the RuboCop style tests:
-
-    $ rake style
-
-### Unit Tests
-
-Minitest tests can be run as usual:
-
-    $ rake test
+See [TESTING.md](https://github.com/zuazo/chef-handler-sns/blob/master/TESTING.md).
 
 ## Contributing
 
-1. Fork the repository on Github.
-2. Create a named feature branch (like `add_component_x`).
-3. Write tests for your change.
-4. Write your change.
-5. Run the tests, ensuring they all pass (try as much as possible not to reduce coverage).
-6. Submit a [Pull Request using Github](http://github.com/zuazo/chef-handler-sns/pulls).
+Please do not hesitate to [open an issue](https://github.com/zuazo/chef-handler-sns/issues/new) with any questions or problems.
+
+See [CONTRIBUTING.md](https://github.com/zuazo/chef-handler-sns/blob/master/CONTRIBUTING.md).
+
+## TODO
+
+See [TODO.md](https://github.com/zuazo/chef-handler-sns/blob/master/TODO.md).
 
 ## License and Author
 
