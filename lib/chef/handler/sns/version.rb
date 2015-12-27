@@ -19,12 +19,17 @@
 
 class Chef
   class Handler
+    #
     # Chef Handler SNS main class.
     #
     # A simple Chef report handler that reports status of a Chef run through
     # [Amazon SNS](http://aws.amazon.com/sns/),
     # [including IAM roles support](#usage-with-amazon-iam-roles).
+    #
     class Sns < ::Chef::Handler
+      #
+      # chef-handler-sns Ruby Gem version.
+      #
       VERSION = '2.0.0.dev'
     end
   end

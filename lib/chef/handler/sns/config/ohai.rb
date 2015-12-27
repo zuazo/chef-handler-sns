@@ -21,30 +21,81 @@ class Chef
   class Handler
     class Sns < ::Chef::Handler
       module Config
+        #
         # Gets Chef Handler SNS default configuration from
         # [Ohai](https://docs.chef.io/ohai.html) information.
+        #
         class Ohai
+          #
+          # AWS region name.
+          #
           # Not used, read from the topic ARN.
+          #
+          # @return [String] Region.
+          #
           attr_reader :region
 
+          #
+          # AWS access key.
+          #
+          # @return [String] Access key.
+          #
           attr_reader :access_key
 
+          #
+          # AWS secret key.
+          #
+          # @return [String] Secret key.
+          #
           attr_reader :secret_key
 
+          #
+          # AWS token.
+          #
+          # @return [String] token.
+          #
           attr_reader :token
 
+          #
+          # Constructs a {Chef::Handler::Sns::Config::Ohai} object.
+          #
+          # @param node [Chef::Node] Node object to read Ohai information from.
+          #
+          # @api public
+          #
           def initialize(node)
             read_config(node)
           end
 
           protected
 
+          #
+          # Reads AWS region information from Ohai.
+          #
+          # Old code. This is currently not used. We are reading region
+          # information from Topic ARN.
+          #
+          # @param ec2 [Hash] These are attributes below `node['ec2']`.
+          #
+          # @return void
+          #
+          # @api private
+          #
           def read_region_config(ec2)
             return unless ec2.attribute?('placement_availability_zone') &&
                           ec2['placement_availability_zone'].is_a?(String)
             @region = ec2['placement_availability_zone'].chop
           end
 
+          #
+          # Reads the IAM credentials from Ohai.
+          #
+          # @param ec2 [Hash] These are attributes below `node['ec2']`.
+          #
+          # @return void
+          #
+          # @api private
+          #
           def read_iam_config(ec2)
             return unless ec2.attribute?('iam') &&
                           ec2['iam'].attribute?('security-credentials')
@@ -56,6 +107,17 @@ class Chef
             @token = credentials['Token']
           end
 
+          #
+          # Reads configuration information from Ohai.
+          #
+          # Reads both region information and IAM credentials.
+          #
+          # @param node [Chef::Node] Node object to read information from.
+          #
+          # @return void
+          #
+          # @api private
+          #
           def read_config(node)
             return unless node.attribute?('ec2')
             read_region_config(node['ec2'])

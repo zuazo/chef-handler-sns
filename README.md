@@ -1,5 +1,6 @@
 # Chef Handler SNS
 [![Gem Version](http://img.shields.io/gem/v/chef-handler-sns.svg?style=flat)](http://badge.fury.io/rb/chef-handler-sns)
+[![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg?style=flat)](http://www.rubydoc.info/gems/chef-handler-sns)
 [![GitHub](http://img.shields.io/badge/github-zuazo/chef--handler--sns-blue.svg?style=flat)](https://github.com/zuazo/chef-handler-sns)
 [![License](https://img.shields.io/github/license/zuazo/chef-handler-sns.svg?style=flat)](#license-and-author)
 
@@ -7,6 +8,7 @@
 [![Code Climate](http://img.shields.io/codeclimate/github/zuazo/chef-handler-sns.svg?style=flat)](https://codeclimate.com/github/zuazo/chef-handler-sns)
 [![Build Status](http://img.shields.io/travis/zuazo/chef-handler-sns.svg?style=flat)](https://travis-ci.org/zuazo/chef-handler-sns)
 [![Coverage Status](http://img.shields.io/coveralls/zuazo/chef-handler-sns.svg?style=flat)](https://coveralls.io/r/zuazo/chef-handler-sns?branch=master)
+[![Inline docs](http://inch-ci.org/github/zuazo/chef-handler-sns.svg?branch=master&style=flat)](http://inch-ci.org/github/zuazo/chef-handler-sns)
 
 A simple Chef report handler that reports status of a Chef run through [Amazon SNS](http://aws.amazon.com/sns/), [including IAM roles support](#usage-with-amazon-iam-roles).
 
