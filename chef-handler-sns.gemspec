@@ -6,7 +6,7 @@ chef_version =
 Gem::Specification.new do |s|
   s.name = 'chef-handler-sns'
   s.version = ::Chef::Handler::Sns::VERSION
-  s.date = '2014-07-04'
+  s.date = '2015-12-28'
   s.platform = Gem::Platform::RUBY
   s.summary = 'Chef SNS reports'
   s.description =
