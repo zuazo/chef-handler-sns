@@ -11,7 +11,7 @@ This file is used to list changes made in each version of `chef-handler-sns`.
 
 ### Fixes on v2.0.0
 
-* Improve wrong encoding support (issues [#6](https://github.com/zuazo/chef-handler-sns/pull/7) and [#7](https://github.com/zuazo/chef-handler-sns/pull/7), thanks [Michael Hobbs](https://github.com/michaelshobbs)).
+* Improve wrong encoding support (issues [#6](https://github.com/zuazo/chef-handler-sns/pull/6) and [#7](https://github.com/zuazo/chef-handler-sns/pull/7), thanks [Michael Hobbs](https://github.com/michaelshobbs)).
 * Limit subject and body size properly.
 
 ### Improvements on v2.0.0
