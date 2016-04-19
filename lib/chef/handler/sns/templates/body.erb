@@ -29,7 +29,7 @@ Instance Local IPv4: <%= node.ec2.local_ipv4 %>
 
 Chef Client Elapsed Time: <%= elapsed_time.to_s %>
 Chef Client Start Time: <%= start_time.to_s %>
-Chef Client Start Time: <%= end_time.to_s %>
+Chef Client End Time: <%= end_time.to_s %>
 
 <% if exception -%>
 Exception: <%= run_status.formatted_exception %>
