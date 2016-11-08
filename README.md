@@ -169,6 +169,7 @@ The following options are available to configure the handler:
 * `secret_key` - AWS secret key (required, but will try to read it from Ohai with IAM roles).
 * `token` - AWS security token (optional, read from Ohai with IAM roles). Set to `false` to disable the token detected by Ohai.
 * `topic_arn` - AWS topic ARN name (required).
+* `message_structure` - Set this option to `json` if you want to send a different message for each protocol. You must set your [message body template](#body_template-configuration-option) properly. Valid value: `json`. (optional)
 * `region` - AWS region (optional).
 * `subject` - Message subject string in erubis format (optional).
 * `body_template` - Full path of an erubis template file to use for the message body (optional).
@@ -276,6 +277,21 @@ Stacktrace:
 ```
 
 See the [subject](#subject) documentation for more details on the variables accessible inside the template.
+
+If you set `message_structure` to `json`, the body template must:
+
+* be a syntactically valid JSON; and
+* contain at least a top-level JSON key of `default` with a value that is a string.
+You can define other top-level keys that define the message you want to send to a specific transport protocol (e.g., "http").
+```erb
+<%# file 'myapp/files/default/chef_handler_sns_body.erb' %>
+{
+"default": "Message body text here.", 
+"email": "Message body text here.", 
+"http": "Message body text here."
+}
+```
+See the [AWS SNS](http://docs.aws.amazon.com/sns/latest/api/API_Publish.html#API_Publish_RequestParameters) documentation for more details on SNS message format.
 
 ## IAM Role Credentials from Ohai
 

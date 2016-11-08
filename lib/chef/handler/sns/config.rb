@@ -209,6 +209,23 @@ class Chef
         end
 
         #
+        # Gets or sets MessageStructure SNS request parameter.
+        #
+        # @param arg [String] MessageStructure.
+        #
+        # @return [String] MessageStructure.
+        #
+        # @api public
+        #
+        def message_structure(arg = nil)
+          set_or_return(
+            :message_structure,
+            arg,
+            kind_of: String
+          )
+        end
+
+        #
         # Gets or sets SNS message subject.
         #
         # @param arg [String] SNS subject.

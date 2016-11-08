@@ -136,7 +136,8 @@ class Chef
         sns.publish(
           topic_arn: topic_arn,
           message: sns_body,
-          subject: sns_subject
+          subject: sns_subject,
+          message_structure: message_structure
         )
       end
 
