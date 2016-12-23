@@ -1,0 +1,4 @@
+Metrics/ModuleLength:
+  Max: 103
+Metrics/LineLength:
+  Max: 94
