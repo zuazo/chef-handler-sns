@@ -71,7 +71,7 @@ describe Chef::Handler::Sns::Config do
     end
   end
 
-  [:access_key, :secret_key, :region, :token, :topic_arn].each do |option|
+  [:access_key, :secret_key, :region, :token, :topic_arn, :message_structure].each do |option|
     it "accepts string values in '#{option}' option" do
       sns_config.send(option, 'test')
     end
