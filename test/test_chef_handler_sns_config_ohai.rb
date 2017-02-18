@@ -19,6 +19,7 @@
 
 require 'helper'
 
+# rubocop:disable Metrics/BlockLength
 describe Chef::Handler::Sns::Config::Ohai do
   let(:node) do
     Chef::Node.new.tap do |node|
@@ -85,3 +86,4 @@ describe Chef::Handler::Sns::Config::Ohai do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

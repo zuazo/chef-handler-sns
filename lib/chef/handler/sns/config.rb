@@ -42,7 +42,7 @@ class Chef
         #
         # Required configuration options.
         #
-        REQUIRED = %w(access_key secret_key topic_arn)
+        REQUIRED = %w(access_key secret_key topic_arn).freeze
 
         #
         # Reads some configuration options from Ohai information.
@@ -108,13 +108,13 @@ class Chef
           config_from_ohai(node) if node
           REQUIRED.each do |key|
             next unless send(key).nil?
-            fail Exceptions::ValidationFailed,
-                 "Required argument #{key} is missing!"
+            raise Exceptions::ValidationFailed,
+                  "Required argument #{key} is missing!"
           end
 
           return unless body_template && !::File.exist?(body_template)
-          fail Exceptions::ValidationFailed,
-               "Template file not found: #{body_template}."
+          raise Exceptions::ValidationFailed,
+                "Template file not found: #{body_template}."
         end
 
         #

@@ -25,10 +25,10 @@ class SnsConfig
 end
 
 class ChefFakeOhai < Chef::Handler::Sns::Config::Ohai
-  def intialize
-  end
+  def intialize; end
 end
 
+# rubocop:disable Metrics/BlockLength
 describe Chef::Handler::Sns::Config do
   let(:node) do
     node = Chef::Node.new
@@ -166,3 +166,4 @@ describe Chef::Handler::Sns::Config do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

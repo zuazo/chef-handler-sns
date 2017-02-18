@@ -40,6 +40,7 @@ module Aws
   end
 end
 
+# rubocop:disable Metrics/BlockLength
 describe Chef::Handler::Sns do
   let(:data_dir) { ::File.join(::File.dirname(__FILE__), 'data') }
   let(:node) do
@@ -301,3 +302,4 @@ describe Chef::Handler::Sns do
     sns_handler.run_report_safely(run_status)
   end
 end
+# rubocop:enable Metrics/BlockLength

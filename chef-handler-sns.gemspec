@@ -1,8 +1,8 @@
 $LOAD_PATH.push File.expand_path('../lib', __FILE__)
 require 'chef/handler/sns/version'
-chef_version =
-  ENV.key?('CHEF_VERSION') ? "#{ENV['CHEF_VERSION']}" : ['>= 0.9.0']
+chef_version = ENV.key?('CHEF_VERSION') ? ENV['CHEF_VERSION'] : ['>= 0.9.0']
 
+# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |s|
   s.name = 'chef-handler-sns'
   s.version = ::Chef::Handler::Sns::VERSION
@@ -31,11 +31,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mocha', '~> 1.1'
   s.add_development_dependency 'coveralls', '~> 0.7'
   s.add_development_dependency 'simplecov', '~> 0.9'
-  s.add_development_dependency 'rubocop', '~> 0.35.0'
+  s.add_development_dependency 'rubocop', '~> 0.47.0'
   s.add_development_dependency 'should_not', '~> 1.1'
   s.add_development_dependency 'yard', '~> 0.8'
   if Gem::Requirement.new('< 2.2.2')
-     .satisfied_by?(Gem::Version.new(RUBY_VERSION))
+                     .satisfied_by?(Gem::Version.new(RUBY_VERSION))
     s.add_development_dependency 'rack', '~> 1.0'
   end
 end
+# rubocop:enable Metrics/BlockLength
