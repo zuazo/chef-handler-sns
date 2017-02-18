@@ -23,7 +23,7 @@ describe Chef::Handler::Sns::Config::Ohai do
   let(:node) do
     Chef::Node.new.tap do |node|
       node.name('test')
-      node.set['ec2'] = {
+      node.override['ec2'] = {
         'placement_availability_zone' => 'region1a',
         'iam' => {
           'security-credentials' => {
@@ -38,7 +38,9 @@ describe Chef::Handler::Sns::Config::Ohai do
     end
   end
   let(:config) { Chef::Handler::Sns::Config::Ohai.new(node) }
-  let(:node_set_iam_roles) { node.set['ec2']['iam']['security-credentials'] }
+  let(:node_override_iam_roles) do
+    node.override['ec2']['iam']['security-credentials']
+  end
 
   describe 'read_config' do
     it 'reads the region' do
@@ -46,12 +48,12 @@ describe Chef::Handler::Sns::Config::Ohai do
     end
 
     it 'does not read the region when not set' do
-      node.set['ec2']['placement_availability_zone'] = nil
+      node.override['ec2']['placement_availability_zone'] = nil
       assert_nil config.region
     end
 
     it 'does not read the credentials when has not IAM role' do
-      node.set['ec2'] = {}
+      node.override['ec2'] = {}
       assert_nil config.access_key
     end
 
@@ -60,7 +62,7 @@ describe Chef::Handler::Sns::Config::Ohai do
     end
 
     it 'does not read the access_key when not set' do
-      node_set_iam_roles['iam-role1']['AccessKeyId'] = nil
+      node_override_iam_roles['iam-role1']['AccessKeyId'] = nil
       assert_nil config.access_key
     end
 
@@ -69,7 +71,7 @@ describe Chef::Handler::Sns::Config::Ohai do
     end
 
     it 'does not read the secret_key when not set' do
-      node_set_iam_roles['iam-role1']['SecretAccessKey'] = nil
+      node_override_iam_roles['iam-role1']['SecretAccessKey'] = nil
       assert_nil config.secret_key
     end
 
@@ -78,7 +80,7 @@ describe Chef::Handler::Sns::Config::Ohai do
     end
 
     it 'does not read the security token when not set' do
-      node_set_iam_roles['iam-role1']['Token'] = nil
+      node_override_iam_roles['iam-role1']['Token'] = nil
       assert_nil config.token
     end
   end

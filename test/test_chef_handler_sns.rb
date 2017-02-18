@@ -277,7 +277,7 @@ describe Chef::Handler::Sns do
 
   it 'publishes messages if node["opsworks"]["activity"] matches allowed '\
      'acvities' do
-    node.set['opsworks']['activity'] = 'deploy'
+    node.override['opsworks']['activity'] = 'deploy'
     config[:filter_opsworks_activity] = %w(deploy setup)
 
     fake_sns.expects(:publish).once
@@ -286,7 +286,7 @@ describe Chef::Handler::Sns do
 
   it 'does not publish messages if node["opsworks"]["activity"] differs '\
      'from allowed acvities' do
-    node.set['opsworks']['activity'] = 'configure'
+    node.override['opsworks']['activity'] = 'configure'
     config[:filter_opsworks_activity] = %w(deploy setup)
 
     fake_sns.expects(:publish).never
