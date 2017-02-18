@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'erubis', '~> 2.0'
 
   s.add_development_dependency 'chef', chef_version
-  s.add_development_dependency 'rake', '~> 10.0'
+  s.add_development_dependency 'rake', '~> 12.0'
   s.add_development_dependency 'minitest', '~> 5.7'
   s.add_development_dependency 'minitest-stub-const', '~> 0.6.0'
   s.add_development_dependency 'mocha', '~> 1.1'
