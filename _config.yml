@@ -1,0 +1,8 @@
+title: Chef-handler-sns
+description: Chef report handler to send Amazon SNS notifications on failures or changes.
+google_analytics: UA-38093658-2
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
