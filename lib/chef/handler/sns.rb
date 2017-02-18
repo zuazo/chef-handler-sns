@@ -251,7 +251,7 @@ class Chef
       # ruby-limiting-a-utf-8-string-by-byte-length
       #
       # @param str [String] The string to limit.
-      # @param size [Fixnum] The string size in bytes.
+      # @param size [Integer] The string size in bytes.
       #
       # @return [String] The final string.
       #

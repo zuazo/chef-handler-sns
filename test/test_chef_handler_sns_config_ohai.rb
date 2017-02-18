@@ -47,12 +47,12 @@ describe Chef::Handler::Sns::Config::Ohai do
 
     it 'does not read the region when not set' do
       node.set['ec2']['placement_availability_zone'] = nil
-      assert_equal nil, config.region
+      assert_nil config.region
     end
 
     it 'does not read the credentials when has not IAM role' do
       node.set['ec2'] = {}
-      assert_equal nil, config.access_key
+      assert_nil config.access_key
     end
 
     it 'reads the access_key' do
@@ -61,7 +61,7 @@ describe Chef::Handler::Sns::Config::Ohai do
 
     it 'does not read the access_key when not set' do
       node_set_iam_roles['iam-role1']['AccessKeyId'] = nil
-      assert_equal nil, config.access_key
+      assert_nil config.access_key
     end
 
     it 'reads the secret_key' do
@@ -70,7 +70,7 @@ describe Chef::Handler::Sns::Config::Ohai do
 
     it 'does not read the secret_key when not set' do
       node_set_iam_roles['iam-role1']['SecretAccessKey'] = nil
-      assert_equal nil, config.secret_key
+      assert_nil config.secret_key
     end
 
     it 'reads the security token' do
@@ -79,7 +79,7 @@ describe Chef::Handler::Sns::Config::Ohai do
 
     it 'does not read the security token when not set' do
       node_set_iam_roles['iam-role1']['Token'] = nil
-      assert_equal nil, config.token
+      assert_nil config.token
     end
   end
 end
