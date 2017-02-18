@@ -6,7 +6,7 @@ chef_version = ENV.key?('CHEF_VERSION') ? ENV['CHEF_VERSION'] : ['>= 0.9.0']
 Gem::Specification.new do |s|
   s.name = 'chef-handler-sns'
   s.version = ::Chef::Handler::Sns::VERSION
-  s.date = '2015-12-28'
+  s.date = '2017-02-18'
   s.platform = Gem::Platform::RUBY
   s.summary = 'Chef SNS reports'
   s.description =

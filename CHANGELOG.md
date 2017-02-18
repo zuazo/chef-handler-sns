@@ -2,6 +2,14 @@
 
 This file is used to list changes made in each version of `chef-handler-sns`.
 
+## 2.1.0 (2017-02-18)
+
+* Fix end time message typo in *body.erb* ([issue #8](https://github.com/zuazo/chef-handler-sns/pull/8), thanks [Hugo Lopes Tavares](https://github.com/hltbra)).
+* Add `:message_structure` option support (issues [#9](https://github.com/zuazo/chef-handler-sns/issues/9) and [#10](https://github.com/zuazo/chef-handler-sns/issues/10), thanks [Dmitry Averkiev](https://github.com/d-averkiev)).
+* Fix some Chef warnings.
+* Fix some Ruby warnings.
+* Update RuboCop to version `0.47`.
+
 ## 2.0.0 (2015-12-28)
 
 ### Breaking Changes on v2.0.0
