@@ -334,6 +334,8 @@ See [TODO.md](https://github.com/zuazo/chef-handler-sns/blob/master/TODO.md).
 | **Author:**          | [Xabier de Zuazo](https://github.com/zuazo) (<xabier@zuazo.org>)
 | **Contributor:**     | [Florian Holzhauer](https://github.com/fh)
 | **Contributor:**     | [Michael Hobbs](https://github.com/michaelshobbs)
+| **Contributor:**     | [Hugo Lopes Tavares](https://github.com/hltbra)
+| **Contributor:**     | [Dmitry Averkiev](https://github.com/d-averkiev)
 | **Copyright:**       | Copyright (c) 2015 Xabier de Zuazo
 | **Copyright:**       | Copyright (c) 2013-2014 Onddo Labs, SL.
 | **License:**         | Apache License, Version 2.0
