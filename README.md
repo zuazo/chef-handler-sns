@@ -286,8 +286,8 @@ You can define other top-level keys that define the message you want to send to 
 ```erb
 <%# file 'myapp/files/default/chef_handler_sns_body.erb' %>
 {
-"default": "Message body text here.", 
-"email": "Message body text here.", 
+"default": "Message body text here.",
+"email": "Message body text here.",
 "http": "Message body text here."
 }
 ```
