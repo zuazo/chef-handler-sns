@@ -58,9 +58,7 @@ class Chef
         def config_from_ohai(node)
           config_ohai = Config::Ohai.new(node)
           [
-            :access_key,
-            :secret_key,
-            :token
+            :access_key, :secret_key, :token
           ].each do |attr|
             send(attr, config_ohai.send(attr)) if send(attr).nil?
           end
@@ -127,11 +125,7 @@ class Chef
         # @api public
         #
         def access_key(arg = nil)
-          set_or_return(
-            :access_key,
-            arg,
-            kind_of: String
-          )
+          set_or_return(:access_key, arg, kind_of: String)
         end
 
         #
@@ -144,11 +138,7 @@ class Chef
         # @api public
         #
         def secret_key(arg = nil)
-          set_or_return(
-            :secret_key,
-            arg,
-            kind_of: String
-          )
+          set_or_return(:secret_key, arg, kind_of: String)
         end
 
         #
@@ -161,11 +151,7 @@ class Chef
         # @api public
         #
         def region(arg = nil)
-          set_or_return(
-            :region,
-            arg,
-            kind_of: String
-          )
+          set_or_return(:region, arg, kind_of: String)
         end
 
         #
@@ -178,11 +164,7 @@ class Chef
         # @api public
         #
         def token(arg = nil)
-          set_or_return(
-            :token,
-            arg,
-            kind_of: [String, FalseClass]
-          )
+          set_or_return(:token, arg, kind_of: [String, FalseClass])
         end
 
         #
@@ -198,9 +180,7 @@ class Chef
         #
         def topic_arn(arg = nil)
           set_or_return(
-            :topic_arn,
-            arg,
-            kind_of: String
+            :topic_arn, arg, kind_of: String
           ).tap do |arn|
             # Get the region from the ARN:
             next if arn.nil? || !region.nil?
@@ -218,11 +198,7 @@ class Chef
         # @api public
         #
         def message_structure(arg = nil)
-          set_or_return(
-            :message_structure,
-            arg,
-            kind_of: String
-          )
+          set_or_return(:message_structure, arg, kind_of: String)
         end
 
         #
@@ -235,11 +211,7 @@ class Chef
         # @api public
         #
         def subject(arg = nil)
-          set_or_return(
-            :subject,
-            arg,
-            kind_of: String
-          )
+          set_or_return(:subject, arg, kind_of: String)
         end
 
         #
@@ -252,11 +224,7 @@ class Chef
         # @api public
         #
         def body_template(arg = nil)
-          set_or_return(
-            :body_template,
-            arg,
-            kind_of: String
-          )
+          set_or_return(:body_template, arg, kind_of: String)
         end
 
         #
@@ -273,11 +241,7 @@ class Chef
         #
         def filter_opsworks_activity(arg = nil)
           arg = Array(arg) if arg.is_a? String
-          set_or_return(
-            :filter_opsworks_activity,
-            arg,
-            kind_of: Array
-          )
+          set_or_return(:filter_opsworks_activity, arg, kind_of: Array)
         end
       end
     end
