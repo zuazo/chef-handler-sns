@@ -34,4 +34,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop', '~> 0.35.0'
   s.add_development_dependency 'should_not', '~> 1.1'
   s.add_development_dependency 'yard', '~> 0.8'
+  if Gem::Requirement.new('< 2.2.2')
+     .satisfied_by?(Gem::Version.new(RUBY_VERSION))
+    s.add_development_dependency 'rack', '~> 1.0'
+  end
 end
